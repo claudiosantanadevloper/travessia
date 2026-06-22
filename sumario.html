@@ -1,0 +1,555 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sumário — O Avesso do Chão</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter+Tight:wght@100;200;300;400&family=JetBrains+Mono:wght@100;200;300&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans:  ['"Inter Tight"', "sans-serif"],
+              mono:  ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              copper: { 400: "#e98a75", 500: "#e2583e" },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #050505;
+        color: #e6e6e6;
+        overflow-x: hidden;
+        hyphens: none;
+        opacity: 0;
+        transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+      body.loaded { opacity: 1; }
+
+      #bg-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ── Linha de capítulo ─────────────────────────────── */
+      .chapter-row {
+        display: grid;
+        grid-template-columns: 2.5rem 1fr auto;
+        align-items: baseline;
+        gap: 0 1rem;
+        padding: 1.1rem 0 1.1rem 1.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        text-decoration: none;
+        color: inherit;
+        position: relative;
+        opacity: 0;
+        transform: translateX(-8px);
+        transition:
+          background 0.35s ease,
+          opacity 0.6s cubic-bezier(0.16,1,0.3,1),
+          transform 0.6s cubic-bezier(0.16,1,0.3,1);
+      }
+      .chapter-row.ch-revealed {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      /* Barra colorida esquerda */
+      .chapter-row::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.6rem;
+        bottom: 0.6rem;
+        width: 2px;
+        background: var(--accent, #e2583e);
+        opacity: 0;
+        transition: opacity 0.35s ease;
+        border-radius: 2px;
+      }
+
+      .chapter-row:hover::before,
+      .chapter-row:focus-visible::before { opacity: 1; }
+
+      .chapter-row:hover .ch-num   { color: var(--accent, #e2583e); }
+      .chapter-row:hover .ch-title { color: #ffffff; filter: blur(0); }
+      .chapter-row:hover .ch-desc  { color: rgba(255, 255, 255, 0.35); }
+      .chapter-row:focus-visible .ch-title { color: #ffffff; filter: blur(0); }
+
+      .ch-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.62rem;
+        font-weight: 200;
+        letter-spacing: 0.2em;
+        color: rgba(255, 255, 255, 0.18);
+        transition: color 0.35s ease;
+        line-height: 1;
+        align-self: center;
+      }
+
+      .ch-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(1.05rem, 2.5vw, 1.3rem);
+        font-weight: 300;
+        font-style: italic;
+        color: rgba(255, 255, 255, 0.1);
+        filter: blur(5px);
+        transition: color 0.55s cubic-bezier(0.16,1,0.3,1),
+                    filter 0.55s cubic-bezier(0.16,1,0.3,1);
+        line-height: 1.3;
+      }
+
+      .ch-desc {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.58rem;
+        font-weight: 100;
+        letter-spacing: 0.06em;
+        color: rgba(255, 255, 255, 0.03);
+        transition: color 0.55s cubic-bezier(0.16,1,0.3,1);
+        text-align: right;
+        max-width: 220px;
+        line-height: 1.6;
+        font-style: italic;
+      }
+
+      @media (max-width: 600px) {
+        .chapter-row {
+          grid-template-columns: 2rem 1fr;
+          grid-template-rows: auto auto;
+          gap: 0.2rem 0.75rem;
+          padding: 1rem 0 1rem 1rem;
+        }
+        .ch-desc {
+          grid-column: 2;
+          grid-row: 2;
+          text-align: left;
+          max-width: 100%;
+          font-size: 0.54rem;
+        }
+      }
+
+      /* ── Botão de ação ─────────────────────────────────── */
+      .action-btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .action-btn::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 1px;
+        background: #e2583e;
+        transition: all 0.5s ease;
+        transform: translateX(-50%);
+      }
+      .action-btn:hover::after { width: 100%; }
+
+      /* ── ESTADOS PROGRESSIVOS ────────────────────────────
+
+         .ch-visited   → capítulo descoberto — nome nítido, link ativo, hover
+         .ch-unvisited → nome visível mas bloqueado — sem link, sem hover
+         .ch-gated     → nome visível mas muito bloqueado — exige chave
+
+         REGRA: o nome sempre aparece. O que muda é a navegabilidade.
+         O leitor vê para onde a obra vai, mas só chega quando estiver pronto.
+
+      ──────────────────────────────────────────────────── */
+
+      /* VISITADO — nome nítido, link ativo, hover completo */
+      .chapter-row.ch-visited .ch-title {
+        color: rgba(255,255,255,0.78);
+        filter: blur(0);
+      }
+      .chapter-row.ch-visited .ch-num {
+        color: rgba(255,255,255,0.28);
+      }
+      .chapter-row.ch-visited .ch-desc {
+        color: rgba(255,255,255,0.14);
+      }
+
+      /* NÃO VISITADO — nome visível mas link bloqueado */
+      .chapter-row.ch-unvisited {
+        pointer-events: none;
+        cursor: default;
+      }
+      .chapter-row.ch-unvisited::before { display: none; }
+      .chapter-row.ch-unvisited .ch-num {
+        color: rgba(255,255,255,0.10);
+      }
+      .chapter-row.ch-unvisited .ch-title {
+        color: rgba(255,255,255,0.28);
+        filter: blur(0);      /* nome legível — só o acesso está fechado */
+      }
+      .chapter-row.ch-unvisited .ch-desc {
+        color: rgba(255,255,255,0.06);
+      }
+
+      /* GATEADO — Cap IX sem chave: nome existe mas suspenso */
+      .chapter-row.ch-gated {
+        pointer-events: none;
+        cursor: default;
+      }
+      .chapter-row.ch-gated::before { display: none; }
+      .chapter-row.ch-gated .ch-num {
+        color: rgba(255,255,255,0.07);
+      }
+      .chapter-row.ch-gated .ch-title {
+        color: rgba(255,255,255,0.14);
+        filter: blur(6px); /* mais velado — capítulo mais íntimo */
+      }
+      .chapter-row.ch-gated .ch-desc {
+        opacity: 0;
+      }
+    </style>
+  </head>
+
+  <body class="font-sans antialiased min-h-screen">
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- ← Capa -->
+    <a
+      href="index.html"
+      class="nav-link fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 uppercase"
+      >← Capa</a
+    >
+
+    <main class="relative z-10 max-w-2xl mx-auto px-6 sm:px-10 md:px-12 py-24 md:py-32">
+
+      <!-- Cabeçalho -->
+      <header class="mb-14 md:mb-18">
+        <div class="w-px h-10 bg-gradient-to-b from-transparent via-copper-500/40 to-transparent mb-8 opacity-60"></div>
+        <p class="font-mono text-[8px] tracking-[0.55em] text-zinc-700 uppercase mb-3">
+          O Avesso do Chão
+        </p>
+        <h1 class="font-serif font-light text-3xl md:text-4xl text-white/85 italic mb-3 leading-tight">
+          Sumário
+        </h1>
+        <p class="font-mono text-[8px] tracking-[0.4em] text-zinc-700 uppercase">
+          Volume I · Piraju
+        </p>
+        <p
+          class="font-mono text-[7px] tracking-[0.3em] text-zinc-600 uppercase mt-4 italic"
+          style="letter-spacing:0.25em"
+        >
+          antes do seu olhar — nada aqui existe
+        </p>
+      </header>
+
+      <!-- Lista de capítulos -->
+      <nav class="border-l border-white/[0.06] mb-16">
+
+        <!--
+          data-chapter-id  → chave localStorage avesso_jornada_{id}
+          data-gate        → "key" = exige oavesso_key_unlocked para aparecer
+          O JS abaixo aplica ch-visited / ch-unvisited / ch-gated dinamicamente.
+        -->
+
+        <a href="capitulo-0-prologo.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-0"
+           style="--accent:#4a6fa8">
+          <span class="ch-num">○</span>
+          <span class="ch-title">Prólogo</span>
+          <span class="ch-desc">antes de haver chão</span>
+        </a>
+
+        <a href="capitulo-1-o-segredo.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-1"
+           style="--accent:#c8915a">
+          <span class="ch-num">I</span>
+          <span class="ch-title">O Segredo</span>
+          <span class="ch-desc">o que virou febre</span>
+        </a>
+
+        <a href="capitulo-2-a-linha.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-2"
+           style="--accent:#c8a06a">
+          <span class="ch-num">II</span>
+          <span class="ch-title">A Linha</span>
+          <span class="ch-desc">onde a tensão tem peso próprio</span>
+        </a>
+
+        <a href="capitulo-3-o-peso-da-dualidade.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-3"
+           style="--accent:#d0a858">
+          <span class="ch-num">III</span>
+          <span class="ch-title">O Peso da Dualidade</span>
+          <span class="ch-desc">o que pesa e mesmo assim fica</span>
+        </a>
+
+        <a href="capitulo-4-a-arquitetura-da-atencao.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-4"
+           style="--accent:#6a7f96">
+          <span class="ch-num">IV</span>
+          <span class="ch-title">A Arquitetura da Atenção</span>
+          <span class="ch-desc">o que reorienta sem pedir licença</span>
+        </a>
+
+        <a href="capitulo-5-a-arquitetura-do-desejo.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-5"
+           style="--accent:#c0462a">
+          <span class="ch-num">V</span>
+          <span class="ch-title">A Arquitetura do Desejo</span>
+          <span class="ch-desc">a combustão que não pede autorização</span>
+        </a>
+
+        <a href="capitulo-6-a-nossa-bolha.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-6"
+           style="--accent:#c8a9d4">
+          <span class="ch-num">VI</span><span class="ch-title">A Nossa Bolha</span>
+          <span class="ch-desc">onde dois é o universo inteiro</span>
+        </a>
+
+        <a href="capitulo-7-o-deslocamento.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-7"
+           style="--accent:#cdac6c">
+          <span class="ch-num">VII</span><span class="ch-title">O Deslocamento</span>
+          <span class="ch-desc">o que muda sem avisar</span>
+        </a>
+
+        <a href="capitulo-8-o-risco-do-depois.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-8"
+           style="--accent:#c04e3a">
+          <span class="ch-num">VIII</span><span class="ch-title">O Risco do Depois</span>
+          <span class="ch-desc">o que pode não ter volta</span>
+        </a>
+
+        <a href="capitulo-9-a-entrega.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-9"
+           style="--accent:#C8A96E">
+          <span class="ch-num">IX</span><span class="ch-title">A Entrega</span>
+          <span class="ch-desc">as mãos abertas; isso não é mais meu</span>
+        </a>
+
+
+        <a href="capitulo-11-a-espera.html"
+           class="nav-link chapter-row"
+           data-chapter-id="cap-11"
+           style="--accent:#768ca5">
+          <span class="ch-num">XI</span><span class="ch-title">A Espera</span>
+          <span class="ch-desc">a tela que olha de volta · online há 2 minutos</span>
+        </a>
+
+      </nav>
+
+      <!-- Fragmentos Não Catalogados (Ideia #2 — câmara pós-obra) -->
+      <section id="fragmentos-section" class="mt-12 mb-4">
+        <p class="font-mono text-[7px] tracking-[0.45em] uppercase text-zinc-700 mb-6"
+           style="letter-spacing:0.42em">
+          fragmentos não catalogados
+        </p>
+        <div class="border-l border-white/[0.04] space-y-0">
+
+          <a href="capitulo-10-a-crueza-do-presente.html"
+             class="nav-link chapter-row ch-gated"
+             data-chapter-id="cap-10a"
+             data-gate="key"
+             style="--accent:#dc2626">
+            <span class="ch-num" style="font-size:0.6rem;opacity:0.4">✦</span>
+            <span class="ch-title">A Crueza do Presente</span>
+            <span class="ch-desc">o que não coube em metáfora</span>
+          </a>
+
+          <a href="capitulo-10-a-sereia-e-o-ouro.html"
+             class="nav-link chapter-row ch-gated"
+             data-chapter-id="cap-10b"
+             data-gate="key"
+             style="--accent:#efb057">
+            <span class="ch-num" style="font-size:0.6rem;opacity:0.4">✦</span>
+            <span class="ch-title">A Sereia e o Ouro</span>
+            <span class="ch-desc">o nome que a obra guardou até aqui</span>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- Rodapé de navegação -->
+      <footer class="pt-8 border-t border-white/[0.05] flex flex-col sm:flex-row justify-between items-center gap-6">
+        <a
+          href="index.html"
+          class="nav-link font-mono text-[8px] tracking-[0.35em] text-zinc-600 hover:text-zinc-300 transition-colors duration-400 uppercase"
+        >← Voltar à Capa</a>
+        <a
+          href="capitulo-0-prologo.html"
+          class="nav-link action-btn font-mono text-[9px] tracking-[0.4em] text-zinc-400 hover:text-copper-400 transition-colors duration-500 uppercase border border-white/[0.06] hover:border-copper-500/30 px-8 py-3 backdrop-blur-sm"
+        >Iniciar a Travessia</a>
+      </footer>
+
+    </main>
+
+    <script>
+      // ─── REVELAÇÃO PROGRESSIVA ─────────────────────────────────────────────
+      // Lógica espelha a constelação do footer:
+      //   ch-visited   → capítulo descoberto (visitado ao menos uma vez)
+      //   ch-unvisited → destino anônimo, existe mas sem nome
+      //   ch-gated     → completamente invisível até oavesso_key_unlocked
+      (function () {
+        var hasKey = !!localStorage.getItem('oavesso_key_unlocked');
+
+        document.querySelectorAll('[data-chapter-id]').forEach(function (row) {
+          var id      = row.dataset.chapterId;
+          var gate    = row.dataset.gate;
+          var visited = !!localStorage.getItem('avesso_jornada_' + id);
+
+          if (gate === 'key') {
+            // Capítulo gateado: só aparece se a chave estiver desbloqueada
+            if (hasKey) {
+              row.classList.remove('ch-gated');
+              row.classList.add(visited ? 'ch-visited' : 'ch-unvisited');
+            }
+            // Sem chave: permanece ch-gated (display:none já no CSS)
+            return;
+          }
+
+          // Capítulo livre: visitado ou anônimo
+          if (visited) {
+            row.classList.add('ch-visited');
+          } else {
+            row.classList.add('ch-unvisited');
+            row.removeAttribute('href');  // sem link — não navegável diretamente
+          }
+        });
+      })();
+
+      // ─── STAGGER DE ENTRADA DAS LINHAS ───────────────────────────────────
+      document.querySelectorAll('.chapter-row').forEach(function (row, i) {
+        setTimeout(function () { row.classList.add('ch-revealed'); }, 80 + i * 55);
+      });
+
+      // ─── CANVAS: FUNDO ATMOSFÉRICO ────────────────────────────────────────
+      const canvas = document.getElementById('bg-canvas');
+      const ctx    = canvas.getContext('2d');
+      let width, height, particles = [];
+      let mouseX = -9999, mouseY = -9999;
+
+      window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+      class Particle {
+        constructor() {
+          this.x     = Math.random() * width;
+          this.y     = Math.random() * height;
+          this.size  = Math.random() * 0.9 + 0.2;
+          this.vx    = (Math.random() - 0.5) * 0.12;
+          this.vy    = (Math.random() - 0.5) * 0.12;
+          this.alpha = Math.random() * 0.18 + 0.03;
+        }
+        update() {
+          const dx   = mouseX - this.x;
+          const dy   = mouseY - this.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 180 && dist > 0) {
+            const force = (180 - dist) / 180;
+            this.vx += (dx / dist) * force * 0.018;
+            this.vy += (dy / dist) * force * 0.018;
+          }
+          this.vx *= 0.96;
+          this.vy *= 0.96;
+          this.x   += this.vx;
+          this.y   += this.vy;
+          if (this.x < 0 || this.x > width)  this.vx *= -1;
+          if (this.y < 0 || this.y > height) this.vy *= -1;
+        }
+        draw() {
+          ctx.fillStyle = `rgba(163,119,102,${this.alpha})`;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      function init() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        particles = [];
+        for (let i = 0; i < 55; i++) particles.push(new Particle());
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', init);
+      init();
+      animate();
+
+      // ─── ÁUDIO: DRONE PRÉ-VERBAL ──────────────────────────────────────────
+      let audioReady = false;
+      document.addEventListener('click', function initDrone() {
+        if (audioReady) return;
+        audioReady = true;
+        document.removeEventListener('click', initDrone);
+        const ac     = new (window.AudioContext || window.webkitAudioContext)();
+        const master = ac.createGain();
+        master.gain.setValueAtTime(0, 0);
+        master.gain.linearRampToValueAtTime(0.05, ac.currentTime + 5);
+        master.connect(ac.destination);
+        [43.0, 43.35].forEach(f => {
+          const osc = ac.createOscillator();
+          const g   = ac.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = f;
+          g.gain.value = 0.5;
+          osc.connect(g);
+          g.connect(master);
+          osc.start();
+        });
+      });
+
+      // ─── INIT + TRANSIÇÃO ─────────────────────────────────────────────────
+      requestAnimationFrame(() => document.body.classList.add('loaded'));
+
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('mouseenter', () => {
+          const href = link.getAttribute('href');
+          if (href && !document.querySelector(`link[rel='prefetch'][href='${href}']`)) {
+            const pf = document.createElement('link');
+            pf.rel = 'prefetch'; pf.href = href;
+            document.head.appendChild(pf);
+          }
+        });
+        link.addEventListener('click', e => {
+          const dest = link.getAttribute('href');
+          if (!dest) return;
+          e.preventDefault();
+          document.body.classList.remove('loaded');
+          setTimeout(() => { window.location.href = dest; }, 800);
+        });
+      });
+    </script>
+  </body>
+</html>
