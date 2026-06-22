@@ -1,0 +1,1037 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IX · A Entrega — Íntimo & Real</title>
+    <script>localStorage.setItem('oavesso_progress','{"chapter":9,"title":"IX · A Entrega","href":"capitulo-9-a-entrega.html"}');(function(){var k='avesso_jornada_cap-9';if(!localStorage.getItem(k))localStorage.setItem(k,Date.now());})();</script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Inter+Tight:wght@100;200;300;400;500&family=JetBrains+Mono:wght@100;200;300&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans: ['"Inter Tight"', "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              shift: {
+                950: "#040406" /* Fundo ainda mais profundo e escuro */,
+                gold: "#C8A96E",
+                blue: "#9FB8D8",
+                mist: "#8A96A8",
+                risk: "#B34A3E",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #040406;
+        color: #dddde8;
+        opacity: 0;
+        transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        overflow-x: hidden;
+        hyphens: none;
+      }
+      body.loaded {
+        opacity: 1;
+      }
+
+      #peace-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.6;
+      }
+
+      ::selection {
+        background: rgba(200, 169, 110, 0.15);
+        color: #ffffff;
+      }
+      ::-webkit-scrollbar {
+        width: 3px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(200, 169, 110, 0.15);
+        border-radius: 99px;
+      }
+
+      .poetic-paragraph {
+        opacity: 0;
+        transform: translateY(30px);
+        filter: blur(10px);
+        transition:
+          opacity 3s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 3s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        z-index: 10;
+      }
+      .poetic-paragraph.reveal {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+      body .poetic-paragraph p, body .poetic-paragraph { line-height: 1.88; }
+
+      .section-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 0.48em;
+        text-transform: uppercase;
+        color: rgba(200, 169, 110, 0.25);
+        display: inline-block;
+        margin-bottom: 2rem;
+        transition: color 1.2s;
+        cursor: default;
+        user-select: none;
+      }
+      .section-label:hover {
+        color: rgba(200, 169, 110, 0.8);
+      }
+
+      .section-rule {
+        width: 1px;
+        height: 80px;
+        background: linear-gradient(
+          to bottom,
+          rgba(200, 169, 110, 0.08),
+          transparent
+        );
+        margin: 0 auto;
+        position: relative;
+        z-index: 10;
+      }
+
+      .breath-glow {
+        animation: breathGlow 5s ease-in-out infinite;
+      }
+      @keyframes breathGlow {
+        0%,
+        100% {
+          text-shadow: 0 0 0px rgba(200, 169, 110, 0);
+        }
+        50% {
+          text-shadow: 0 0 25px rgba(200, 169, 110, 0.35);
+        }
+      }
+
+      .final-glow {
+        position: relative;
+      }
+      .final-glow::before {
+        content: "";
+        position: absolute;
+        inset: -20px;
+        background: radial-gradient(
+          circle,
+          rgba(200, 169, 110, 0.15) 0%,
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 3s ease;
+        z-index: -1;
+      }
+      .reveal .final-glow::before {
+        opacity: 1;
+      }
+
+      .stagger-children > * {
+        opacity: 0;
+        transform: translateY(15px);
+        transition:
+          opacity 1.5s ease,
+          transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .stagger-children.active > *:nth-child(1) {
+        transition-delay: 0.2s;
+      }
+      .stagger-children.active > *:nth-child(2) {
+        transition-delay: 0.8s;
+      }
+      .stagger-children.active > *:nth-child(3) {
+        transition-delay: 1.4s;
+      }
+      .stagger-children.active > * {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Bossa Bars for Audio */
+      .bossa-bar {
+        display: inline-block;
+        width: 2px;
+        height: 7px;
+        background: linear-gradient(to top, #c8a96e, rgba(200, 169, 110, 0.2));
+        margin: 0 1px;
+        animation: none;
+        transform-origin: bottom center;
+        border-radius: 1px;
+      }
+      .is-playing .bossa-bar {
+        animation: bounceBossa 2s ease-in-out infinite alternate;
+        animation-delay: calc((var(--i, 1) - 1) * 0.4s);
+      }
+      @keyframes bounceBossa {
+        from {
+          transform: scaleY(0.2);
+          opacity: 0.3;
+        }
+        to {
+          transform: scaleY(1.4);
+          opacity: 0.8;
+        }
+      }
+
+      /* Pure custom cursor - calm and slow */
+      #calm-cursor {
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        border: 1px solid rgba(200, 169, 110, 0.2);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.5s,
+          height 0.5s,
+          background 0.5s;
+      }
+
+      .final-button {
+        position: relative;
+        overflow: hidden;
+      }
+      .final-button::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(200, 169, 110, 0.1),
+          transparent
+        );
+        transition: left 0.7s ease;
+      }
+      .final-button:hover::after {
+        left: 100%;
+      }
+
+      /* ─── A POEIRA BAIXA (Efeito no Texto) ──────────── */
+      .dust-text {
+        filter: blur(15px);
+        letter-spacing: 0.4em;
+        transform: translateY(-20px);
+        opacity: 0;
+        transition:
+          filter 4s cubic-bezier(0.16, 1, 0.3, 1),
+          letter-spacing 4s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 4s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 3s ease;
+      }
+      .dust-text.settled {
+        filter: blur(0px);
+        letter-spacing: 0.05em; /* Tracking normal para a fonte */
+        transform: translateY(0);
+        opacity: 0.9;
+      }
+
+      /* ─── AS MÃOS ABERTAS (Sensação de Luz) ─────────── */
+      .hands-sensation {
+        position: relative;
+        display: inline-block;
+        padding: 2rem 4rem;
+      }
+      .glow-palm {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 60px;
+        height: 100px;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(200, 169, 110, 0.25) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+        transition:
+          transform 4s cubic-bezier(0.16, 1, 0.3, 1),
+          left 4s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 4s ease;
+        pointer-events: none;
+        z-index: -1;
+      }
+      .hands-sensation.open .glow-palm.left {
+        left: 15%;
+        transform: translate(-50%, -50%) rotate(-35deg) scale(1.5);
+        opacity: 1;
+      }
+      .hands-sensation.open .glow-palm.right {
+        left: 85%;
+        transform: translate(-50%, -50%) rotate(35deg) scale(1.5);
+        opacity: 1;
+      }
+
+      @media (hover: none), (pointer: coarse) {
+        body {
+          cursor: auto !important;
+        }
+        #calm-cursor {
+          display: none !important;
+        }
+        .nav-link {
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        canvas {
+          display: none !important;
+        }
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0.028;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.4s steps(1) infinite;
+      }
+      @keyframes grain {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-3%, 2%);
+        }
+        40% {
+          transform: translate(2%, -3%);
+        }
+        60% {
+          transform: translate(-2%, 3%);
+        }
+        80% {
+          transform: translate(3%, -1%);
+        }
+        100% {
+          transform: translate(1%, 2%);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="font-sans antialiased relative">
+    <!-- Cursor Calmo -->
+    <div id="calm-cursor" aria-hidden="true"></div>
+
+    <!-- Canvas de poeira estelar/cinzas calmas -->
+    <canvas id="peace-canvas"></canvas>
+
+    <!-- Barra de progresso subtil -->
+    <div class="fixed top-0 left-0 w-full h-[1px] z-[100] opacity-40">
+      <div
+        id="global-progress"
+        class="h-full bg-shift-gold transition-all duration-300 ease-out"
+        style="width: 0%"
+      ></div>
+    </div>
+
+    <!-- ← Índice -->
+    <a
+      href="sumario.html"
+      class="nav-link fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 uppercase"
+      >← Sumário</a
+    >
+
+    <!-- Audio toggle -->
+    <div
+      id="soundtrack-toggle"
+      class="fixed top-6 right-6 z-[100] flex items-center space-x-3 bg-white/[0.02] backdrop-blur-md px-5 py-2.5 rounded-full border border-white/[0.03] text-[10px] font-mono text-zinc-500 hover:text-shift-gold hover:border-shift-gold/30 transition-all cursor-pointer group"
+    >
+      <div class="flex items-center h-4 mr-1 opacity-60">
+        <span class="bossa-bar" style="--i: 1"></span>
+        <span class="bossa-bar" style="--i: 2"></span>
+        <span class="bossa-bar" style="--i: 3"></span>
+        <span class="bossa-bar" style="--i: 4"></span>
+      </div>
+      <span class="tracking-widest uppercase">Resolução</span>
+    </div>
+
+    <main
+      class="min-h-screen flex flex-col justify-center px-6 md:px-20 max-w-3xl mx-auto py-32 md:py-28 relative z-10"
+    >
+      <div class="space-y-16 md:space-y-24 flex flex-col">
+        <!-- HEADER ─────────────────────────────── -->
+        <div
+          class="poetic-paragraph flex flex-col items-center justify-center space-y-6 text-center"
+        >
+          <span class="section-label">capítulo IX · A Entrega</span>
+          <h1
+            class="dust-text font-serif italic text-4xl md:text-6xl text-zinc-200 font-extralight leading-none"
+          >
+            A poeira baixa.
+          </h1>
+          <div
+            class="w-12 h-[1px] bg-gradient-to-r from-transparent via-shift-gold/20 to-transparent mt-10"
+          ></div>
+        </div>
+
+        <!-- I. O SILÊNCIO ───────────────────────── -->
+        <div class="poetic-paragraph text-center space-y-8">
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-400"
+          >
+            Depois que todas as defesas são detonadas,<br
+              class="hidden md:block"
+            />
+            o que sobra não é o caos.
+          </p>
+          <p
+            class="text-2xl md:text-3xl font-serif italic font-light leading-relaxed text-shift-gold breath-glow"
+          >
+            É o silêncio mais absoluto que já conheci.
+          </p>
+          <p
+            class="text-zinc-500 font-sans font-light text-base leading-relaxed pt-4 max-w-lg mx-auto"
+          >
+            Não o silêncio de quem esconde algo, mas a exaustão pacífica de quem
+            tirou absolutamente tudo de dentro.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- II. O FIM DO MONÓLOGO ───────────────── -->
+        <div
+          class="poetic-paragraph text-left space-y-8 pl-4 border-l border-white/5 md:pl-0 md:border-none"
+        >
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Eu ergui este espaço inteiro porque a vida real me parecia estreita
+            demais para acomodar o tamanho do que me atravessava.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300"
+          >
+            Tentei transformar a minha febre numa linguagem que você pudesse caminhar por dentro.
+          </p>
+          <div
+            class="pt-6 space-y-4 text-zinc-500 font-sans font-light text-lg stagger-children"
+          >
+            <p>Mas uma conexão não é feita de um monólogo interminável.</p>
+            <p>A arte é só uma ponte. Uma confissão.</p>
+            <p class="text-zinc-300">
+              E chega o exato momento em que a confissão precisa calar a boca.
+            </p>
+            <p class="text-zinc-600">
+              Escrevi sobre o que você me faz sentir. Não sobre o que você sente. Não sei se isso é literatura ou se é egoísmo com boa iluminação. Provavelmente os dois.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- IV. O POUSAR ──────────────────────────── -->
+        <div class="poetic-paragraph text-center space-y-7">
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400 max-w-xl mx-auto">
+            Tem uma coisa que acontece quando você carrega algo pesado por tempo demais.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300">
+            Não é que os braços enfraquecem.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400 max-w-xl mx-auto">
+            É que você esquece que tem a opção de pousar.
+          </p>
+          <p class="text-zinc-500 font-sans font-light text-base leading-relaxed pt-2">
+            Fica carregando porque carregar virou o estado normal. Porque pousar exige admitir o peso.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400 pt-4">
+            Eu carrego isso há um tempo.
+          </p>
+          <p class="text-2xl md:text-3xl font-serif italic text-shift-gold breath-glow">
+            E agora eu pousei.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- V. A DESPEDIDA DO ESPAÇO ──────────── -->
+        <div class="poetic-paragraph text-center space-y-8">
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400 max-w-xl mx-auto"
+          >
+            A partir daqui, não há mais espaço para erguer. Não há mais
+            armaduras para vestir, nem mais nada que eu possa polir ou desenhar
+            para tentar te convencer.
+          </p>
+          <p
+            class="text-2xl md:text-3xl font-serif italic font-light leading-relaxed text-zinc-200"
+          >
+            A vulnerabilidade encontrou o seu limite.
+          </p>
+          <div class="hands-sensation pt-4">
+            <div class="glow-palm left"></div>
+            <div class="glow-palm right"></div>
+            <p
+              class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-shift-gold relative z-10"
+            >
+              As mãos estão abertas.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-rule h-32"></div>
+
+        <!-- IV. O FIM / A ENTREGA ───────────────── -->
+        <div class="poetic-paragraph text-center space-y-12 pb-32 final-glow">
+          <p
+            class="text-sm md:text-base font-mono uppercase tracking-[0.4em] text-zinc-600 mb-8"
+          >
+            Fim da Transmissão
+          </p>
+
+          <div class="space-y-6">
+            <p
+              class="text-3xl md:text-5xl font-serif italic text-zinc-100 tracking-wide breath-glow"
+            >
+              Tudo o que eu sou, eu deixei aqui.
+            </p>
+<p class="poetic-paragraph">
+  Entregar é render e é também presentear. A mesma palavra carrega as duas coisas e eu finalmente entendo por quê. Quando me entrego não estou perdendo — estou <span class="breath-glow">dando</span>. A rendição aqui não é derrota. É a forma mais honesta de dizer que eu escolhi. Que diante de tudo que eu poderia ser e fazer, eu escolhi isto: ser <span class="final-glow">real com você</span>. Deixo aqui o peso que carrego. Coloco no chão entre nós dois. Não pra você carregar também — não é isso. É pra que você veja o tamanho. Pra que você saiba o que valeu a pena ser <span class="breath-glow">pesado</span>.
+</p>
+            <p
+              class="text-xl md:text-2xl font-sans font-extralight text-zinc-400 pt-6"
+            >
+              Esta obra não é mais minha.
+            </p>
+            <p
+              class="text-2xl md:text-3xl font-serif italic text-shift-gold font-light pt-2"
+            >
+              Ela é sua.
+            </p>
+            <p
+              class="text-sm font-sans font-extralight text-zinc-600 pt-4 max-w-md mx-auto leading-relaxed"
+            >
+              Mesmo que você nunca a tenha pedido. Mesmo que nunca tenha escolhido ser o motivo. Eu construí tudo aqui sem te perguntar se você queria um monumento. Isso também faz parte da confissão.
+            </p>
+
+            <div class="pt-10 text-center">
+              <p class="text-base font-serif italic text-zinc-500">
+                É o que sempre foi.
+              </p>
+            </div>
+
+            <!-- ANOMALIA: área invisível com cursor crosshair (letra Z) -->
+            <div id="oa-z-area" onclick="oaFoundLetter('Z')"
+                 style="height:2.8rem;width:100%;cursor:default;margin-top:0.8rem;position:relative;"
+                 onmouseenter="this.style.cursor='crosshair'"
+                 onmouseleave="this.style.cursor='default'">
+            </div>
+
+            <div style="height:1.2rem;position:relative;overflow:visible;text-align:center;margin-top:0.2rem;">
+              <span style="position:absolute;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:0.45em;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-weight:100;color:rgba(200,169,84,0);transition:color 0.35s ease;padding:0.4rem 1rem;cursor:default;user-select:none;" onmouseenter="this.style.transition='color 0.35s ease';this.style.color='rgba(200,169,84,0.50)'" onmouseleave="this.style.transition='color 2s ease';this.style.color='rgba(200,169,84,0)'">ela tem uma chave. e ela está aqui.</span>
+            </div>
+          </div>
+
+          <div
+            class="pt-24 flex justify-center opacity-0 animate-[fadeIn_3s_ease_ forwards] delay-[2000ms]"
+          >
+            <a
+              href="index.html"
+              class="nav-link final-button px-8 py-3 rounded-full border border-shift-gold/20 text-xs font-mono uppercase tracking-[0.25em] text-shift-gold/70 hover:text-shift-gold hover:border-shift-gold/50 hover:bg-shift-gold/5 transition-all duration-700"
+            >
+              Retornar ao Índice
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer
+      class="mt-16 mb-20 flex flex-col items-center space-y-10 w-full relative z-10"
+    >
+      <div
+        class="w-[1px] h-16 bg-gradient-to-b from-shift-gold/20 to-transparent"
+      ></div>
+      <div
+        class="flex justify-between w-full max-w-md px-6 font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500"
+      >
+        <a
+          href="capitulo-8-o-risco-do-depois.html"
+          class="nav-link hover:text-shift-gold transition-colors duration-300"
+        >
+          ← VIII · O Risco
+        </a>
+        <a
+          href="chave.html"
+          class="nav-link group flex items-center space-x-3 hover:text-shift-gold transition-colors duration-300"
+        >
+          <span>X · ◈</span>
+          <svg
+            class="w-3 h-3 transition-transform duration-300 group-hover:translate-x-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
+    </footer>
+
+    <script>
+      // ─── CANVAS: CINZAS CALMAS (Resolution Dust) ────
+      const canvas = document.getElementById("peace-canvas");
+      const ctx = canvas.getContext("2d");
+      let width, height;
+      const isTouch = window.matchMedia(
+        "(hover: none), (pointer: coarse)",
+      ).matches;
+      let particles = [];
+      const NUM_PARTICLES = isTouch ? 50 : 120;
+      const mouse = { x: -1000, y: -1000 };
+
+      // Variável para controlar a turbulência da poeira inicial
+      let dustTurbulence = 4.0;
+
+      if (!isTouch) {
+        document.addEventListener("mousemove", (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+        });
+      }
+
+      function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+        initParticles();
+      }
+
+      function initParticles() {
+        particles = [];
+        for (let i = 0; i < NUM_PARTICLES; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: Math.random() * 1.5 + 0.1,
+            vy: Math.random() * 0.2 + 0.05, // Cair lentamente para baixo
+            vx: (Math.random() - 0.5) * 0.1, // Leve deriva lateral
+            baseAlpha: Math.random() * 0.3 + 0.1,
+            phase: Math.random() * Math.PI * 2,
+            speed: Math.random() * 0.01 + 0.005,
+            chaosOffset: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+
+      function renderParticles() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Decaimento suave da turbulência ("A poeira baixando")
+        dustTurbulence += (0 - dustTurbulence) * 0.005;
+
+        particles.forEach((p) => {
+          // Movimento principal influenciado pela turbulência inicial
+          const currentChaosX = Math.sin(p.chaosOffset) * dustTurbulence;
+          const currentChaosY = Math.cos(p.chaosOffset) * dustTurbulence;
+
+          p.y += p.vy + currentChaosY;
+          p.x += p.vx + Math.sin(p.phase) * 0.1 + currentChaosX;
+
+          p.phase += p.speed;
+          p.chaosOffset += 0.02;
+
+          // Vento do mouse muito sutil (afastamento leve)
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 150) {
+            const force = (150 - dist) / 150;
+            p.x -= (dx / dist) * force * 0.5;
+            p.y -= (dy / dist) * force * 0.5;
+          }
+
+          // Loop das partículas
+          if (p.y > height + 10) p.y = -10;
+          if (p.x > width + 10) p.x = -10;
+          if (p.x < -10) p.x = width + 10;
+
+          // Cintilação suave
+          const currentAlpha =
+            p.baseAlpha * (0.5 + 0.5 * Math.sin(p.phase * 2));
+
+          ctx.fillStyle = `rgba(200, 169, 110, ${currentAlpha})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        requestAnimationFrame(renderParticles);
+      }
+      window.addEventListener("resize", resizeCanvas);
+
+      // ─── CURSOR CALMO ───────────────────────────────
+      if (!isTouch) {
+        const cursorEl = document.getElementById("calm-cursor");
+        const cursorPos = { x: -200, y: -200 };
+
+        function trackCursor() {
+          cursorPos.x += (mouse.x - cursorPos.x) * 0.05;
+          cursorPos.y += (mouse.y - cursorPos.y) * 0.05;
+          cursorEl.style.left = cursorPos.x + "px";
+          cursorEl.style.top = cursorPos.y + "px";
+          requestAnimationFrame(trackCursor);
+        }
+        trackCursor();
+      }
+
+      // ─── ÁUDIO: ACORDE DE RESOLUÇÃO (Maior, Quente) ──
+      let audioCtx = null;
+      let isPlaying = false;
+      let globalGain = null;
+
+      function startAudio() {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+        globalGain = audioCtx.createGain();
+        globalGain.gain.setValueAtTime(0, now);
+        globalGain.gain.linearRampToValueAtTime(0.04, now + 10); // Fade in extremamente longo (10s)
+        globalGain.connect(audioCtx.destination);
+
+        // Frequências para um acorde de Eb Major 7 espalhado (quente e resolvido)
+        const frequencies = [73.42, 110.0, 185.0, 233.08, 293.66]; // D2, A2, F#3, Bb3, D4 (Approx D Major 7 with warmth)
+
+        frequencies.forEach((freq, index) => {
+          const osc = audioCtx.createOscillator();
+          const panner = audioCtx.createStereoPanner
+            ? audioCtx.createStereoPanner()
+            : null;
+
+          osc.type = index === 0 ? "triangle" : "sine";
+          osc.frequency.value = freq;
+
+          // Desafinação muito sutil para analog feel (chorus)
+          const detuneOsc = audioCtx.createOscillator();
+          const detuneGain = audioCtx.createGain();
+          detuneOsc.type = "sine";
+          detuneOsc.frequency.value = 0.1 + Math.random() * 0.2; // LFO Lento
+          detuneGain.gain.value = 3; // Cents
+          detuneOsc.connect(detuneGain);
+          detuneGain.connect(osc.detune);
+          detuneOsc.start();
+
+          if (panner) {
+            panner.pan.value = (Math.random() - 0.5) * 0.6; // Espalhar no estéreo
+            osc.connect(panner);
+            panner.connect(globalGain);
+          } else {
+            osc.connect(globalGain);
+          }
+
+          osc.start();
+        });
+
+        isPlaying = true;
+        document
+          .getElementById("soundtrack-toggle")
+          .classList.add("is-playing");
+        sessionStorage.setItem('audioState', 'playing');
+      }
+
+      function stopAudio() {
+        if (!audioCtx || !globalGain) return;
+        const now = audioCtx.currentTime;
+        globalGain.gain.linearRampToValueAtTime(0, now + 4); // Fade out suave
+        setTimeout(() => {
+          audioCtx.suspend();
+        }, 4500);
+        isPlaying = false;
+        document
+          .getElementById("soundtrack-toggle")
+          .classList.remove("is-playing");
+        sessionStorage.setItem('audioState', 'paused');
+      }
+
+      document
+        .getElementById("soundtrack-toggle")
+        .addEventListener("click", () => {
+          if (!isPlaying) startAudio();
+          else stopAudio();
+        });
+
+      // ─── PROGRESSO E OBSERVERS ──────────────────────
+      window.addEventListener("scroll", () => {
+        const scrolled = document.documentElement.scrollTop;
+        const h =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        const page = scrolled / h;
+        const global = (8 / 9) * 100 + page * (100 / 9); // Capítulo final preenche até 100%
+        document.getElementById("global-progress").style.width = global + "%";
+      });
+
+      // Observer específico para a poeira e mãos
+      const specialEffectsObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            if (entry.target.classList.contains("dust-text")) {
+              setTimeout(() => entry.target.classList.add("settled"), 300);
+            }
+
+            if (entry.target.classList.contains("hands-sensation")) {
+              setTimeout(() => entry.target.classList.add("open"), 800); // Atraso poético
+            }
+
+            specialEffectsObserver.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.5 },
+      );
+
+      const poeticObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            el.classList.add("reveal");
+
+            // Ativar stagger elements
+            el.querySelectorAll(".stagger-children").forEach((childBox) => {
+              setTimeout(() => childBox.classList.add("active"), 800);
+            });
+
+            poeticObserver.unobserve(el);
+          });
+        },
+        { threshold: 0.15, rootMargin: "0px 0px -5% 0px" },
+      );
+
+      document.querySelectorAll(".poetic-paragraph").forEach((el) => {
+        poeticObserver.observe(el);
+      });
+
+      document
+        .querySelectorAll(".dust-text, .hands-sensation")
+        .forEach((el) => {
+          specialEffectsObserver.observe(el);
+        });
+
+      // Animação CSS helper
+      const style = document.createElement("style");
+      style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+      document.head.appendChild(style);
+
+      // ─── INIT ───────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("loaded");
+        resizeCanvas();
+        renderParticles();
+        if (sessionStorage.getItem('audioState') === 'playing') {
+          startAudio();
+          const btnPlay = document.getElementById("icon-play");
+          const btnPause = document.getElementById("icon-pause");
+          if (btnPlay) btnPlay.classList.add("hidden");
+          if (btnPause) btnPause.classList.remove("hidden");
+        }
+      });
+
+      // ─── NAVEGAÇÃO COM TRANSIÇÃO ──────────────────────
+      function playNavClick() {
+        try {
+          const c = new (window.AudioContext || window.webkitAudioContext)();
+          const o = c.createOscillator();
+          const g = c.createGain();
+          o.type = "sine";
+          o.frequency.setValueAtTime(520, c.currentTime);
+          o.frequency.exponentialRampToValueAtTime(260, c.currentTime + 0.18);
+          g.gain.setValueAtTime(0.07, c.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.22);
+          o.connect(g);
+          g.connect(c.destination);
+          o.start();
+          o.stop(c.currentTime + 0.22);
+          setTimeout(() => c.close(), 600);
+        } catch (e) {}
+      }
+
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("mouseenter", () => {
+          const href = link.getAttribute("href");
+          if (
+            href &&
+            href !== "index.html" &&
+            !document.querySelector(`link[rel='prefetch'][href='${href}']`)
+          ) {
+            const prefetch = document.createElement("link");
+            prefetch.rel = "prefetch";
+            prefetch.href = href;
+            document.head.appendChild(prefetch);
+          }
+        });
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          playNavClick();
+          const destination = link.getAttribute("href");
+          const rx = e.clientX || window.innerWidth / 2;
+          const ry = e.clientY || window.innerHeight / 2;
+          playExitRipple(rx, ry, () => {
+            document.body.classList.remove("loaded");
+            setTimeout(() => {
+              window.location.href = destination;
+            }, 60);
+          });
+        });
+      });
+
+      function playExitRipple(x, y, cb) {
+        const el = document.createElement("div");
+        const s = Math.hypot(window.innerWidth, window.innerHeight) * 2.4;
+        el.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(239,176,87,0.18) 0%,rgba(1,7,9,0.97) 65%);transform:translate(-50%,-50%) scale(1);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1);pointer-events:none;z-index:9997;`;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(-50%,-50%) scale(${s})`;
+        });
+        setTimeout(() => {
+          el.remove();
+          cb();
+        }, 670);
+      }
+
+      if (!isTouch) {
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("mouseenter", () => {
+            try {
+              const c = new (
+                window.AudioContext || window.webkitAudioContext
+              )();
+              const o = c.createOscillator();
+              const g = c.createGain();
+              o.type = "sine";
+              o.frequency.value = 800;
+              g.gain.setValueAtTime(0.018, c.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+              o.connect(g);
+              g.connect(c.destination);
+              o.start();
+              o.stop(c.currentTime + 0.12);
+              setTimeout(() => c.close(), 400);
+            } catch (e) {}
+          });
+        });
+      }
+    </script>
+
+    <!-- ── NOTA DE RODAPÉ ──────────────────────────────────────────────── -->
+    <aside id="fn-cap-8" style="font-family:'JetBrains Mono',monospace;font-size:0.595rem;line-height:1.95;color:rgba(255,255,255,0.22);border-left:1px solid rgba(188,180,168,0.14);padding:1.1rem 1.6rem;max-width:38rem;margin:4.5rem auto 0;opacity:0;transform:translateY(10px);transition:opacity 3.5s cubic-bezier(0.16,1,0.3,1),transform 3.5s cubic-bezier(0.16,1,0.3,1);letter-spacing:0.025em;display:block;"><span style="display:block;width:1.8rem;height:1px;background:rgba(188,180,168,0.18);margin-bottom:0.8rem;"></span>Entregar é render e é também presentear. A mesma palavra carrega as duas coisas e eu finalmente entendo por quê. Quando me entrego não estou perdendo — estou dando. A rendição aqui não é derrota. É a forma mais honesta de dizer que eu escolhi. Que diante de tudo que eu poderia ser e fazer, eu escolhi isto: ser real com você. Deixo aqui o peso que carrego. Coloco no chão entre nós dois. Não pra você carregar também — não é isso. É pra que você veja o tamanho. Pra que você saiba o que valeu a pena ser pesado.</aside>
+    <script>
+    (function(){
+      var fn=document.getElementById('fn-cap-8'),fired=false;
+      if(!fn)return;
+      window.addEventListener('scroll',function(){
+        if(fired)return;
+        var t=document.documentElement.scrollHeight-window.innerHeight;
+        if(t>0&&window.scrollY/t>0.90){fired=true;fn.style.opacity='1';fn.style.transform='translateY(0)';}
+      });
+    })();
+    </script>
+    <!-- ══ COLETOR DE FRAGMENTOS ═══════════════════════════════════════════ -->
+    <style>
+    @keyframes oLetterFlash{0%{opacity:0;transform:translateY(14px) scale(.65)}18%{opacity:1;transform:translateY(0) scale(1.1)}62%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:translateY(-12px) scale(1.05)}}
+    #oa-glyph{position:fixed;bottom:5rem;right:1.6rem;z-index:500;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(200,169,84,.42);cursor:pointer;opacity:0;transition:opacity 2s ease;letter-spacing:.2em;user-select:none;text-shadow:0 0 9px rgba(200,169,84,.18);padding:6px}
+    #oa-glyph.on{opacity:1}
+    #oa-overlay{position:fixed;bottom:6.5rem;right:1.2rem;z-index:499;background:rgba(4,4,4,.97);border:1px solid rgba(200,169,84,.08);padding:1.3rem 1.7rem 1.1rem;backdrop-filter:blur(18px);opacity:0;pointer-events:none;transition:opacity .42s ease;min-width:200px}
+    #oa-overlay.on{opacity:1;pointer-events:auto}
+    .oa-lbl{display:block;font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.44em;color:rgba(200,169,84,.28);text-transform:uppercase;margin-bottom:1rem}
+    .oa-slots{display:flex;gap:.78rem;justify-content:center;align-items:baseline}
+    .oa-slot{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.65rem;line-height:1;min-width:1rem;text-align:center;color:rgba(255,255,255,.07);transition:color 1s ease,text-shadow 1s ease}
+    .oa-slot.found{color:rgba(200,169,84,.88);text-shadow:0 0 14px rgba(200,169,84,.26)}
+    #oa-done{display:none;margin-top:1.1rem;text-align:center;border-top:1px solid rgba(200,169,84,.07);padding-top:.9rem}
+    #oa-done a{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.4em;color:rgba(200,169,84,.55);text-decoration:none;text-transform:uppercase;transition:color .4s ease}
+    #oa-done a:hover{color:rgba(200,169,84,1)}
+    .oa-flash{position:fixed;bottom:7rem;right:4rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:6rem;font-weight:300;line-height:1;color:rgba(200,169,84,.88);pointer-events:none;z-index:600;animation:oLetterFlash 3s ease forwards}
+    </style>
+    <div id="oa-glyph" onclick="oaToggle()">◈</div>
+    <div id="oa-overlay"><span class="oa-lbl">fragmentos encontrados</span><div class="oa-slots" id="oa-slots"></div><div id="oa-done"><a href="chave.html">entrar →</a></div></div>
+    <script>
+    (function(){var K='oavesso_letters',O=['A','B','E','I','R','T','Z'];function gF(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return[]}}function sF(a){localStorage.setItem(K,JSON.stringify(a))}function render(){var f=gF(),s=document.getElementById('oa-slots');if(!s)return;s.innerHTML='';O.forEach(function(l){var el=document.createElement('span');el.className='oa-slot'+(f.indexOf(l)>-1?' found':'');el.textContent=f.indexOf(l)>-1?l:'·';s.appendChild(el)});var d=document.getElementById('oa-done');if(d)d.style.display=f.length===7?'block':'none'}function showG(){var g=document.getElementById('oa-glyph');if(g)setTimeout(function(){g.classList.add('on')},400)}window.oaFoundLetter=function(l){var f=gF();if(f.indexOf(l)>-1)return;f.push(l);sF(f);showG();render();var fl=document.createElement('div');fl.className='oa-flash';fl.textContent=l;document.body.appendChild(fl);setTimeout(function(){fl.remove()},3200)};window.oaToggle=function(){var o=document.getElementById('oa-overlay');if(o)o.classList.toggle('on');render()};document.addEventListener('DOMContentLoaded',function(){render();if(gF().length>0)showG()})})();
+    </script>
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <script src="oa-fragmentos.js"></script>
+  <script src="constelacao-header.js"></script>
+<script>
+/* Autoplay: inicia o audio no primeiro gesto do usuario em cada capitulo */
+(function(){
+  window.addEventListener('load', function() {
+    var btn = document.getElementById('btn-audio') || document.getElementById('soundtrack-toggle');
+    if (!btn) return;
+    function _playing() {
+      if (btn.id === 'btn-audio') {
+        var ip = document.getElementById('icon-play');
+        return ip && ip.classList.contains('hidden');
+      }
+      return btn.classList.contains('is-playing');
+    }
+    if (_playing()) return;
+    document.addEventListener('pointerdown', function oa_auto() {
+      document.removeEventListener('pointerdown', oa_auto, true);
+      if (!_playing()) btn.click();
+    }, { capture: true });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,2248 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>V · A Arquitetura do Desejo — O Avesso do Chão</title>
+    <script>
+      localStorage.setItem(
+        "oavesso_progress",
+        '{"chapter":5,"title":"V · A Arquitetura do Desejo","href":"capitulo-5-a-arquitetura-do-desejo.html"}',
+      );
+    </script>
+    <script>
+      (function () {
+        var k = "avesso_jornada_cap-5";
+        if (!localStorage.getItem(k)) localStorage.setItem(k, Date.now());
+      })();
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:wght@100;200;300&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans: ['"Inter Tight"', "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              copper: {
+                50: "#fdf8f6",
+                300: "#f08a75",
+                400: "#e96c54",
+                500: "#e2583e",
+                600: "#cc462d",
+              },
+              crimson: {
+                500: "#991b1b",
+                600: "#7f1d1d",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #0f0302; /* Escuridão densa e quente */
+        color: #e5e5e5;
+        opacity: 0;
+        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        overflow-x: hidden;
+        hyphens: none;
+      }
+      body.loaded {
+        opacity: 1;
+      }
+
+      /* Canvas Background */
+      #universe-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Animação Poética de Revelação (Scroll) */
+      .poetic-paragraph {
+        opacity: 0;
+        transform: translateY(50px);
+        filter: blur(12px);
+        transition: all 2.2s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        z-index: 10;
+      }
+      .poetic-paragraph.reveal {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+      body .poetic-paragraph p,
+      body .poetic-paragraph {
+        line-height: 1.88;
+      }
+
+      /* Palavras que reagem com vibração física */
+      .visceral-word {
+        display: inline-block;
+        color: #ddd;
+        cursor: pointer;
+        position: relative;
+        transition:
+          color 0.4s ease,
+          text-shadow 0.4s ease;
+      }
+      .visceral-word:hover {
+        color: #ffffff;
+        text-shadow:
+          0 0 15px rgba(226, 88, 62, 0.8),
+          0 0 5px rgba(255, 255, 255, 0.3);
+        animation: tremor 0.15s infinite linear;
+      }
+      @keyframes tremor {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        20% {
+          transform: translate(-1.5px, 1px) rotate(-1deg);
+        }
+        40% {
+          transform: translate(1px, -1.5px) rotate(1deg);
+        }
+        60% {
+          transform: translate(-1.5px, -1px) rotate(0deg);
+        }
+        80% {
+          transform: translate(1.5px, 1.5px) rotate(1deg);
+        }
+        100% {
+          transform: translate(-1px, 1px) rotate(-1deg);
+        }
+      }
+
+      /* Efeito do Amante: Intensidade Sensorial */
+      .sensory-glow {
+        transition:
+          text-shadow 0.8s ease,
+          color 0.8s ease;
+      }
+      .sensory-glow:hover {
+        color: #ffffff;
+        text-shadow: 0 0 20px rgba(226, 88, 62, 0.6);
+      }
+      .sensory-active {
+        color: #ffffff !important;
+        text-shadow:
+          0 0 25px rgba(226, 88, 62, 0.8),
+          0 0 10px rgba(255, 255, 255, 0.4);
+      }
+
+      /* O Texto Selvagem */
+      .wild-text span {
+        display: inline-block;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .wild-text:hover span:nth-child(1) {
+        color: #e2583e;
+        text-shadow: 0 0 15px rgba(226, 88, 62, 0.6);
+      }
+      .wild-text:hover span:nth-child(2) {
+        color: #ffffff;
+        text-shadow:
+          0 0 25px rgba(255, 255, 255, 0.7),
+          0 0 10px rgba(226, 88, 62, 0.4);
+      }
+      .wild-text:hover span:nth-child(3) {
+        color: #cc462d;
+      }
+
+      /* Bloco de Papel Confessional */
+      .paper-sheet {
+        opacity: 0;
+        transform: translateY(60px) rotate(-1.5deg);
+        transition: all 2.2s cubic-bezier(0.16, 1, 0.3, 1);
+        background: linear-gradient(135deg, #eae3db 0%, #cfc5ba 100%);
+        box-shadow:
+          0 50px 100px rgba(0, 0, 0, 0.95),
+          inset 0 0 60px rgba(226, 88, 62, 0.08);
+        color: #24201e;
+        position: relative;
+        z-index: 10;
+      }
+      .paper-sheet.reveal-sheet {
+        opacity: 1;
+        transform: translateY(0) rotate(0.5deg);
+      }
+
+      /* Cursor da Máquina de Escrever */
+      .typewriter-cursor::after {
+        content: "";
+        display: inline-block;
+        width: 3px;
+        height: 1.1em;
+        background-color: #e2583e;
+        margin-left: 5px;
+        vertical-align: middle;
+        animation: blinkCursor 0.8s infinite;
+      }
+      @keyframes blinkCursor {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* Interação "Rabiscar a nossa História" */
+      .scribble-box {
+        position: relative;
+        background: rgba(18, 4, 3, 0.6);
+        border: 1px solid rgba(226, 88, 62, 0.15);
+        transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .scribble-box:hover {
+        border-color: rgba(226, 88, 62, 0.5);
+        background: rgba(18, 4, 3, 0.8);
+        box-shadow: 0 0 30px rgba(226, 88, 62, 0.1);
+      }
+      .scribble-bg-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        opacity: 0.15;
+        transition: opacity 0.5s ease;
+      }
+      .scribble-box:hover .scribble-bg-line {
+        opacity: 0.6;
+      }
+
+      /* Selecção de texto ultra ardente */
+      ::selection {
+        background: rgba(226, 88, 62, 0.4);
+        color: #ffffff;
+      }
+
+      /* Efeito de atravessar a linha no hover */
+      .cross-line-effect {
+        position: relative;
+        display: inline-block;
+      }
+      .cross-line-effect::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 50%;
+        background-color: #e2583e;
+        transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateX(-50%);
+        box-shadow: 0 0 12px rgba(226, 88, 62, 0.8);
+      }
+
+      .distancia-expand {
+        transition:
+          color 0.8s ease,
+          text-shadow 0.8s ease;
+        display: inline-block;
+        cursor: pointer;
+      }
+      .distancia-expand:hover {
+        color: #ffffff;
+        text-shadow: 0 0 15px rgba(226, 88, 62, 0.6);
+      }
+
+      /* Controle de Som Padronizado */
+      .fixed.bottom-6.right-6 {
+        z-index: 50;
+      }
+
+      /* Barras de áudio animadas */
+      .bossa-bar {
+        display: inline-block;
+        width: 2px;
+        height: 8px;
+        background-color: #e2583e;
+        margin: 0 1px;
+        animation: none;
+        transform-origin: bottom center;
+      }
+      .is-playing .bossa-bar {
+        animation: bounceBossa 0.8s ease-in-out infinite alternate;
+        animation-delay: calc((var(--i, 1) - 1) * 0.15s);
+      }
+      @keyframes bounceBossa {
+        from {
+          transform: scaleY(0.3);
+        }
+        to {
+          transform: scaleY(1.6);
+        }
+      }
+      .group:hover .cross-line-effect::after {
+        width: 100%;
+      }
+
+      @media (hover: none), (pointer: coarse) {
+        body {
+          cursor: auto !important;
+        }
+        .visceral-word {
+          text-shadow: 0 0 12px rgba(226, 88, 62, 0.5);
+        }
+        .nav-link {
+          min-height: 44px;
+          min-width: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        canvas#fireCanvas {
+          opacity: 0.4 !important;
+        }
+      }
+      @media (max-width: 600px) {
+        .paper-sheet {
+          padding: 1.5rem !important;
+        }
+        .scribble-box {
+          padding: 1.5rem !important;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        canvas {
+          display: none !important;
+        }
+        .bossa-bar {
+          animation: none !important;
+        }
+      }
+
+      /* Palavra 'verdade' — pulso de chama latente */
+      @keyframes verdade-shimmer {
+        0%,
+        100% {
+          text-shadow: 0 0 0px rgba(226, 88, 62, 0);
+          color: #ffffff;
+        }
+        50% {
+          text-shadow:
+            0 0 18px rgba(226, 88, 62, 0.65),
+            0 0 36px rgba(226, 88, 62, 0.2);
+          color: #ffe9e5;
+        }
+      }
+      @keyframes verdade-rage {
+        0%,
+        100% {
+          text-shadow: 0 0 12px rgba(226, 88, 62, 0.6);
+          color: #ffb0a0;
+        }
+        50% {
+          text-shadow:
+            0 0 42px rgba(226, 88, 62, 1),
+            0 0 80px rgba(226, 88, 62, 0.35);
+          color: #ffffff;
+        }
+      }
+      #word-verdade {
+        animation: verdade-shimmer 3.8s ease-in-out infinite;
+      }
+      #word-verdade:hover {
+        animation-duration: 1.3s;
+      }
+      #word-verdade.is-rage {
+        animation: verdade-rage 0.55s ease-in-out infinite;
+      }
+
+      /* Matéria em Conflito — aterrissagem e cisão entre palavras */
+      .materia-conflito {
+        display: block;
+        color: #71717a;
+        transition:
+          color 0.2s ease 0.4s,
+          text-shadow 0.8s ease;
+      }
+      .poetic-paragraph.reveal .materia-conflito {
+        color: #ffffff;
+      }
+      .materia-conflito:hover {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+      }
+      .mc-palavra {
+        display: inline-block;
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .materia-conflito:hover .mc-materia {
+        transform: translateX(-3px);
+      }
+      .materia-conflito:hover .mc-conflito {
+        transform: translateX(3px);
+      }
+
+      /* Devoramento — queda mais pesada + escuridão de hover */
+      .devoramento-block {
+        position: relative;
+        transform: translateY(80px);
+        filter: blur(18px);
+      }
+      .devoramento-block.reveal {
+        transform: translateY(0);
+        filter: blur(0);
+      }
+      .devoramento-block::before {
+        content: "";
+        position: absolute;
+        inset: -1.5rem -2rem;
+        background: rgba(0, 0, 0, 0);
+        transition: background 1.2s ease;
+        pointer-events: none;
+        z-index: -1;
+        border-radius: 4px;
+      }
+      .devoramento-block:hover::before {
+        background: rgba(0, 0, 0, 0.38);
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0.028;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.4s steps(1) infinite;
+      }
+      @keyframes grain {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-3%, 2%);
+        }
+        40% {
+          transform: translate(2%, -3%);
+        }
+        60% {
+          transform: translate(-2%, 3%);
+        }
+        80% {
+          transform: translate(3%, -1%);
+        }
+        100% {
+          transform: translate(1%, 2%);
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="font-sans antialiased relative selection:bg-copper-500/30 selection:text-white"
+  >
+    <!-- Botão de Índice Glassmorphism -->
+    <a
+      href="sumario.html"
+      class="nav-link fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 uppercase"
+    >
+      ← Sumário
+    </a>
+
+    <!-- Controle de Som Padronizado -->
+    <div
+      class="fixed bottom-6 right-6 z-50 flex items-center space-x-3 bg-neutral-950/60 backdrop-blur-md border border-white/5 py-2 px-4 rounded-full transition-all hover:bg-neutral-900/80"
+    >
+      <span
+        class="text-[9px] font-mono tracking-[0.2em] text-copper-400 uppercase"
+        >Aura do Instinto</span
+      >
+      <button
+        id="btn-audio"
+        class="w-8 h-8 rounded-full border border-white/10 hover:border-copper-500/50 flex items-center justify-center transition-all duration-300 focus:outline-none"
+      >
+        <svg
+          id="icon-play"
+          class="w-3.5 h-3.5 text-zinc-400 fill-current"
+          viewBox="0 0 24 24"
+        >
+          <path d="M8 5v14l11-7z" />
+        </svg>
+        <svg
+          id="icon-pause"
+          class="w-3.5 h-3.5 text-copper-500 fill-current hidden"
+          viewBox="0 0 24 24"
+        >
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+        </svg>
+      </button>
+      <div class="flex items-center h-4 ml-1">
+        <span class="bossa-bar" style="--i: 1"></span>
+        <span class="bossa-bar" style="--i: 2"></span>
+        <span class="bossa-bar" style="--i: 3"></span>
+        <span class="bossa-bar" style="--i: 4"></span>
+      </div>
+    </div>
+
+    <!-- Fundo Canvas: Reage ao scroll, cliques e hovers -->
+    <canvas id="universe-canvas"></canvas>
+
+    <main
+      class="min-h-screen flex flex-col justify-center px-6 md:px-20 max-w-5xl mx-auto py-20 md:py-28 relative z-10"
+    >
+      <div class="space-y-14 md:space-y-20">
+        <!-- Cabeçalho Poético -->
+        <div
+          class="poetic-paragraph flex items-center justify-center space-x-4 mb-8"
+        >
+          <span
+            class="text-xs md:text-sm font-mono text-copper-500 tracking-[0.4em] uppercase"
+            >capítulo V · A Arquitetura do Desejo</span
+          >
+        </div>
+
+        <!-- Subtítulo -->
+        <div class="poetic-paragraph text-center">
+          <p class="text-xs font-mono text-zinc-600 tracking-[0.3em] uppercase">
+            _(A Órbita Que Mudou)_
+          </p>
+        </div>
+
+        <!-- Intro — /Registro_de_Instinto/ -->
+        <div
+          class="paper-sheet p-8 md:p-16 rounded-sm relative max-w-3xl mx-auto"
+        >
+          <p
+            class="font-mono text-[10px] text-zinc-500 uppercase tracking-widest mb-6"
+          >
+            /Registro_de_Instinto/
+          </p>
+          <p
+            class="font-serif italic text-2xl md:text-4xl leading-relaxed text-[#24201e]"
+            id="type-text"
+            data-text="O corpo é o primeiro a saber. Antes do nome, antes da frase — a outra parte já foi. A que chegou depois ficou tentando montar o mapa do que ela carregou. Não escrevo para entender. Escrevo porque rastrear o que passou é a única forma de provar que também estive lá. Ela reorganiza tudo. Não porque seja cruel — mas porque nenhuma floresta permanece dona de si mesma depois que o tigre passa."
+          ></p>
+          <svg
+            class="absolute bottom-6 right-8 w-28 h-8 text-copper-600/50"
+            viewBox="0 0 200 20"
+            fill="none"
+          >
+            <path
+              d="M5 12 Q 90 -10, 160 18 T 195 5"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+
+        <!-- § 4 — A Ruptura: chegada -->
+        <div
+          class="poetic-paragraph text-center max-w-3xl mx-auto space-y-10 pt-8"
+        >
+          <p
+            class="text-[10px] font-mono text-zinc-700 tracking-[0.3em] uppercase"
+          >
+            4. A Ruptura
+          </p>
+          <p
+            class="text-xl md:text-2xl font-sans font-light text-zinc-400 leading-relaxed"
+          >
+            Não chegou como incêndio organizado — chegou como combustão que já
+            estava aqui, esperando a faísca certa.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic text-zinc-500 leading-relaxed"
+          >
+            Ali tudo muda. A estrutura que existia antes simplesmente não
+            aguenta.
+          </p>
+          <div class="py-6">
+            <span
+              class="wild-text text-5xl md:text-7xl font-serif italic font-medium leading-none"
+            >
+              <span class="text-white block">A órbita</span>
+              <span class="text-copper-500 block mt-1">mudou.</span>
+              <span
+                class="text-zinc-600 text-xl block mt-5 not-italic font-light font-sans tracking-[0.35em] uppercase"
+                >a estrutura que existia antes</span
+              >
+            </span>
+          </div>
+        </div>
+
+        <!-- § 4 — Matéria em conflito -->
+        <div
+          class="poetic-paragraph text-center max-w-3xl mx-auto space-y-8 py-4"
+        >
+          <p
+            class="text-xl md:text-2xl font-sans font-light text-zinc-400 leading-relaxed"
+          >
+            Eu tento calcular a distância entre o que eu sinto e o que você
+            permite.<br />
+            Mas isso não é cálculo. Não é linha reta.
+          </p>
+          <p class="text-2xl md:text-3xl font-serif italic materia-conflito">
+            É <span class="mc-palavra mc-materia">matéria</span> em
+            <span class="mc-palavra mc-conflito">conflito</span>.
+          </p>
+          <div class="h-px w-16 bg-copper-500/20 mx-auto my-4"></div>
+          <p
+            class="text-lg md:text-xl font-sans font-light text-zinc-500 leading-relaxed"
+          >
+            E a
+            <span id="word-verdade" class="sensory-glow text-white"
+              >verdade</span
+            >
+            se impõe, seca:
+          </p>
+          <p
+            class="text-2xl md:text-4xl font-serif italic text-zinc-300 leading-relaxed"
+          >
+            não é o desejo do beijo que me engole.
+          </p>
+          <p
+            class="text-3xl md:text-5xl font-serif italic text-zinc-100 font-medium leading-tight"
+          >
+            É você que me engole por inteiro.
+          </p>
+        </div>
+
+        <!-- § 4 — Devoramento -->
+        <div
+          class="poetic-paragraph devoramento-block space-y-6 max-w-3xl mx-auto py-4"
+        >
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Eu já fui totalmente devorado por você — arrastado para o fundo de
+            um avesso a ponto de passar dias esquecendo o resto do mundo,
+            trancado no escuro, escrevendo cada linha dessa obra obsessiva só
+            para tentar dar contorno ao
+            <span class="visceral-word sensory-glow text-copper-400"
+              >estrago</span
+            >
+            que você causou em mim. Você continua aí fora, inteira, intacta.
+          </p>
+          <p
+            class="font-mono text-xs text-zinc-600 tracking-[0.4em] uppercase pt-2"
+          >
+            quem foi engolido fui eu.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-300"
+          >
+            A outra parte não tem paciência para eufemismos. Quer
+            <span class="visceral-word text-white sensory-glow"
+              >o teu peso</span
+            >. Quer descobrir o que você é quando o mundo para de cobrar.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic text-zinc-300 leading-relaxed"
+          >
+            A pele queima antes do toque porque isso não é um flerte. É o meu
+            colapso biológico diante de você.
+          </p>
+        </div>
+
+        <!-- § 5 — Wild Zone: A Combustão -->
+        <div class="py-16 md:py-24 text-center relative group" id="wild-zone">
+          <p
+            class="poetic-paragraph text-[10px] font-mono text-copper-600/60 mb-2 tracking-[0.25em] uppercase transition-opacity group-hover:opacity-100 opacity-60"
+          >
+            5. Wild Zone — A Combustão
+          </p>
+          <p
+            class="poetic-paragraph text-sm font-mono text-zinc-600 mb-10 tracking-[0.2em] uppercase"
+          >
+            Sente a combustão.
+          </p>
+
+          <h1
+            class="poetic-paragraph wild-text text-6xl md:text-8xl lg:text-9xl font-serif italic font-medium leading-none cursor-crosshair"
+          >
+            <span class="text-white block mb-2">sem contrato.</span>
+            <span class="text-copper-500 block mb-2">sem garantia.</span>
+            <span class="text-zinc-300 block">sem promessa.</span>
+          </h1>
+
+          <div class="poetic-paragraph space-y-8 mt-16 max-w-2xl mx-auto">
+            <p
+              class="text-lg font-mono text-zinc-600 tracking-widest uppercase"
+            >
+              Presente. Inteiramente presente.
+            </p>
+            <p
+              class="text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed"
+            >
+              Às vezes
+              <span id="word-animal" class="visceral-word text-white"
+                >essa coisa em mim</span
+              >
+              quer só ouvir a sua voz. Uma frase qualquer. Uma risada. Um
+              comentário perdido no meio da tarde.
+            </p>
+            <p
+              class="text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed"
+            >
+              Você atravessa a minha cabeça e alguma coisa desperta. A percepção afia. O corpo presta atenção. Como se todos os
+              sentidos recebessem a mesma ordem ao mesmo tempo:
+            </p>
+            <p
+              class="text-2xl md:text-3xl font-serif italic text-zinc-200 text-center"
+            >
+              <em>ela está aqui.</em>
+            </p>
+            <p
+              class="text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed"
+            >
+              A parte que chegou depois ainda está tentando nomear. A outra já
+              saiu. A razão tenta montar equações, mas o corpo já tomou a
+              decisão antes da mente terminar a frase.
+            </p>
+            <p
+              class="text-xl md:text-2xl font-serif italic text-zinc-300 leading-relaxed"
+            >
+              Não é fraqueza. É a forma mais honesta de existir que eu já
+              experimentei.
+            </p>
+          </div>
+        </div>
+
+        <!-- § 6 — Invasão Sensorial -->
+        <div
+          class="poetic-paragraph space-y-8 max-w-4xl mx-auto py-12 group cursor-pointer"
+        >
+          <p
+            class="text-[10px] font-mono text-zinc-700 tracking-[0.3em] uppercase mb-6"
+          >
+            6. Invasão Sensorial
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif text-zinc-300 leading-relaxed"
+          >
+            Você continua falando. E eu continuo ouvindo.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif text-zinc-300 leading-relaxed"
+          >
+            Mas já não escuto apenas as palavras. Escuto o intervalo entre elas.
+            O ritmo. As pausas. O jeito como certas sílabas demoram um pouco
+            mais para sair. O modo como você ocupa um espaço. Como altera a
+            temperatura emocional de um ambiente sem perceber.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif text-zinc-300 leading-relaxed"
+          >
+            Eu não te olho com a distância segura de um amigo. Eu te olho com
+            <span class="visceral-word text-white sensory-glow">desejo</span> e
+            fome. Penso no teu
+            <span class="visceral-word text-white sensory-glow">cheiro</span> de
+            pertinho, na curva da tua nuca, no contraste da tua cor com a minha,
+            na tua
+            <span class="visceral-word text-white sensory-glow">respiração</span
+            >. Penso na tua boca, na tua energia colada à minha — e sinto a
+            <span class="text-copper-500 italic">sede</span> real de atravessar
+            essa
+            <span
+              class="cross-line-effect text-copper-400 font-medium group-hover:text-copper-300 transition-colors duration-500"
+              >linha invisível</span
+            >.
+          </p>
+        </div>
+
+        <!-- § 6 — Estado puro -->
+        <div
+          class="poetic-paragraph grid grid-cols-1 md:grid-cols-2 gap-12 text-center max-w-3xl mx-auto py-12"
+        >
+          <div
+            class="md:border-r border-zinc-800/80 md:pr-12 flex flex-col justify-center"
+          >
+            <p
+              class="font-mono text-xs text-zinc-600 uppercase tracking-[0.2em] mb-4"
+            >
+              isso não é pensamento organizado
+            </p>
+            <p class="font-serif text-4xl text-zinc-200 italic">
+              vem como invasão<br /><span
+                class="text-2xl font-sans not-italic font-light text-zinc-500"
+                >vira</span
+              >
+              estado puro.
+            </p>
+          </div>
+          <div class="md:pl-12 flex flex-col justify-center mt-8 md:mt-0">
+            <p
+              class="font-mono text-xs text-zinc-600 uppercase tracking-[0.2em] mb-4"
+            >
+              funde o que a parte que chegou depois
+            </p>
+            <p
+              class="font-serif text-3xl md:text-4xl text-copper-400 italic leading-tight"
+            >
+              tentou manter à parte.<br />
+              <span
+                class="text-xl font-sans not-italic font-light text-zinc-600 my-2 block"
+                >alguma coisa em mim</span
+              >
+              <span class="visceral-word text-white"
+                >já não volta para o lugar anterior.</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- § 7 — A Autonomia do Desejo -->
+        <div
+          class="poetic-paragraph text-xl md:text-2xl font-sans font-light text-zinc-400 text-center max-w-3xl mx-auto space-y-10 leading-relaxed"
+        >
+          <p
+            class="text-[10px] font-mono text-zinc-700 tracking-[0.3em] uppercase"
+          >
+            7. A Autonomia do Desejo
+          </p>
+          <p>O mais estranho não é desejar você.</p>
+          <p>
+            O mais estranho é perceber que esse desejo não depende da minha
+            autorização.
+          </p>
+          <p class="text-zinc-300">
+            Ele continua. Nos dias bons. Nos dias ruins. Nos dias em que decido
+            esquecê-lo. Nos dias em que ele decide me lembrar.
+          </p>
+          <p>
+            Existe uma autonomia nisso. Uma vida própria. Como se alguma parte
+            de mim tivesse tomado uma decisão sem consultar o restante.
+          </p>
+          <p class="text-lg md:text-xl font-serif italic text-zinc-300">
+            A outra parte decidiu. A que chegou depois aprendeu a não recorrer.
+            Meu corpo parou de tentar se justificar.
+          </p>
+        </div>
+
+        <!-- § 8 — O Reconhecimento Final -->
+        <div class="poetic-paragraph space-y-8 py-8 max-w-3xl mx-auto">
+          <p
+            class="text-[10px] font-mono text-zinc-700 tracking-[0.3em] uppercase mb-4"
+          >
+            8. O Reconhecimento Final
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light text-zinc-500 leading-relaxed"
+          >
+            Mas muito antes de tudo isso —
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed"
+          >
+            A outra parte não tem paciência para eufemismos. Foi ela quem
+            percebeu você primeiro.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed"
+          >
+            Muito antes das palavras. Muito antes das confissões. Muito antes
+            desta obra existir.<br />
+            Antes de eu saber que havia algo para perceber.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light text-zinc-300 leading-relaxed"
+          >
+            Sentiu a mudança na temperatura do ar quando você entrou no
+            ambiente. Registrou o cheiro específico do teu cabelo no calor da
+            tarde. Catalogou, sem ser mandado, a distância exata entre o teu
+            ombro e o meu quando a gente senta junto. Anotou qual risada vem do
+            fundo e qual fica só na boca — qual você não ensaiou e não controla.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic text-zinc-300 leading-relaxed"
+          >
+            Ela não escolhe o que registra. Registra antes de saber que está
+            registrando.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed"
+          >
+            Eu ensinei essa parte a se comportar. A sentar direito. A falar
+            baixo. A parecer civilizada. Mas às vezes você ri daquele jeito —
+            aquele específico, o que não foi ensaiado — e ela se levanta. Afasta
+            a cadeira. Não me pede licença.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic text-copper-400 text-center leading-relaxed"
+          >
+            Você já escreveu nas paredes do meu silêncio. Escreveu sem saber,
+            sem caneta, sem intenção — mas está tudo lá: o teu riso, a tua voz,
+            o peso específico da tua presença no ar de uma tarde qualquer.
+          </p>
+          <p
+            class="text-2xl md:text-3xl font-serif italic text-zinc-200 text-center"
+          >
+            Você já me rabiscou por dentro.
+          </p>
+        </div>
+
+        <!-- § 9 — O Pacto -->
+        <div
+          class="poetic-paragraph scribble-box p-8 md:p-16 rounded-xl max-w-3xl mx-auto overflow-hidden"
+        >
+          <svg
+            class="scribble-bg-line"
+            id="scribble-svg"
+            viewBox="0 0 500 200"
+            preserveAspectRatio="none"
+          >
+            <path
+              id="scribble-path-1"
+              d="M 10 50 Q 150 150, 300 50 T 490 150"
+              fill="none"
+              stroke="rgba(226,88,62,0.3)"
+              stroke-width="1.5"
+            />
+            <path
+              id="scribble-path-2"
+              d="M 10 150 Q 120 20, 280 160 T 490 50"
+              fill="none"
+              stroke="rgba(255,255,255,0.15)"
+              stroke-width="1.2"
+            />
+          </svg>
+          <div class="relative z-10 text-center space-y-6">
+            <span
+              class="text-xs font-mono text-copper-500 tracking-[0.3em] uppercase block"
+              >9. O Pacto</span
+            >
+            <p
+              class="text-xl md:text-3xl font-serif italic text-zinc-100 leading-relaxed"
+            >
+              Agora te peço o contrário.
+            </p>
+            <p class="text-sm font-sans font-light text-zinc-500 italic pb-6">
+              Passe o cursor para rabiscar
+            </p>
+            <div class="h-px w-24 bg-copper-500/20 mx-auto my-8"></div>
+            <div class="text-left space-y-6">
+              <p
+                class="text-xl md:text-2xl font-serif italic text-zinc-300 leading-relaxed pt-4"
+              >
+                Rabisca o meu corpo do mesmo jeito que já fez na minha mente.
+              </p>
+              <p
+                class="text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed"
+              >
+                Não com intenção. Não com cerimônia. Do jeito que você faz
+                quando não está tentando — que é exatamente quando mais chega
+                fundo.
+              </p>
+              <p
+                class="text-lg md:text-xl font-sans font-light text-zinc-300 leading-relaxed border-t border-white/5 pt-6"
+              >
+                Esse é o pacto que proponho nas entrelinhas desta obra inteira.
+                Não é uma promessa. Não é uma expectativa. É uma pergunta que o
+                meu corpo aprendeu a fazer antes de mim:
+              </p>
+              <p
+                class="text-xl md:text-2xl font-serif italic text-copper-400 text-center"
+              >
+                e se a gente deixasse?
+              </p>
+              <p
+                class="text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed"
+              >
+                Sem o peso do julgamento. Sem a pressa de dar um nome eterno ao
+                que ainda está em chamas.
+              </p>
+              <p
+                class="text-lg md:text-xl font-serif italic text-zinc-300 leading-relaxed"
+              >
+                Quero ser o silêncio que você escolhe quando o mundo fica alto
+                demais. Quero te conhecer inteira — pelo que a pele toca e pelo
+                que só a alma alcança.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fecho -->
+        <div class="poetic-paragraph pt-12 pb-32 space-y-12">
+          <p
+            class="text-3xl md:text-5xl lg:text-6xl font-serif text-center text-zinc-400 leading-tight"
+          >
+            Aqui, na margem desse rio, a carne é só a porta.
+          </p>
+          <div class="flex flex-col items-center justify-center space-y-4">
+            <div
+              class="h-[1px] w-24 bg-gradient-to-r from-transparent via-copper-500 to-transparent"
+            ></div>
+            <p
+              class="text-4xl md:text-6xl lg:text-7xl font-serif italic text-center text-copper-500 animate-pulse font-medium"
+              style="animation-duration: 3.5s"
+            >
+              O que a pele toca chega mais fundo do que qualquer palavra que eu já escrevi. Ali, só
+              restamos nós.
+            </p>
+            <p class="text-xl md:text-2xl font-serif italic text-zinc-500">
+              E a outra parte em mim finalmente cansou de fingir que não
+              percebeu.
+            </p>
+          </div>
+        </div>
+
+        <!-- Navegação de Livro -->
+        <footer
+          class="poetic-paragraph mt-20 mb-20 flex flex-col items-center space-y-12 w-full"
+        >
+          <div
+            class="w-[1px] h-16 bg-gradient-to-b from-copper-500/30 to-transparent"
+          ></div>
+          <div
+            class="flex justify-between w-full max-w-sm font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500"
+          >
+            <a
+              href="capitulo-4-a-arquitetura-da-atencao.html"
+              class="nav-link hover:text-white transition-colors"
+              >← IV · A Atenção</a
+            >
+            <a
+              href="capitulo-6-a-nossa-bolha.html"
+              class="nav-link group flex items-center space-x-2 hover:text-copper-400 transition-colors"
+            >
+              <span>VI · A Bolha</span>
+              <svg
+                class="w-3 h-3 transition-transform group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+          </div>
+        </footer>
+      </div>
+    </main>
+
+    <script>
+      // ==========================================
+      // 1. SISTEMA FÍSICO DO CANVAS "O ANIMAL"
+      // ==========================================
+      const canvas = document.getElementById("universe-canvas");
+      const ctx = canvas.getContext("2d");
+      let width, height;
+
+      let combustaoMode = false;
+      const isTouch = window.matchMedia(
+        "(hover: none), (pointer: coarse)",
+      ).matches;
+      let rageIntensity = 0; // Transição suave entre calmo e fúria
+      let lastScrollY = window.scrollY;
+      let scrollSpeed = 0;
+
+      const mouse = { x: -1000, y: -1000, vx: 0, vy: 0 };
+      let lastMouse = { x: -1000, y: -1000 };
+
+      if (!isTouch) {
+        window.addEventListener("mousemove", (e) => {
+          lastMouse.x = mouse.x;
+          lastMouse.y = mouse.y;
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+          mouse.vx = mouse.x - lastMouse.x;
+          mouse.vy = mouse.y - lastMouse.y;
+        });
+
+        // Ativadores de Fúria e Combustão
+        const wildZone = document.getElementById("wild-zone");
+        const wordVerdade = document.getElementById("word-verdade");
+        if (wildZone) {
+          wildZone.addEventListener("mouseenter", () => {
+            combustaoMode = true;
+            if (window._fnCap4Reveal) window._fnCap4Reveal();
+            if (wordVerdade) wordVerdade.classList.add("is-rage");
+          });
+          wildZone.addEventListener("mouseleave", () => {
+            combustaoMode = false;
+            if (wordVerdade) wordVerdade.classList.remove("is-rage");
+          });
+        }
+      }
+
+      // Ativar vibração ao passar o mouse pelas palavras viscerais
+      document.querySelectorAll(".visceral-word").forEach((word) => {
+        word.addEventListener("mouseenter", () => {
+          combustaoMode = true;
+          if (wordVerdade) wordVerdade.classList.add("is-rage");
+          // Dispara fagulhas na área da palavra
+          const rect = word.getBoundingClientRect();
+          for (let i = 0; i < 15; i++) {
+            createSpark(
+              rect.left + Math.random() * rect.width,
+              rect.top + Math.random() * rect.height,
+            );
+          }
+        });
+        word.addEventListener("mouseleave", () => {
+          combustaoMode = false;
+          if (wordVerdade) wordVerdade.classList.remove("is-rage");
+        });
+
+        const triggerVibration = () => {
+          if (navigator.vibrate) {
+            // Batida de coração: vibra, pausa curta, vibra mais forte
+            navigator.vibrate([30, 50, 60]);
+          } else {
+            // Fallback visual para iPhone
+            word.classList.add("shake-effect");
+            setTimeout(() => word.classList.remove("shake-effect"), 400);
+          }
+        };
+
+        word.addEventListener("click", triggerVibration);
+        word.addEventListener("touchstart", triggerVibration, {
+          passive: true,
+        });
+      });
+
+      // Partículas (Brasas que sobem)
+      let particles = [];
+      const numParticles = isTouch ? 60 : 150;
+      let lineNodes = [];
+      const numNodes = 50;
+
+      function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initUniverse();
+      }
+
+      function initUniverse() {
+        particles = [];
+        for (let i = 0; i < numParticles; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: Math.random() * 2 + 0.5,
+            baseSpeed: Math.random() * 1.6 + 0.6,
+            hue: Math.random() > 0.25 ? 12 : 355, // Tons profundos de vermelho e brasa
+            alpha: Math.random() * 0.65 + 0.1,
+          });
+        }
+
+        lineNodes = [];
+        for (let i = 0; i < numNodes; i++) {
+          lineNodes.push({
+            x: width / 2,
+            y: (height / numNodes) * i,
+            baseX: width / 2,
+            baseY: (height / numNodes) * i,
+            vx: 0,
+            vy: 0,
+          });
+        }
+      }
+
+      // Criador de Fagulhas / Faíscas Dinâmicas (Micro-interação de Clique)
+      function createSpark(x, y) {
+        particles.push({
+          x: x,
+          y: y,
+          size: Math.random() * 3 + 1,
+          baseSpeed: Math.random() * 4 + 2,
+          hue: Math.random() > 0.5 ? 18 : 38, // Faíscas amarelas/laranjas quentes
+          alpha: 1,
+          isSpark: true,
+          vx: (Math.random() - 0.5) * 6,
+          vy: -Math.random() * 5 - 2,
+        });
+      }
+
+      window.addEventListener("click", (e) => {
+        // Gera explosão de brasas no clique
+        for (let i = 0; i < 25; i++) {
+          createSpark(e.clientX, e.clientY);
+        }
+      });
+
+      function renderUniverse() {
+        // Efeito de rastro escuro e carnal
+        const currentScrollY = window.scrollY;
+        const deltaY = Math.abs(currentScrollY - lastScrollY);
+        scrollSpeed += (deltaY - scrollSpeed) * 0.15;
+        lastScrollY = currentScrollY;
+
+        // O fundo torna-se mais avermelhado conforme a velocidade de rolagem aumenta
+        const redValue = Math.min(15 + scrollSpeed * 0.7, 75);
+        ctx.fillStyle = `rgba(${redValue}, 3, 2, 0.25)`;
+        ctx.fillRect(0, 0, width, height);
+
+        // Ajustar intensidade de Fúria gradualmente
+        if (combustaoMode) {
+          combustaoIntensity = Math.min(combustaoIntensity + 0.05, 1);
+        } else {
+          combustaoIntensity = Math.max(combustaoIntensity - 0.03, 0);
+        }
+
+        // --- RENDERIZAR PARTÍCULAS ---
+        for (let i = particles.length - 1; i >= 0; i--) {
+          let p = particles[i];
+
+          if (p.isSpark) {
+            // Comportamento de faísca balística temporária
+            p.x += p.vx;
+            p.y += p.vy;
+            p.alpha -= 0.02;
+            p.size *= 0.98;
+            if (p.alpha <= 0) {
+              particles.splice(i, 1);
+              continue;
+            }
+          } else {
+            // Comportamento de brasas que sobem
+            let speedMultiplier = 1 + combustaoIntensity * 4.5;
+            p.y -= p.baseSpeed * speedMultiplier;
+            p.x += (Math.random() - 0.5) * 2.5 * speedMultiplier;
+
+            if (p.y < -10) p.y = height + 10;
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+          }
+
+          let drawAlpha = p.isSpark
+            ? p.alpha // Faíscas temporárias
+            : p.currentAlpha || p.alpha * (1 + combustaoIntensity * 0.8); // Brasas ambientais
+          ctx.fillStyle = `hsla(${p.hue}, 100%, 55%, ${Math.min(drawAlpha, 1)})`; // Cor das brasas
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.currentSize || p.size, 0, Math.PI * 2); // Usa currentSize se existir
+          ctx.fill();
+        }
+
+        // Manter número ideal de partículas ambientais se algumas faíscas sumirem
+        while (particles.filter((p) => !p.isSpark).length < numParticles) {
+          particles.push({
+            x: Math.random() * width,
+            y: height + 10,
+            size: Math.random() * 2 + 0.5,
+            baseSpeed: Math.random() * 1.6 + 0.6,
+            hue: Math.random() > 0.25 ? 12 : 355,
+            alpha: Math.random() * 0.65 + 0.1,
+          });
+        }
+
+        // --- RENDERIZAR LINHA ESPINHAL/ANIMAL ---
+        ctx.beginPath();
+        ctx.moveTo(lineNodes[0].x, lineNodes[0].y);
+
+        for (let i = 0; i < numNodes; i++) {
+          let node = lineNodes[i];
+
+          // Vibração caótica baseada no nível de fúria
+          node.vx += (Math.random() - 0.5) * (1.5 + combustaoIntensity * 16);
+
+          // Reação de repulsão ao ponteiro do rato
+          let dx = mouse.x - node.x;
+          let dy = mouse.y - node.y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 180) {
+            let force = (180 - dist) / 180;
+            node.vx -= (dx / dist) * force * 18;
+            node.vy -= (dy / dist) * force * 18;
+          }
+
+          // Elasticidade de retorno
+          let tension = 0.15 - combustaoIntensity * 0.1;
+          let friction = 0.82 + combustaoIntensity * 0.08;
+
+          node.vx += (node.baseX - node.x) * tension;
+          node.vy += (node.baseY - node.y) * tension;
+          node.vx *= friction;
+          node.vy *= friction;
+
+          node.x += node.vx;
+          node.y += node.vy;
+
+          if (i > 0) {
+            let prevNode = lineNodes[i - 1];
+            let xc = (node.x + prevNode.x) / 2;
+            let yc = (node.y + prevNode.y) / 2;
+            ctx.quadraticCurveTo(prevNode.x, prevNode.y, xc, yc);
+          }
+        }
+
+        ctx.lineWidth = 1.1 + combustaoIntensity * 2;
+        ctx.strokeStyle = `rgba(226, 88, 62, ${0.25 + combustaoIntensity * 0.65})`;
+
+        ctx.shadowBlur = 4 + combustaoIntensity * 16;
+        ctx.shadowColor = "#e2583e";
+        ctx.stroke();
+        ctx.shadowBlur = 0; // Desativar para manter performance limpa
+
+        requestAnimationFrame(renderUniverse);
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+      renderUniverse();
+
+      // ==========================================
+      // ENGINE SONORA — AURA DO INSTINTO
+      // Drone 80Hz→130Hz (sobe com scroll, animal acordando)
+      // Lub-dub cardíaco real (dois pulsos)
+      // LFO tremolo ativa no rage mode
+      // Filtro lowpass abre com intensidade
+      // ==========================================
+      let audioCtx = null;
+      let droneOsc = null,
+        droneGain = null;
+      let harmOsc = null,
+        harmGain = null;
+      let droneFilter = null;
+      let lfoOsc = null,
+        lfoGain = null;
+      let heartbeatInterval = null;
+      let isPlaying = false;
+      let droneRafId = null;
+
+      const btnAudio = document.getElementById("btn-audio"),
+        iconPlay = document.getElementById("icon-play"),
+        iconPause = document.getElementById("icon-pause");
+
+      function startAudio() {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+
+        // Filtro lowpass — começa fechado, abre com scroll e rage
+        droneFilter = audioCtx.createBiquadFilter();
+        droneFilter.type = "lowpass";
+        droneFilter.frequency.value = 300;
+        droneFilter.Q.value = 1.8;
+        droneFilter.connect(audioCtx.destination);
+
+        // Oscilador fundamental: 80Hz (audível em qualquer speaker)
+        droneOsc = audioCtx.createOscillator();
+        droneGain = audioCtx.createGain();
+        droneOsc.type = "sine";
+        droneOsc.frequency.value = 80;
+        droneGain.gain.setValueAtTime(0, audioCtx.currentTime);
+        droneGain.gain.linearRampToValueAtTime(0.065, audioCtx.currentTime + 3);
+        droneOsc.connect(droneGain);
+        droneGain.connect(droneFilter);
+        droneOsc.start();
+
+        // Harmônico: quinta acima (120Hz) — textura orgânica/animal
+        harmOsc = audioCtx.createOscillator();
+        harmGain = audioCtx.createGain();
+        harmOsc.type = "sine";
+        harmOsc.frequency.value = 120;
+        harmGain.gain.setValueAtTime(0, audioCtx.currentTime);
+        harmGain.gain.linearRampToValueAtTime(0.028, audioCtx.currentTime + 4);
+        harmOsc.connect(harmGain);
+        harmGain.connect(droneFilter);
+        harmOsc.start();
+
+        // LFO tremolo (ativa no rage mode, 4Hz — vibração do animal)
+        lfoOsc = audioCtx.createOscillator();
+        lfoGain = audioCtx.createGain();
+        lfoOsc.type = "sine";
+        lfoOsc.frequency.value = 4;
+        lfoGain.gain.value = 0;
+        lfoOsc.connect(lfoGain);
+        lfoGain.connect(droneGain.gain);
+        lfoOsc.start();
+
+        isPlaying = true;
+        btnAudio.parentElement.classList.add("is-playing");
+        triggerHeartbeat();
+        animateDrone();
+        sessionStorage.setItem("audioState", "playing");
+      }
+
+      function stopAudio() {
+        const now = audioCtx.currentTime;
+        if (droneGain) droneGain.gain.linearRampToValueAtTime(0, now + 1.5);
+        if (harmGain) harmGain.gain.linearRampToValueAtTime(0, now + 1.5);
+        if (lfoGain) lfoGain.gain.linearRampToValueAtTime(0, now + 1.5);
+        if (droneOsc) droneOsc.stop(now + 1.6); // STOP REAL
+        if (harmOsc) harmOsc.stop(now + 1.6);
+        if (lfoOsc) lfoOsc.stop(now + 1.6);
+        clearTimeout(heartbeatInterval);
+        cancelAnimationFrame(droneRafId);
+        isPlaying = false;
+        btnAudio.parentElement.classList.remove("is-playing");
+        sessionStorage.setItem("audioState", "paused");
+      }
+
+      // Evolução contínua do drone por scroll e rage
+      function animateDrone() {
+        if (!isPlaying || !droneOsc) return;
+
+        const scrollProgress =
+          window.scrollY /
+          Math.max(
+            1,
+            document.documentElement.scrollHeight - window.innerHeight,
+          );
+
+        // Drone sobe de 80Hz → 160Hz e recua para 100Hz no final (Arco de Desejo)
+        let targetFreq;
+        if (scrollProgress < 0.8) {
+          targetFreq = 80 + (scrollProgress / 0.8) * 80; // Escala até 160Hz
+        } else {
+          targetFreq = 160 - ((scrollProgress - 0.8) / 0.2) * 60; // Recua para 100Hz
+        }
+
+        droneOsc.frequency.linearRampToValueAtTime(
+          targetFreq,
+          audioCtx.currentTime + 0.6,
+        );
+        harmOsc.frequency.linearRampToValueAtTime(
+          targetFreq * 1.5,
+          audioCtx.currentTime + 0.6,
+        );
+
+        // Filtro abre com scroll e explode no rage mode
+        const filterTarget = 300 + scrollProgress * 900 + rageIntensity * 1800;
+        droneFilter.frequency.linearRampToValueAtTime(
+          Math.min(filterTarget, 4000),
+          audioCtx.currentTime + 0.3,
+        );
+
+        // Aumenta a distorção no Waveshaper conforme a fúria sobe
+        if (saturationNode) {
+          saturationNode.curve = makeDistortionCurve(20 + rageIntensity * 80);
+        }
+
+        // LFO tremolo cresce em rage mode
+        lfoGain.gain.linearRampToValueAtTime(
+          rageIntensity * 0.022,
+          audioCtx.currentTime + 0.2,
+        );
+
+        droneRafId = requestAnimationFrame(animateDrone);
+      }
+
+      // Heartbeat lub-dub — dois pulsos, como coração real
+      function triggerHeartbeat() {
+        if (!isPlaying) return;
+        const now = audioCtx.currentTime;
+
+        // LUB — batida principal (grave, curta)
+        const lubOsc = audioCtx.createOscillator();
+        const lubGain = audioCtx.createGain();
+        lubOsc.frequency.setValueAtTime(68, now);
+        lubOsc.frequency.exponentialRampToValueAtTime(0.01, now + 0.14);
+        lubGain.gain.setValueAtTime(0.1, now);
+        lubGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        lubOsc.connect(lubGain);
+        lubGain.connect(audioCtx.destination);
+        lubOsc.start(now);
+        lubOsc.stop(now + 0.14);
+
+        // DUB — eco suave 220ms depois (como a segunda valva do coração)
+        const dubOsc = audioCtx.createOscillator();
+        const dubGain = audioCtx.createGain();
+        const dubNow = now + 0.22;
+        dubOsc.frequency.setValueAtTime(52, dubNow);
+        dubOsc.frequency.exponentialRampToValueAtTime(0.01, dubNow + 0.09);
+        dubGain.gain.setValueAtTime(0.048, dubNow);
+        dubGain.gain.exponentialRampToValueAtTime(0.001, dubNow + 0.09);
+        dubOsc.connect(dubGain);
+        dubGain.connect(audioCtx.destination);
+        dubOsc.start(dubNow);
+        dubOsc.stop(dubNow + 0.09);
+
+        // Intervalo reage ao scroll (coração acelera ao mergulhar) e rage
+        const scrollProgress =
+          window.scrollY /
+          Math.max(
+            1,
+            document.documentElement.scrollHeight - window.innerHeight,
+          );
+        const baseInterval = 1100 - scrollProgress * 280; // 1100ms → 820ms
+        const interval = combustaoMode ? 600 : baseInterval;
+        heartbeatInterval = setTimeout(triggerHeartbeat, interval);
+      }
+
+      btnAudio.addEventListener("click", () => {
+        if (!isPlaying) {
+          startAudio();
+          iconPlay.classList.add("hidden");
+          iconPause.classList.remove("hidden");
+        } else {
+          stopAudio();
+          iconPlay.classList.remove("hidden");
+          iconPause.classList.add("hidden");
+        }
+      });
+
+      window.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("loaded");
+
+        // Garantir que os ícones do áudio iniciem no estado correto
+        const iconPlay = document.getElementById("icon-play");
+        const iconPause = document.getElementById("icon-pause");
+        if (iconPlay && iconPause) {
+          iconPlay.classList.remove("hidden");
+          iconPause.classList.add("hidden");
+        }
+
+        if (sessionStorage.getItem("audioState") === "playing") {
+          startAudio();
+          if (iconPlay) iconPlay.classList.add("hidden");
+          if (iconPause) iconPause.classList.remove("hidden");
+        }
+
+        function playNavClick() {
+          try {
+            const c = new (window.AudioContext || window.webkitAudioContext)();
+            const now = c.currentTime;
+            const bufLen = Math.floor(c.sampleRate * 0.14);
+            const buf = c.createBuffer(1, bufLen, c.sampleRate);
+            const d = buf.getChannelData(0);
+            for (let i = 0; i < bufLen; i++) d[i] = Math.random() * 2 - 1;
+            const noise = c.createBufferSource();
+            noise.buffer = buf;
+            const filter = c.createBiquadFilter();
+            filter.type = "bandpass";
+            filter.frequency.value = 2000;
+            filter.Q.value = 0.7;
+            const g = c.createGain();
+            g.gain.setValueAtTime(0, now);
+            g.gain.linearRampToValueAtTime(0.13, now + 0.008);
+            g.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+            noise.connect(filter);
+            filter.connect(g);
+            g.connect(c.destination);
+            noise.start(now);
+            noise.stop(now + 0.14);
+            const thump = c.createOscillator();
+            const tg = c.createGain();
+            thump.type = "sine";
+            thump.frequency.setValueAtTime(110, now + 0.07);
+            thump.frequency.exponentialRampToValueAtTime(55, now + 0.16);
+            tg.gain.setValueAtTime(0.055, now + 0.07);
+            tg.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+            thump.connect(tg);
+            tg.connect(c.destination);
+            thump.start(now + 0.07);
+            thump.stop(now + 0.16);
+            setTimeout(() => c.close(), 600);
+          } catch (e) {}
+        }
+
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("mouseenter", () => {
+            const href = link.getAttribute("href");
+            if (
+              href &&
+              href !== "index.html" &&
+              !document.querySelector(`link[rel='prefetch'][href='${href}']`)
+            ) {
+              const prefetch = document.createElement("link");
+              prefetch.rel = "prefetch";
+              prefetch.href = href;
+              document.head.appendChild(prefetch);
+            }
+          });
+
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (audioCtx && audioCtx.state === "running") {
+              try {
+                const _ft = audioCtx.currentTime;
+                [droneGain, harmGain, lfoGain].forEach((g) => {
+                  if (g) {
+                    g.gain.cancelScheduledValues(_ft);
+                    g.gain.linearRampToValueAtTime(0, _ft + 0.5);
+                  }
+                });
+              } catch (_) {}
+            }
+            playNavClick();
+            const rx = e.clientX || window.innerWidth / 2;
+            const ry = e.clientY || window.innerHeight / 2;
+            playExitRipple(rx, ry, () => {
+              document.body.classList.remove("loaded");
+              setTimeout(() => {
+                window.location.href = link.getAttribute("href");
+              }, 60);
+            });
+          });
+        });
+
+        function playExitRipple(x, y, cb) {
+          const el = document.createElement("div");
+          const s = Math.hypot(window.innerWidth, window.innerHeight) * 2.4;
+          el.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(239,176,87,0.18) 0%,rgba(1,7,9,0.97) 65%);transform:translate(-50%,-50%) scale(1);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1);pointer-events:none;z-index:9997;`;
+          document.body.appendChild(el);
+          requestAnimationFrame(() => {
+            el.style.transform = `translate(-50%,-50%) scale(${s})`;
+          });
+          setTimeout(() => {
+            el.remove();
+            cb();
+          }, 670);
+        }
+
+        if (!isTouch) {
+          document.querySelectorAll(".nav-link").forEach((link) => {
+            link.addEventListener("mouseenter", () => {
+              try {
+                const c = new (
+                  window.AudioContext || window.webkitAudioContext
+                )();
+                const o = c.createOscillator();
+                const g = c.createGain();
+                o.type = "sine";
+                o.frequency.value = 800;
+                g.gain.setValueAtTime(0.018, c.currentTime);
+                g.gain.exponentialRampToValueAtTime(
+                  0.001,
+                  c.currentTime + 0.12,
+                );
+                o.connect(g);
+                g.connect(c.destination);
+                o.start();
+                o.stop(c.currentTime + 0.12);
+                setTimeout(() => c.close(), 400);
+              } catch (e) {}
+            });
+          });
+        }
+      });
+
+      // ==========================================
+      // 2. INTERAÇÃO SENSORIAL NAS PÁGINAS
+      // ==========================================
+
+      // Efeito de escrita da Máquina de Escrever
+      const typeWriterEffect = (element, text, speed = 40) => {
+        element.innerHTML = "";
+        element.classList.add("typewriter-cursor");
+        let i = 0;
+
+        function type() {
+          if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, speed + Math.random() * 45);
+          } else {
+            setTimeout(
+              () => element.classList.remove("typewriter-cursor"),
+              2000,
+            );
+
+            // Revelar sutilmente a linha desenhada a caneta abaixo do texto
+            const svgPath = element.parentElement.querySelector("path");
+            if (svgPath) {
+              const length = svgPath.getTotalLength();
+              svgPath.style.strokeDasharray = length;
+              svgPath.style.strokeDashoffset = length;
+              svgPath.style.transition =
+                "stroke-dashoffset 2.2s cubic-bezier(0.25, 1, 0.5, 1)";
+              setTimeout(() => {
+                svgPath.style.strokeDashoffset = "0";
+              }, 300);
+            }
+          }
+        }
+        setTimeout(type, 800);
+      };
+
+      // Intersection Observers (Configurações e Acionamentos)
+      const observerOptions = {
+        threshold: 0.12,
+        rootMargin: "0px 0px -8% 0px",
+      };
+
+      const poeticObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("reveal");
+            poeticObserver.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll(".poetic-paragraph").forEach((el) => {
+        poeticObserver.observe(el);
+      });
+
+      const sheetObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("reveal-sheet");
+              sheetObserver.unobserve(entry.target);
+              const pText = entry.target.querySelector("p[data-text]");
+              if (pText && !pText.dataset.typed) {
+                pText.dataset.typed = "true";
+                typeWriterEffect(pText, pText.getAttribute("data-text"), 40);
+              }
+            }
+          });
+        },
+        { threshold: 0.45 },
+      );
+
+      document.querySelectorAll(".paper-sheet").forEach((sheet) => {
+        sheetObserver.observe(sheet);
+      });
+
+      // --- Efeito "Rabiscar a nossa História" ---
+      const scribbleBox = document.querySelector(".scribble-box");
+      const path1 = document.getElementById("scribble-path-1");
+      const path2 = document.getElementById("scribble-path-2");
+
+      if (scribbleBox && path1 && path2 && !isTouch) {
+        scribbleBox.addEventListener("mousemove", (e) => {
+          const rect = scribbleBox.getBoundingClientRect();
+          const xNorm = (e.clientX - rect.left) / rect.width;
+          const yNorm = (e.clientY - rect.top) / rect.height;
+
+          // Altera a geometria dos caminhos SVG dinamicamente para parecer um rabisco à mão livre
+          path1.setAttribute(
+            "d",
+            `M 10 70 Q ${100 + xNorm * 120} ${180 - yNorm * 100}, ${250 + xNorm * 50} 60 T 490 ${130 + yNorm * 40}`,
+          );
+          path2.setAttribute(
+            "d",
+            `M 10 130 Q ${120 - xNorm * 80} ${10 + yNorm * 140}, ${280 - xNorm * 60} 140 T 490 ${60 - yNorm * 30}`,
+          );
+        });
+
+        scribbleBox.addEventListener("mouseleave", () => {
+          // Volta suavemente ao estado original
+          path1.setAttribute("d", "M 10 50 Q 150 150, 300 50 T 490 150");
+          path2.setAttribute("d", "M 10 150 Q 120 20, 280 160 T 490 50");
+        });
+      }
+    </script>
+    <!-- ══ FRAGMENTO R — ANIMAL QUE FOGE ════════════════════════════════════ -->
+    <script>
+      (function () {
+        var isTouch = window.matchMedia(
+          "(hover:none),(pointer:coarse)",
+        ).matches;
+        document.addEventListener("DOMContentLoaded", function () {
+          var origin = document.getElementById("word-animal");
+          if (!origin) return;
+
+          if (isTouch) {
+            origin.style.cursor = "pointer";
+            origin.onclick = function () {
+              window.oaFoundLetter && window.oaFoundLetter("R");
+            };
+            return;
+          }
+
+          var prey = null,
+            preyPos = null,
+            originHome = null;
+          var fleeCount = 0,
+            tired = false,
+            abandonTimer = null;
+          var MAX_FLEES = 3;
+
+          function spawnPrey() {
+            if (prey) return;
+            var rect = origin.getBoundingClientRect();
+            originHome = {
+              x: rect.left,
+              y: rect.top,
+              w: rect.width,
+              h: rect.height,
+            };
+            preyPos = {
+              x: rect.left + rect.width / 2,
+              y: rect.top + rect.height / 2,
+            };
+
+            prey = document.createElement("span");
+            prey.textContent = origin.textContent;
+            prey.style.cssText = [
+              "position:fixed",
+              "z-index:8000",
+              'font-family:"Cormorant Garamond",serif',
+              "font-style:italic",
+              "font-size:1.4rem",
+              "color:rgba(226,88,62,0.92)",
+              "text-shadow:0 0 18px rgba(226,88,62,0.35)",
+              "cursor:default",
+              "user-select:none",
+              "pointer-events:none",
+              "transition:left 0.14s cubic-bezier(.4,0,.2,1),top 0.14s cubic-bezier(.4,0,.2,1),opacity 0.6s ease",
+              "left:" + originHome.x + "px",
+              "top:" + originHome.y + "px",
+              "opacity:1",
+            ].join(";");
+            document.body.appendChild(prey);
+            origin.style.visibility = "hidden";
+
+            // Fase 1: vibra 2× antes de ativar a fuga
+            prey.style.animation = "prey-tremble 0.3s linear 2";
+            setTimeout(function () {
+              if (!prey) return;
+              prey.style.animation = "";
+              document.addEventListener("mousemove", onMove);
+            }, 680);
+          }
+
+          function flee(fromX, fromY) {
+            clearTimeout(abandonTimer);
+            fleeCount++;
+            var margin = 100;
+            var W = window.innerWidth - margin,
+              H = window.innerHeight - margin;
+            var nx,
+              ny,
+              tries = 0;
+            do {
+              nx = margin / 2 + Math.random() * W;
+              ny = margin / 2 + Math.random() * H;
+              tries++;
+            } while (Math.hypot(nx - fromX, ny - fromY) < 180 && tries < 40);
+            preyPos = { x: nx + 30, y: ny + 10 };
+            prey.style.left = nx + "px";
+            prey.style.top = ny + "px";
+            if (fleeCount >= MAX_FLEES) {
+              surrender();
+              return;
+            }
+            // Timer de abandono — se cursor sair, volta para casa
+            abandonTimer = setTimeout(returnHome, 2800);
+          }
+
+          function returnHome() {
+            if (tired || !prey) return;
+            document.removeEventListener("mousemove", onMove);
+            prey.style.transition =
+              "left 1.4s ease,top 1.4s ease,opacity 1s ease";
+            prey.style.left = originHome.x + "px";
+            prey.style.top = originHome.y + "px";
+            setTimeout(function () {
+              prey.style.opacity = "0";
+              setTimeout(function () {
+                if (prey) {
+                  prey.remove();
+                  prey = null;
+                }
+                origin.style.visibility = "visible";
+                fleeCount = 0;
+              }, 650);
+            }, 1400);
+          }
+
+          function surrender() {
+            tired = true;
+            clearTimeout(abandonTimer);
+            document.removeEventListener("mousemove", onMove);
+            setTimeout(function () {
+              prey.style.transition =
+                "left 1.8s ease,top 1.8s ease,color 1.2s ease,text-shadow 1.2s ease,transform 1.2s ease";
+              prey.style.color = "rgba(200,169,84,1)";
+              prey.style.textShadow = "0 0 24px rgba(200,169,84,0.8)";
+              prey.style.transform = "scale(1.2)";
+              prey.style.cursor = "pointer";
+              prey.style.pointerEvents = "auto";
+              prey.addEventListener("click", function () {
+                window.oaFoundLetter && window.oaFoundLetter("R");
+              });
+            }, 350);
+          }
+
+          function onMove(e) {
+            if (tired || !preyPos) return;
+            if (Math.hypot(e.clientX - preyPos.x, e.clientY - preyPos.y) < 90) {
+              flee(e.clientX, e.clientY);
+            }
+          }
+
+          origin.addEventListener("mouseenter", spawnPrey, { once: true });
+        });
+      })();
+    </script>
+
+    <!-- ── NOTA DE RODAPÉ ──────────────────────────────────────────────── -->
+    <aside
+      id="fn-cap-4"
+      style="
+        font-family: &quot;JetBrains Mono&quot;, monospace;
+        font-size: 0.595rem;
+        line-height: 1.95;
+        color: rgba(255, 255, 255, 0.22);
+        border-left: 1px solid rgba(210, 38, 38, 0.18);
+        padding: 1.1rem 1.6rem;
+        max-width: 38rem;
+        margin: 4.5rem auto 0;
+        opacity: 0;
+        transform: translateY(10px);
+        transition:
+          opacity 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 2.4s cubic-bezier(0.16, 1, 0.3, 1);
+        letter-spacing: 0.025em;
+        display: block;
+      "
+    >
+      <span
+        style="
+          display: block;
+          width: 1.8rem;
+          height: 1px;
+          background: rgba(210, 38, 38, 0.22);
+          margin-bottom: 0.8rem;
+        "
+      ></span
+      >A outra parte não tem paciência para eufemismos. Foi ela quem percebeu
+      você primeiro — muito antes das palavras, muito antes das confissões,
+      muito antes desta obra existir. Antes de eu saber que havia algo para
+      perceber. Ela registrou o cheiro específico do teu cabelo no calor da
+      tarde, catalogou sem ser mandada a distância exata entre o teu ombro e o
+      meu quando a gente senta junto. Anotou qual risada vem do fundo e qual
+      fica só na boca — qual você não ensaiou e não controla. Ela não escolhe o
+      que registra. Registra antes de saber que está registrando. Eu ensinei
+      essa parte a se comportar. Mas quando você ri daquele jeito — aquele
+      específico, o que não foi ensaiado — ela se levanta. Afasta a cadeira. Não
+      me pede licença.
+    </aside>
+    <script>
+      (function () {
+        var fn = document.getElementById("fn-cap-4"),
+          fired = false;
+        if (!fn) return;
+        window._fnCap4Reveal = function () {
+          if (fired) return;
+          fired = true;
+          setTimeout(function () {
+            fn.style.opacity = "1";
+            fn.style.transform = "translateY(0)";
+          }, 1200);
+        };
+        window.addEventListener("scroll", function () {
+          if (fired) return;
+          var t = document.documentElement.scrollHeight - window.innerHeight;
+          if (t > 0 && window.scrollY / t > 0.85) {
+            fired = true;
+            fn.style.opacity = "1";
+            fn.style.transform = "translateY(0)";
+          }
+        });
+      })();
+    </script>
+    <!-- ══ COLETOR DE FRAGMENTOS ═══════════════════════════════════════════ -->
+    <style>
+      @keyframes prey-tremble {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        12% {
+          transform: translate(-4px, 2px) rotate(-0.5deg);
+        }
+        24% {
+          transform: translate(5px, -3px) rotate(0.45deg);
+        }
+        36% {
+          transform: translate(-5px, 2px) rotate(-0.4deg);
+        }
+        48% {
+          transform: translate(5px, -2px) rotate(0.35deg);
+        }
+        62% {
+          transform: translate(-3px, 3px) rotate(-0.25deg);
+        }
+        76% {
+          transform: translate(3px, -2px) rotate(0.18deg);
+        }
+        88% {
+          transform: translate(-2px, 1px) rotate(-0.1deg);
+        }
+        100% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+      }
+      @keyframes oLetterFlash {
+        0% {
+          opacity: 0;
+          transform: translateY(14px) scale(0.65);
+        }
+        18% {
+          opacity: 1;
+          transform: translateY(0) scale(1.1);
+        }
+        62% {
+          opacity: 0.9;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-12px) scale(1.05);
+        }
+      }
+      #oa-glyph {
+        position: fixed;
+        bottom: 5rem;
+        right: 1.6rem;
+        z-index: 500;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: rgba(200, 169, 84, 0.42);
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 2s ease;
+        letter-spacing: 0.2em;
+        user-select: none;
+        text-shadow: 0 0 9px rgba(200, 169, 84, 0.18);
+        padding: 6px;
+      }
+      #oa-glyph.on {
+        opacity: 1;
+      }
+      #oa-overlay {
+        position: fixed;
+        bottom: 6.5rem;
+        right: 1.2rem;
+        z-index: 499;
+        background: rgba(4, 4, 4, 0.97);
+        border: 1px solid rgba(200, 169, 84, 0.08);
+        padding: 1.3rem 1.7rem 1.1rem;
+        backdrop-filter: blur(18px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.42s ease;
+        min-width: 200px;
+      }
+      #oa-overlay.on {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .oa-lbl {
+        display: block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 7px;
+        letter-spacing: 0.44em;
+        color: rgba(200, 169, 84, 0.28);
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+      }
+      .oa-slots {
+        display: flex;
+        gap: 0.78rem;
+        justify-content: center;
+        align-items: baseline;
+      }
+      .oa-slot {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 1.65rem;
+        line-height: 1;
+        min-width: 1rem;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.07);
+        transition:
+          color 1s ease,
+          text-shadow 1s ease;
+      }
+      .oa-slot.found {
+        color: rgba(200, 169, 84, 0.88);
+        text-shadow: 0 0 14px rgba(200, 169, 84, 0.26);
+      }
+      #oa-done {
+        display: none;
+        margin-top: 1.1rem;
+        text-align: center;
+        border-top: 1px solid rgba(200, 169, 84, 0.07);
+        padding-top: 0.9rem;
+      }
+      #oa-done a {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+        letter-spacing: 0.4em;
+        color: rgba(200, 169, 84, 0.55);
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.4s ease;
+      }
+      #oa-done a:hover {
+        color: rgba(200, 169, 84, 1);
+      }
+      .oa-flash {
+        position: fixed;
+        bottom: 7rem;
+        right: 4rem;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 6rem;
+        font-weight: 300;
+        line-height: 1;
+        color: rgba(200, 169, 84, 0.88);
+        pointer-events: none;
+        z-index: 600;
+        animation: oLetterFlash 3s ease forwards;
+      }
+    </style>
+    <div id="oa-glyph" onclick="oaToggle()">◈</div>
+    <div id="oa-overlay">
+      <span class="oa-lbl">fragmentos encontrados</span>
+      <div class="oa-slots" id="oa-slots"></div>
+      <div id="oa-done"><a href="chave.html">entrar →</a></div>
+    </div>
+    <script>
+      (function () {
+        var K = "oavesso_letters",
+          O = ["A", "B", "E", "I", "R", "T", "Z"];
+        function gF() {
+          try {
+            return JSON.parse(localStorage.getItem(K) || "[]");
+          } catch (e) {
+            return [];
+          }
+        }
+        function sF(a) {
+          localStorage.setItem(K, JSON.stringify(a));
+        }
+        function render() {
+          var f = gF(),
+            s = document.getElementById("oa-slots");
+          if (!s) return;
+          s.innerHTML = "";
+          O.forEach(function (l) {
+            var el = document.createElement("span");
+            el.className = "oa-slot" + (f.indexOf(l) > -1 ? " found" : "");
+            el.textContent = f.indexOf(l) > -1 ? l : "·";
+            s.appendChild(el);
+          });
+          var d = document.getElementById("oa-done");
+          if (d) d.style.display = f.length === 7 ? "block" : "none";
+        }
+        function showG() {
+          var g = document.getElementById("oa-glyph");
+          if (g)
+            setTimeout(function () {
+              g.classList.add("on");
+            }, 400);
+        }
+        window.oaFoundLetter = function (l) {
+          var f = gF();
+          if (f.indexOf(l) > -1) return;
+          f.push(l);
+          sF(f);
+          showG();
+          render();
+          var fl = document.createElement("div");
+          fl.className = "oa-flash";
+          fl.textContent = l;
+          document.body.appendChild(fl);
+          setTimeout(function () {
+            fl.remove();
+          }, 3200);
+        };
+        window.oaToggle = function () {
+          var o = document.getElementById("oa-overlay");
+          if (o) o.classList.toggle("on");
+          render();
+        };
+        document.addEventListener("DOMContentLoaded", function () {
+          render();
+          if (gF().length > 0) showG();
+        });
+      })();
+    </script>
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <script src="oa-fragmentos.js"></script>
+    <script src="constelacao-header.js"></script>
+    <script>
+      /* Variable font weight: peso da fonte responde à proximidade do cursor */
+      (function initVarFontWeight() {
+        var VW_MIN = 200,
+          VW_MAX = 620,
+          VW_RADIUS = 260,
+          VW_LERP = 0.09;
+        var vfEls = [];
+        document.querySelectorAll(".poetic-paragraph p").forEach(function (p) {
+          vfEls.push({ el: p, w: VW_MIN });
+        });
+        var rafId = null;
+        var mouseX = window.innerWidth / 2,
+          mouseY = window.innerHeight / 2;
+        document.addEventListener("mousemove", function (e) {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          if (!rafId) rafId = requestAnimationFrame(applyWeights);
+        });
+        function applyWeights() {
+          rafId = null;
+          vfEls.forEach(function (item) {
+            var parent = item.el.closest(".poetic-paragraph");
+            if (!parent || !parent.classList.contains("reveal")) return;
+            var rect = item.el.getBoundingClientRect();
+            if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+            var cx = rect.left + rect.width * 0.5;
+            var cy = rect.top + rect.height * 0.5;
+            var dist = Math.sqrt(
+              (mouseX - cx) * (mouseX - cx) + (mouseY - cy) * (mouseY - cy),
+            );
+            var t = Math.max(0, 1 - dist / VW_RADIUS);
+            var targetW = VW_MIN + (VW_MAX - VW_MIN) * t * t;
+            item.w += (targetW - item.w) * VW_LERP;
+            item.el.style.fontVariationSettings = "'wght' " + item.w.toFixed(1);
+          });
+        }
+      })();
+    </script>
+    <script>
+      /* Autoplay: inicia o audio no primeiro gesto do usuario em cada capitulo */
+      (function () {
+        window.addEventListener("load", function () {
+          var btn =
+            document.getElementById("btn-audio") ||
+            document.getElementById("soundtrack-toggle");
+          if (!btn) return;
+          function _playing() {
+            if (btn.id === "btn-audio") {
+              var ip = document.getElementById("icon-play");
+              return ip && ip.classList.contains("hidden");
+            }
+            return btn.classList.contains("is-playing");
+          }
+          if (_playing()) return;
+          document.addEventListener(
+            "pointerdown",
+            function oa_auto() {
+              document.removeEventListener("pointerdown", oa_auto, true);
+              if (!_playing()) btn.click();
+            },
+            { capture: true },
+          );
+        });
+      })();
+    </script>
+  </body>
+</html>

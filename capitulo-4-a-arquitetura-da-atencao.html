@@ -1,0 +1,2194 @@
+﻿<!doctype html>
+<html lang="pt-PT" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IV · A Arquitetura da Atenção — O Avesso do Chão</title>
+
+    <!-- Progresso (sobrescreve a cada visita) -->
+    <script>
+      localStorage.setItem(
+        "oavesso_progress",
+        '{"chapter":4,"title":"IV · A Atenção","href":"capitulo-4-a-arquitetura-da-atencao.html"}',
+      );
+    </script>
+    <!-- Jornada (apenas na primeira visita — nunca sobrescrever) -->
+    <script>
+      (function () {
+        var k = "avesso_jornada_cap-4";
+        if (!localStorage.getItem(k)) localStorage.setItem(k, Date.now());
+      })();
+    </script>
+
+    <!-- Google Fonts: Inter Tight, Cormorant Garamond, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@100;200;300;400;500;600&family=JetBrains+Mono:wght@100;200;300;400&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans: ['"Inter Tight"', "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              papel: "#F4F2EC" /* Tom de papel velho leve */,
+              tinta: "#0A0A0A" /* Carvão profundo */,
+              vazamento: "#203140" /* Azul nanquim */,
+              abismo: "#04070A" /* A cor da inundação final */,
+              ember: "#FF6B4A" /* Brasa do Cap III */,
+              amberGlow: "#F59E0B" /* Âmbar da usina escondida */,
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      :root {
+        --transition-lenta: 2.5s cubic-bezier(0.22, 1, 0.36, 1);
+        --tensao: 0;
+        --collapse-intensity: 0;
+        --collapse-drift: 0px;
+        --collapse-fog: 0;
+      }
+
+      /* --- O Corpo (A Página Reativa) --- */
+      body {
+        background-color: #f4f2ec;
+        color: #0a0a0a;
+        overflow-x: hidden;
+        transition:
+          background-color var(--transition-lenta),
+          color var(--transition-lenta),
+          transform 0.2s ease-out;
+      }
+
+      /* O Estado Inundado (Quando a Arquitetura Cede) */
+      body.inundado {
+        background-color: #04070a;
+        color: #e6e6e6;
+      }
+      body.post-detonation {
+        background-color: #010203;
+        color: #b9c4c9;
+      }
+      body.inundado .text-tinta {
+        color: #e6e6e6;
+      }
+      body.inundado .text-vazamento {
+        color: #8faab3;
+      }
+      body.inundado .border-tinta {
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      body.inundado .blueprint-line {
+        opacity: 0 !important;
+      }
+      body.inundado #monitor-hud {
+        border-left-color: rgba(255, 255, 255, 0.15);
+      }
+
+      /* --- Textura de Papel/Ruído --- */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0;
+        background:
+          radial-gradient(
+            circle at 52% 82%,
+            rgba(255, 107, 74, calc(var(--collapse-fog) * 0.18)),
+            transparent 34%
+          ),
+          radial-gradient(
+            circle at 18% 22%,
+            rgba(143, 170, 179, calc(var(--collapse-fog) * 0.18)),
+            transparent 30%
+          ),
+          linear-gradient(
+            180deg,
+            transparent 15%,
+            rgba(4, 7, 10, calc(var(--collapse-fog) * 0.42)) 100%
+          );
+        mix-blend-mode: screen;
+        transition: opacity 1.2s ease;
+      }
+      body.terminal-collapse::before {
+        opacity: 1;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0.04;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.4s steps(1) infinite;
+      }
+      body.inundado::after {
+        opacity: 0.025;
+      }
+      @keyframes grain {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-3%, 2%);
+        }
+        40% {
+          transform: translate(2%, -3%);
+        }
+        60% {
+          transform: translate(-2%, 3%);
+        }
+        80% {
+          transform: translate(3%, -1%);
+        }
+        100% {
+          transform: translate(1%, 2%);
+        }
+      }
+
+      /* --- Linhas Arquiteturais (Blueprint Integrado) --- */
+      .blueprint-line {
+        position: fixed;
+        background: rgba(10, 10, 10, 0.06);
+        z-index: 0;
+        pointer-events: none;
+        transition:
+          opacity 1.5s ease,
+          transform 2s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .v-line-1 {
+        left: 8.33%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+      }
+      .v-line-2 {
+        left: 66.66%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+      }
+      .h-line-1 {
+        top: 15vh;
+        left: 0;
+        right: 0;
+        height: 1px;
+      }
+
+      /* Canvas de Dispersão de Névoa de Tinta */
+      #nevoa-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.85;
+        mix-blend-mode: multiply;
+        transition:
+          opacity var(--transition-lenta),
+          mix-blend-mode 0.1s;
+      }
+      body.inundado #nevoa-canvas {
+        mix-blend-mode: screen;
+        opacity: 0.3;
+      }
+
+      /* Fase 1: silêncio. O sistema segura a respiração antes da causa. */
+      body.nuclear-silence #nevoa-canvas {
+        opacity: 0.12;
+        filter: saturate(0.65) contrast(0.92);
+      }
+      body.nuclear-silence::after {
+        opacity: 0.01;
+      }
+      body.nuclear-silence #monitor-hud {
+        opacity: 0.46;
+        filter: none;
+        transform: translate(0, 0);
+      }
+      body.nuclear-silence #glitch-warning {
+        opacity: 0 !important;
+      }
+      body.nuclear-silence #registo-atomico-card {
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.04),
+          0 18px 60px rgba(0, 0, 0, 0.42);
+      }
+      body.nuclear-silence .on-fire {
+        animation-play-state: paused;
+      }
+
+      /* --- O Monitor (HUD Lateral Integrado) --- */
+      #monitor-hud {
+        position: fixed;
+        right: 4%;
+        top: 25vh;
+        width: 25vw;
+        max-width: 300px;
+        z-index: 10;
+        pointer-events: none;
+        transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        border-left: 1px solid rgba(10, 10, 10, 0.1);
+        padding-left: 1.5rem;
+        mix-blend-mode: normal;
+      }
+
+      .glitch-text {
+        animation: glitch 4s infinite alternate;
+      }
+      @keyframes glitch {
+        0%,
+        95% {
+          transform: translate(0);
+          opacity: 1;
+          filter: blur(0);
+        }
+        96% {
+          transform: translate(-2px, 1px);
+          opacity: 0.8;
+          filter: blur(1.1px);
+        }
+        98% {
+          transform: translate(2px, -1px);
+          opacity: 0.6;
+          filter: blur(1.5px);
+        }
+        100% {
+          transform: translate(0);
+          opacity: 1;
+          filter: blur(0);
+        }
+      }
+
+      /* --- Comportamento dos Parágrafos (Controle e Foco) --- */
+      .poetic-paragraph {
+        max-width: 58ch;
+        border-left: 1.5px solid rgba(10, 10, 10, 0.8);
+        padding-left: 2.5rem;
+        margin-bottom: 5rem;
+        opacity: 0.35;
+        filter: blur(2px);
+        transform: translateY(20px);
+        transition:
+          opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+          border-color 2s ease,
+          color 1.2s ease,
+          text-shadow 1.2s ease,
+          padding-left 2s ease,
+          max-width 2s ease;
+        position: relative;
+      }
+
+      .poetic-paragraph::before {
+        content: attr(data-coord);
+        position: absolute;
+        left: -18px;
+        top: 8px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+        letter-spacing: 0.2em;
+        color: rgba(10, 10, 10, 0.3);
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        transition:
+          opacity 1s ease,
+          color 1s ease;
+      }
+
+      /* Foco Ativo e Cristalino */
+      .poetic-paragraph.reveal {
+        opacity: 1 !important;
+        filter: none !important;
+        transform: translateY(0);
+      }
+
+      /* --- Estética "Luz de Usina" (Efeito de respiração sutil) --- */
+      .breathing-text {
+        animation: breathe 4s infinite ease-in-out;
+        color: #6b7280; /* Começa em cinza-chumbo */
+      }
+      @keyframes breathe {
+        0%,
+        100% {
+          opacity: 0.8;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* Revelação Âmbar Dourada ao focar na Secção 1 */
+      .poetic-paragraph.reveal.breathing-text {
+        color: #f59e0b !important;
+        text-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+      }
+
+      /* Fio Condutor (Linha Fina Lateral no primeiro bloco) */
+      .fio-condutor-container {
+        position: relative;
+      }
+      .fio-condutor {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: rgba(10, 10, 10, 0.15);
+        transition:
+          background 1.5s var(--transition-lenta),
+          box-shadow 1.5s var(--transition-lenta);
+      }
+      .fio-condutor.glow {
+        background: #f59e0b !important;
+        box-shadow:
+          0 0 15px #f59e0b,
+          0 0 30px #f59e0b;
+      }
+
+      /* O Rompimento da Estrutura */
+      body.inundado .poetic-paragraph.force-inundation {
+        border-left-color: transparent;
+        padding-left: 0;
+        max-width: 85%;
+        text-align: center;
+      }
+      body.inundado .poetic-paragraph::before {
+        opacity: 0;
+      }
+
+      /* --- Animação do Texto Em Chamas --- */
+      @keyframes chamaFlicker {
+        0%,
+        100% {
+          text-shadow:
+            0 -2px 4px rgba(239, 108, 84, 0.9),
+            0 -4px 10px rgba(255, 107, 74, 0.6),
+            0 -10px 20px rgba(239, 176, 87, 0.4),
+            0 2px 4px rgba(0, 0, 0, 0.9);
+          color: #ffffff;
+        }
+        50% {
+          text-shadow:
+            0 -3px 6px rgba(239, 108, 84, 1),
+            0 -6px 15px rgba(255, 107, 74, 0.8),
+            0 -15px 30px rgba(239, 176, 87, 0.6),
+            0 2px 4px rgba(0, 0, 0, 0.9);
+          color: #fffceb;
+          transform: scale(1.015);
+        }
+      }
+
+      .on-fire {
+        transition: all 1.5s ease-in-out;
+      }
+
+      body.inundado .on-fire {
+        animation: chamaFlicker 1.8s infinite alternate ease-in-out;
+        color: #ffffff !important;
+        filter: drop-shadow(0px 0px 4px rgba(255, 107, 74, 0.3));
+      }
+
+      /* --- Animação: Dois Movimentos --- */
+      .dois-mov-1 {
+        transition:
+          transform 2s cubic-bezier(0.25, 1, 0.5, 1),
+          opacity 2s;
+      }
+      .dois-mov-3 {
+        transition:
+          transform 2s cubic-bezier(0.25, 1, 0.5, 1),
+          opacity 2s;
+      }
+
+      /* Quando focado, separa fisicamente os extremos */
+      .reveal.poetic-paragraph .dois-mov-1 {
+        transform: translateX(-20px);
+        opacity: 0.7;
+      }
+      .reveal.poetic-paragraph .dois-mov-3 {
+        transform: translateX(20px);
+        opacity: 0.7;
+      }
+
+      /* --- Cartão de Registo Atómico Adaptativo --- */
+      #registo-atomico-card {
+        transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      #registo-atomico-card.atomic-shake {
+        animation: atomicShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      }
+      @keyframes atomicShake {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        25% {
+          transform: translate(-3px, 1px);
+        }
+        50% {
+          transform: translate(3px, -2px);
+        }
+        75% {
+          transform: translate(-2px, -1px);
+        }
+      }
+
+      body.inundado #registo-atomico-card {
+        background-color: rgba(18, 22, 28, 0.85) !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      body.inundado #registo-atomico-card span {
+        color: #e6e6e6 !important;
+      }
+
+      body.inundado #registo-atomico-card .titulo-atomico {
+        color: rgba(255, 255, 255, 0.4) !important;
+      }
+
+      body.inundado #registo-atomico-card .destaque-combustao {
+        color: #ff6b4a !important;
+        text-shadow: 0 0 15px rgba(255, 107, 74, 0.4);
+        font-weight: 400;
+      }
+
+      /* --- Interações Especiais --- */
+      .isolamento-poetico {
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        line-height: 1.4;
+        max-width: 90% !important;
+        border-left: none !important;
+        padding-left: 0 !important;
+        text-align: center;
+        margin: 10rem auto;
+        opacity: 0.8;
+      }
+
+      .frase-guardada .letra-organica {
+        display: inline-block;
+        transition:
+          transform 1.8s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 1s ease;
+      }
+      .palavra-gatilho {
+        cursor: pointer;
+        position: relative;
+        border-bottom: 1px dotted rgba(10, 10, 10, 0.5);
+      }
+      body.inundado .palavra-gatilho {
+        border-bottom-color: rgba(255, 255, 255, 0.3);
+      }
+
+      .drifted {
+        transform: translate(var(--rx), var(--ry)) rotate(var(--rot))
+          scale(var(--s));
+        opacity: 0.4;
+      }
+
+      /* --- Órbita (Escultura) --- */
+      #orbit-container {
+        width: 100%;
+        height: 350px;
+        position: relative;
+        margin: 6rem 0;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition:
+          opacity 1.5s ease,
+          transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .orbit-word {
+        position: absolute;
+        font-family: "Inter Tight", sans-serif;
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(10, 10, 10, 0.6);
+        transition: color 1.5s;
+      }
+      body.inundado .orbit-word {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .orbit-ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 0.5px solid rgba(10, 10, 10, 0.1);
+        transition: border-color 1.5s;
+      }
+      body.inundado .orbit-ring {
+        border-color: rgba(255, 255, 255, 0.05);
+      }
+
+      /* Ruptura final: o cenário colapsa, a frase permanece legível. */
+      body.terminal-collapse {
+        background-color: #020407;
+      }
+      body.terminal-collapse #nevoa-canvas {
+        opacity: calc(0.35 + var(--collapse-fog) * 0.38);
+        filter: contrast(calc(1 + var(--collapse-fog) * 0.7))
+          saturate(calc(1 + var(--collapse-fog) * 0.45));
+      }
+      body.terminal-collapse::after {
+        opacity: calc(0.03 + var(--collapse-fog) * 0.04);
+      }
+      body.terminal-collapse.collapse-lines .blueprint-line {
+        opacity: calc(var(--collapse-fog) * 0.22) !important;
+        background: rgba(255, 255, 255, 0.18);
+        box-shadow: 0 0 28px rgba(143, 170, 179, 0.28);
+      }
+      body.terminal-collapse.collapse-lines #bp-v1 {
+        transform: translateX(calc(var(--collapse-drift) * -1.9));
+      }
+      body.terminal-collapse.collapse-lines #bp-v2 {
+        transform: translateX(calc(var(--collapse-drift) * 2.2));
+      }
+      body.terminal-collapse.collapse-lines #bp-h1 {
+        transform: translateY(calc(var(--collapse-drift) * 1.25));
+      }
+      body.terminal-collapse.collapse-hud #monitor-hud {
+        opacity: calc(0.82 - var(--collapse-fog) * 0.38);
+        transform: translate(
+            calc(var(--collapse-drift) * 0.75),
+            calc(var(--collapse-drift) * -0.25)
+          )
+          rotate(0.45deg);
+      }
+      body.terminal-collapse #main-header {
+        opacity: calc(1 - var(--collapse-fog) * 0.55);
+        transform: translateY(calc(var(--collapse-drift) * -0.65));
+      }
+      body.terminal-collapse #main-footer {
+        opacity: calc(0.8 - var(--collapse-fog) * 0.4);
+        transform: translateY(calc(var(--collapse-drift) * 0.85));
+      }
+      body.terminal-collapse.collapse-orbit #orbit-container {
+        opacity: 0.35;
+        transform: translate(96px, -36px) rotate(7deg);
+      }
+      body.terminal-collapse.collapse-structure #main-header {
+        opacity: 0.22;
+        transform: translateY(calc(var(--collapse-drift) * -1.1));
+      }
+      body.terminal-collapse.collapse-structure #main-footer {
+        opacity: 0.34;
+        transform: translateY(calc(var(--collapse-drift) * 1.35));
+      }
+      body.terminal-collapse.collapse-secondary
+        .poetic-paragraph:not(#trigger-nuclear) {
+        opacity: 0.72 !important;
+      }
+      body.terminal-collapse .poetic-paragraph {
+        text-shadow: 0 0 calc(6px + var(--collapse-fog) * 10px)
+          rgba(230, 230, 230, 0.08);
+      }
+      body.terminal-collapse.collapse-paragraphs
+        .poetic-paragraph.force-inundation {
+        opacity: 0.94 !important;
+        filter: none !important;
+        transform: translate3d(
+          var(--orbit-loss-x, 0),
+          var(--orbit-loss-y, 0),
+          0
+        ) !important;
+      }
+      body.terminal-collapse.collapse-paragraphs #trigger-nuclear {
+        opacity: 1 !important;
+        transform: translate3d(0, 0, 0) !important;
+      }
+      body.terminal-collapse #registo-atomico-card {
+        box-shadow:
+          0 0 calc(20px + var(--collapse-fog) * 35px) rgba(255, 107, 74, 0.18),
+          0 32px 80px rgba(0, 0, 0, 0.72);
+      }
+      body.terminal-collapse.collapse-environment::before {
+        opacity: 1;
+      }
+      body.terminal-collapse.collapse-environment #nevoa-canvas {
+        opacity: 0.78;
+      }
+      body.terminal-collapse.collapse-environment::after {
+        opacity: 0.075;
+      }
+
+      @media (max-width: 768px) {
+        body.inundado .poetic-paragraph.force-inundation {
+          max-width: 100%;
+          text-align: left;
+        }
+
+        body.terminal-collapse .poetic-paragraph.force-inundation {
+          transform: translate3d(0, 0, 0) !important;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #registo-atomico-card.atomic-shake {
+          animation: none;
+        }
+        .blueprint-line,
+        #monitor-hud,
+        .poetic-paragraph,
+        #orbit-container {
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* ===== FOCUS BLUR — A ATENÇÃO QUE ESTREITA O CAMPO ===== */
+      /* Quando um parágrafo está em foco, os outros revelados desvanecem */
+      body:not(.terminal-collapse)
+        main.has-focus
+        .poetic-paragraph.reveal:not(.para-focus) {
+        opacity: 0.26 !important;
+        filter: blur(1.3px) !important;
+        transition:
+          opacity 1.9s ease,
+          filter 1.9s ease !important;
+      }
+      /* No estado inundado: desvanecem menos (menos contraste necessário no escuro) */
+      body.inundado main.has-focus .poetic-paragraph.reveal:not(.para-focus) {
+        opacity: 0.22 !important;
+        filter: blur(1px) !important;
+        transition:
+          opacity 1.9s ease,
+          filter 1.9s ease !important;
+      }
+      /* O parágrafo em foco respira com mais presença */
+      main.has-focus .poetic-paragraph.para-focus {
+        transition:
+          opacity 0.65s ease,
+          filter 0.65s ease !important;
+      }
+
+      /* ============================================================
+         LEGIBILIDADE EM MODO ESCURO — LUZ DE VELA + CURTO-CIRCUITO
+         Tailwind text-tinta/{opacity} não é sobrescrito pela regra
+         body.inundado .text-tinta; corrigido aqui via seletor direto.
+         ============================================================ */
+
+      /* Base: texto legível nas seções de inundação */
+      body.inundado .poetic-paragraph.force-inundation > p.font-sans {
+        color: rgba(238, 230, 215, 0.92) !important;
+      }
+
+      /* Luz de Vela — tremor suave e orgânico */
+      @keyframes candleGlow {
+        0%,
+        100% {
+          text-shadow:
+            0 0 6px rgba(245, 158, 11, 0.08),
+            0 0 14px rgba(245, 158, 11, 0.04);
+        }
+        28% {
+          text-shadow:
+            0 0 11px rgba(245, 158, 11, 0.14),
+            0 0 24px rgba(245, 158, 11, 0.06);
+        }
+        65% {
+          text-shadow:
+            0 0 4px rgba(245, 158, 11, 0.05),
+            0 0 8px rgba(245, 158, 11, 0.02);
+        }
+      }
+
+      /* Curto-Circuito — relâmpago elétrico periódico */
+      @keyframes shortCircuit {
+        0%,
+        72%,
+        100% {
+          text-shadow: 0 0 6px rgba(245, 158, 11, 0.08);
+          filter: brightness(1);
+        }
+        74% {
+          text-shadow:
+            0 0 50px rgba(255, 235, 160, 1),
+            0 0 110px rgba(245, 158, 11, 0.75);
+          filter: brightness(2.2);
+        }
+        75.5% {
+          text-shadow: none;
+          filter: brightness(0.22);
+        }
+        77.5% {
+          text-shadow:
+            0 0 32px rgba(255, 205, 110, 0.9),
+            0 0 65px rgba(245, 158, 11, 0.5);
+          filter: brightness(1.7);
+        }
+        80% {
+          text-shadow: 0 0 6px rgba(245, 158, 11, 0.08);
+          filter: brightness(1);
+        }
+      }
+
+      /* P.01.S3 ("A gente já teve tantos desvios") → curto-circuito */
+      body.inundado .poetic-paragraph.force-inundation.sc-flash > p.font-sans {
+        animation: shortCircuit 15s ease-in-out infinite;
+        animation-delay: var(--sc-delay, 0s);
+      }
+      /* P.01b.S3 e P.02.S3 → luz de vela */
+      body.inundado
+        .poetic-paragraph.force-inundation:not(.sc-flash):not(.on-fire)
+        > p.font-sans {
+        animation: candleGlow 4.2s ease-in-out infinite;
+        animation-delay: var(--candle-delay, 0s);
+      }
+
+      /* ============================================================
+         FOOTER — sempre legível, nunca deslocado no colapso final
+         ============================================================ */
+      body.inundado #main-footer {
+        border-color: rgba(255, 255, 255, 0.06) !important;
+      }
+      body.inundado #main-footer a {
+        color: rgba(200, 193, 180, 0.6) !important;
+        transition: color 2s ease;
+      }
+      body.inundado #main-footer a:hover {
+        color: rgba(245, 158, 11, 0.85) !important;
+      }
+      /* Ainda legível e fixo durante o colapso atmosférico final */
+      body.terminal-collapse #main-footer {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      /* ============================================================
+         MANCHA DE TINTA — INFILTRAÇÃO DO CANTO DIREITO INFERIOR
+         ============================================================ */
+      #ink-infiltracao {
+        position: fixed;
+        bottom: -14%;
+        right: -14%;
+        width: 0;
+        height: 0;
+        background: radial-gradient(
+          ellipse at 72% 72%,
+          rgba(5, 7, 12, 0.97) 0%,
+          rgba(8, 12, 20, 0.86) 22%,
+          rgba(12, 17, 27, 0.67) 44%,
+          rgba(18, 23, 36, 0.35) 66%,
+          rgba(22, 28, 42, 0.12) 82%,
+          transparent 100%
+        );
+        border-radius: 55% 45% 62% 38% / 44% 56% 52% 48%;
+        transition:
+          width 14s cubic-bezier(0.06, 0.85, 0.14, 1),
+          height 14s cubic-bezier(0.06, 0.85, 0.14, 1);
+        z-index: 0;
+        pointer-events: none;
+        animation: manchaMorph 22s ease-in-out infinite;
+      }
+      @keyframes manchaMorph {
+        0%,
+        100% {
+          border-radius: 55% 45% 62% 38% / 44% 56% 52% 48%;
+        }
+        22% {
+          border-radius: 42% 58% 50% 70% / 62% 38% 66% 34%;
+        }
+        48% {
+          border-radius: 68% 32% 44% 56% / 48% 66% 34% 62%;
+        }
+        72% {
+          border-radius: 36% 64% 58% 42% / 68% 32% 56% 44%;
+        }
+      }
+      body.inundado #ink-infiltracao {
+        width: 75vw;
+        height: 75vh;
+      }
+
+      /* ===== OPÇÃO B — BORDAS SELVAGENS + SEGUNDA MANCHA + PULSO NUCLEAR ===== */
+
+      /* Filtro de borda fraturada aplicado às manchas */
+      #ink-infiltracao,
+      #ink-infiltracao-2 {
+        filter: url(#stain-wild);
+      }
+
+      /* Pulso crimson no evento nuclear — pseudo-elemento */
+      #ink-infiltracao::before {
+        content: "";
+        position: absolute;
+        inset: -8%;
+        border-radius: inherit;
+        background: radial-gradient(
+          ellipse at 58% 58%,
+          rgba(210, 18, 18, 0.82) 0%,
+          rgba(120, 8, 8, 0.55) 25%,
+          rgba(40, 5, 5, 0.25) 50%,
+          transparent 75%
+        );
+        opacity: 0;
+        transition: opacity 0.42s ease;
+        pointer-events: none;
+      }
+      #ink-infiltracao.nuclear-pulse::before {
+        opacity: 1;
+      }
+      #ink-infiltracao.nuclear-pulse-fade::before {
+        opacity: 0;
+        transition: opacity 2s ease;
+      }
+
+      /* Segunda mancha — canto superior esquerdo, ativa no terminal-collapse */
+      #ink-infiltracao-2 {
+        position: fixed;
+        top: -14%;
+        left: -14%;
+        width: 0;
+        height: 0;
+        background: radial-gradient(
+          ellipse at 30% 30%,
+          rgba(6, 8, 14, 0.93) 0%,
+          rgba(10, 14, 22, 0.74) 24%,
+          rgba(14, 19, 30, 0.44) 50%,
+          rgba(18, 24, 36, 0.16) 72%,
+          transparent 100%
+        );
+        border-radius: 48% 52% 42% 58% / 55% 45% 62% 38%;
+        transition:
+          width 10s cubic-bezier(0.06, 0.85, 0.14, 1),
+          height 10s cubic-bezier(0.06, 0.85, 0.14, 1);
+        z-index: 0;
+        pointer-events: none;
+        animation: manchaMorph2 28s ease-in-out infinite;
+      }
+      @keyframes manchaMorph2 {
+        0%,
+        100% {
+          border-radius: 48% 52% 42% 58% / 55% 45% 62% 38%;
+        }
+        28% {
+          border-radius: 62% 38% 56% 44% / 40% 60% 44% 56%;
+        }
+        58% {
+          border-radius: 38% 62% 64% 36% / 60% 40% 36% 64%;
+        }
+      }
+      body.terminal-collapse #ink-infiltracao-2 {
+        width: 48vw;
+        height: 48vh;
+      }
+
+      /* ============================================================
+         GOOEY INK — gotas viscosas que se fundem organicamente
+         ============================================================ */
+      #gooey-ink-wrapper {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 4.5s ease;
+        mix-blend-mode: screen;
+        /* O filtro SVG é aplicado via JS após confirmação de suporte */
+      }
+      body.inundado #gooey-ink-wrapper {
+        opacity: 1;
+      }
+      #gooey-ink-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body class="relative">
+    <!-- SVG Filter Definitions -->
+    <svg
+      style="position: absolute; width: 0; height: 0; overflow: hidden"
+      aria-hidden="true"
+    >
+      <defs>
+        <!-- Gooey ink blobs -->
+        <filter
+          id="gooey-filter"
+          x="-30%"
+          y="-30%"
+          width="160%"
+          height="160%"
+          color-interpolation-filters="sRGB"
+        >
+          <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur" />
+          <feColorMatrix
+            in="blur"
+            type="matrix"
+            values="1 0 0 0 0
+                    0 1 0 0 0
+                    0 0 1 0 0
+                    0 0 0 21 -8"
+            result="goo"
+          />
+          <feComposite in="SourceGraphic" in2="goo" operator="in" />
+        </filter>
+        <!-- Selvagem: bordas fraturadas/rasgadas nas manchas de infiltração -->
+        <filter id="stain-wild" x="-18%" y="-18%" width="136%" height="136%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.022 0.038"
+            numOctaves="5"
+            seed="13"
+            result="noise"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale="70"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- Mancha Principal — canto inferior direito -->
+    <div id="ink-infiltracao" aria-hidden="true"></div>
+    <!-- Segunda Mancha — canto superior esquerdo, ativa no colapso -->
+    <div id="ink-infiltracao-2" aria-hidden="true"></div>
+
+    <!-- Gotas de Nanquim Viscoso (Gooey Canvas) -->
+    <div id="gooey-ink-wrapper" aria-hidden="true">
+      <canvas id="gooey-ink-canvas"></canvas>
+    </div>
+
+    <!-- Navigation Estilo Cap 3 -->
+    <a
+      href="sumario.html"
+      class="fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-tinta/5 backdrop-blur-md border border-tinta/10 text-[10px] font-mono tracking-widest text-tinta/60 hover:text-tinta hover:bg-tinta/10 transition-all duration-500 uppercase"
+      id="nav-btn"
+    >
+      ← Sumário
+    </a>
+
+    <!-- Blueprint Físico (Linhas que cruzam a tela) -->
+    <div class="blueprint-line v-line-1" id="bp-v1"></div>
+    <div class="blueprint-line v-line-2 hidden lg:block" id="bp-v2"></div>
+    <div class="blueprint-line h-line-1" id="bp-h1"></div>
+
+    <!-- Canvas de Fluido Viscoso -->
+    <canvas id="nevoa-canvas"></canvas>
+
+    <!-- O Monitor Integrado (Sem caixa, fundido na página) -->
+    <div
+      id="monitor-hud"
+      class="hidden lg:flex flex-col gap-8 font-mono text-[9px] uppercase tracking-widest text-tinta/70"
+    >
+      <div>
+        <div class="mb-1 text-vazamento/60">// MONITOR DE ESPECTRO</div>
+        <div class="w-full h-px bg-tinta/10 mb-2 relative">
+          <div
+            id="tension-line"
+            class="absolute top-0 left-0 h-full bg-tinta transition-all duration-500"
+            style="width: 0%"
+          ></div>
+        </div>
+        <div class="flex justify-between text-[8px] opacity-60">
+          <span>SYS.VER 4.0</span>
+          <span id="lbl-tension">TENSÃO: 0%</span>
+        </div>
+      </div>
+
+      <div class="relative h-12 w-full">
+        <svg
+          class="w-full h-full overflow-visible"
+          viewBox="0 0 100 20"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0,10 L100,10"
+            stroke="currentColor"
+            stroke-width="0.3"
+            stroke-dasharray="2 2"
+            opacity="0.3"
+          ></path>
+          <path
+            id="osc-wave"
+            d="M0,10 Q25,10 50,10 T100,10"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="0.8"
+            class="transition-all duration-300"
+          ></path>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 text-[8px]">
+        <div>
+          <span class="block opacity-40 mb-1">INTEGRIDADE</span>
+          <span id="lbl-int" class="text-tinta">100% [ESTÁVEL]</span>
+        </div>
+        <div>
+          <span class="block opacity-40 mb-1">FREQUÊNCIA</span>
+          <span id="lbl-freq">52.00 HZ</span>
+        </div>
+      </div>
+
+      <div
+        id="glitch-warning"
+        class="text-[8px] text-red-600/80 mt-4 glitch-text opacity-0 transition-opacity leading-relaxed"
+      >
+        !!! AVISO: ESTRUTURA COMPROMETIDA !!!<br />
+        FALHA DE CONTENÇÃO DETETADA
+      </div>
+    </div>
+
+    <!-- Botão de Áudio Inferior (Estilo Cap 3) -->
+    <div
+      class="fixed bottom-6 right-6 z-50 flex items-center space-x-3 bg-tinta/5 backdrop-blur-md border border-tinta/10 py-2 px-4 rounded-full transition-all hover:bg-tinta/10"
+      id="audio-container"
+    >
+      <span
+        class="text-[9px] font-mono tracking-[0.2em] text-tinta/70 uppercase"
+        >Atenção</span
+      >
+      <button
+        id="btn-audio"
+        class="w-8 h-8 rounded-full border border-tinta/20 hover:border-vazamento/50 flex items-center justify-center transition-all duration-300 focus:outline-none group"
+      >
+        <svg
+          id="icon-play"
+          class="w-3.5 h-3.5 text-tinta/60 fill-current group-hover:text-tinta transition-colors"
+          viewBox="0 0 24 24"
+        >
+          <path d="M8 5v14l11-7z" />
+        </svg>
+        <svg
+          id="icon-pause"
+          class="w-3.5 h-3.5 text-vazamento fill-current hidden"
+          viewBox="0 0 24 24"
+        >
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Cabeçalho Principal -->
+    <header
+      id="main-header"
+      class="min-h-[90vh] flex flex-col justify-center px-6 lg:px-[8.33%] relative z-10 pt-20 transition-transform duration-1000 ease-out"
+    >
+      <div class="max-w-4xl">
+        <span
+          class="font-mono text-[9px] tracking-[0.4em] text-tinta/50 uppercase block mb-6 reveal-init"
+        >
+          capítulo iv · o avesso do chão
+        </span>
+        <h1
+          class="text-5xl md:text-7xl lg:text-8xl font-sans font-light text-tinta leading-[1.05] tracking-tight mb-8 reveal-init"
+          style="transition-delay: 200ms"
+        >
+          a arquitetura<br />da
+          <span class="font-serif italic text-vazamento">atenção</span>
+        </h1>
+        <p
+          class="font-serif italic text-xl md:text-2xl text-tinta/70 max-w-2xl reveal-init"
+          style="transition-delay: 400ms"
+        >
+          "Existem duas coisas em mim: uma parte que chegou depois — e uma força
+          que não nasceu para obedecer."
+        </p>
+      </div>
+    </header>
+
+    <!-- Corpo do Livro -->
+    <main class="w-full relative z-10 pb-64 px-6 lg:px-[12%]">
+      <!-- Secção 1 (Envelopada com o Fio Condutor Dinâmico) -->
+      <div class="max-w-3xl space-y-24 fio-condutor-container">
+        <!-- Fio Condutor Físico -->
+        <div id="fio-azul" class="fio-condutor"></div>
+
+        <div class="poetic-paragraph breathing-text" data-coord="P.01.S1">
+          <p class="font-sans font-light text-lg md:text-xl leading-loose">
+            Alguns silêncios descansam, são calmos e mansos.<br />
+            Outros permanecem acordados.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph breathing-text" data-coord="P.02.S1">
+          <p class="font-sans font-light text-lg md:text-xl leading-loose">
+            No fundo desse silêncio aceso, há algo que tenta sobreviver e se
+            alimenta das palavras. Não escrevo porque entendo o que sinto.
+            Escrevo porque existe uma coisa viva aqui dentro que se recusa a
+            permanecer sem linguagem.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph breathing-text" data-coord="P.03.S1">
+          <p class="font-serif italic text-2xl md:text-3xl leading-relaxed">
+            Isso não me consultou. Não esperou que eu estivesse pronto.
+          </p>
+        </div>
+
+        <div
+          class="poetic-paragraph breathing-text"
+          data-coord="P.04.S1"
+          id="trigger-usina"
+        >
+          <p class="font-sans font-light text-lg md:text-xl leading-loose">
+            Durante muito tempo achei que estava escrevendo sobre você. Hoje
+            desconfio que estou escrevendo sobre o estrago que você causou na
+            arquitetura da minha atenção. É como uma
+            <span
+              class="text-tinta font-semibold transition-all duration-700"
+              id="palavra-usina"
+              >usina</span
+            >
+            escondida atrás da montanha. Você não vê a usina, mas vê a
+            <span
+              class="text-tinta font-semibold transition-all duration-700"
+              id="palavra-cidade"
+              >cidade inteira iluminada</span
+            >.
+          </p>
+        </div>
+
+        <!-- Efeito 'Guardadas' -->
+        <div class="poetic-paragraph" data-coord="P.05.S1">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose frase-guardada"
+            id="sentence-container"
+          >
+            Pequenas observações que foram sendo guardadas em algum lugar que eu
+            não administro.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.06.S1">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            Eu tinha outras urgências. Outras tarefas. Outras prioridades. Mas
+            voltava para essa corrente invisível que me puxava de volta para a
+            mesma margem. Existe algo profundamente humilhante em admitir isso —
+            e profundamente libertador também. Porque a força não respeita a
+            hierarquia das coisas importantes. Ela escolhe. E depois reorganiza
+            o mundo inteiro ao redor da escolha.
+          </p>
+        </div>
+      </div>
+
+      <div class="w-full h-px bg-tinta/10 my-32 max-w-sm"></div>
+
+      <!-- Secção 2 -->
+      <div class="max-w-3xl space-y-24">
+        <div class="poetic-paragraph" data-coord="P.01.S2">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            Existe uma parte de mim que chegou depois.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.02.S2">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            Que recebe o que o corpo já sabe e tenta transformar em linguagem.
+            Que observa, anota, mede distâncias, organiza palavras. Constrói
+            teorias, faz mapas, nomeia territorios. Acredita, com a fé que lhe
+            foi ensinada, que compreender é uma forma de proteção.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.03.S2">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            E existe outra parte. Mais antiga. Que não chegou — que simplesmente
+            sempre esteve.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.04.S2">
+          <p
+            class="font-serif italic text-2xl md:text-3xl text-vazamento leading-relaxed"
+          >
+            Há uma região que não aceita cartografia. Uma parte que não nasceu
+            para ser entendida.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.05.S2">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            Toda vez que a parte que chegou depois tenta desenhar o mapa, o
+            território muda de lugar. Não por esquiva — por natureza. A
+            cartografia pressupõe que o território espera. Este não espera.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.06.S2">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            Ela não procura significado. Ela apenas sabe. Como a água sabe
+            descer, como a chama sabe queimar, como raízes sabem procurar água
+            no escuro. Como pássaros encontram o caminho de volta sem consultar
+            mapas. Ela apenas sabe.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.06b.S2">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            Durante muito tempo pensei que desejo fosse movimento. Hoje suspeito
+            que seja permanência. Algumas presenças vão embora e mesmo assim
+            continuam alterando a paisagem. O que ficou não foi o encontro — foi
+            a forma como o encontro reorganizou tudo ao redor.
+          </p>
+        </div>
+
+        <!-- Animação da Órbita / Escultura -->
+        <div class="w-full relative" id="orbit-container">
+          <!-- Anéis SVG gerados via JS -->
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.07.S2">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            Essa é a mesma força que faz escultores tirarem deusas de blocos de
+            mármore. Não pergunta se faz sentido. Não pergunta qual será o
+            preço. Não cria apenas atração. Cria órbita.
+          </p>
+        </div>
+
+        <!-- A Tese Isolada -->
+        <div
+          class="poetic-paragraph isolamento-poetico font-serif italic text-vazamento"
+        >
+          "O desejo é apenas a sombra que essa força projeta quando atravessa um
+          corpo humano."
+        </div>
+
+        <!-- ANIMAÇÃO DE DRIFT: Dois movimentos. Um só corpo. Zero acordo. -->
+        <div
+          class="poetic-paragraph border-l-0 pl-0 max-w-full text-center flex flex-col items-center justify-center space-y-3 py-10"
+          data-coord="P.08.S2"
+        >
+          <span
+            class="dois-mov-1 font-serif italic text-xl md:text-2xl text-vazamento block select-none"
+            >Dois movimentos.</span
+          >
+          <span
+            class="dois-mov-2 font-serif italic text-2xl md:text-4xl text-tinta font-semibold block my-1 tracking-wide select-none"
+            >Um só corpo.</span
+          >
+          <span
+            class="dois-mov-3 font-serif italic text-xl md:text-2xl text-vazamento block select-none"
+            >Zero acordo.</span
+          >
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.09.S2">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            A parte que chegou depois procura explicações sofisticadas para
+            acontecimentos simples. Quando algo a atravessa, ela procura um
+            nome. Quando algo a assusta, ela procura uma teoria. Acredita que
+            compreender é uma forma de proteção.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.09b.S2">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            Às vezes talvez seja. Às vezes não.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.09c.S2">
+          <p
+            class="font-sans font-light text-lg md:text-xl text-tinta/90 leading-loose"
+          >
+            Porque existe outra presença habitando a mesma casa. Mais antiga,
+            mais silenciosa, mais selvagem. Ela não pergunta o que algo
+            significa — pergunta apenas se é verdadeiro. E a verdade raramente
+            chega organizada. Chega em fragmentos. Num olhar. Num intervalo.
+            Numa mudança quase imperceptível da atmosfera.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph" data-coord="P.10.S2">
+          <p
+            class="font-serif italic text-2xl md:text-3xl text-vazamento leading-relaxed"
+          >
+            Primeiro o corpo percebe.<br />
+            Depois a consciência tenta alcançá-lo.<br />
+            Quando consegue, já é tarde.
+          </p>
+        </div>
+      </div>
+
+      <div class="w-full h-px bg-tinta/10 my-32 max-w-sm"></div>
+
+      <!-- Secção 3: A INVERSÃO FÍSICA -->
+      <div class="max-w-3xl space-y-24" id="climax-trigger">
+        <div class="poetic-paragraph force-inundation" data-coord="P.01.S3">
+          <p
+            class="font-sans font-light text-lg md:text-xl leading-loose text-tinta/90 transition-colors duration-1000"
+          >
+            A gente já teve tantos desvios de rota. Você fala, gesticula, canta,
+            me conta o que te empolga. E eu estou ali, tentando sustentar alguma
+            estabilidade enquanto o silêncio entre uma frase e outra vai
+            crescendo devagar. Eu estou ali: o porto que você buscava para me
+            falar sobre o que carrega.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph force-inundation" data-coord="P.01b.S3">
+          <p
+            class="font-sans font-light text-lg md:text-xl leading-loose text-tinta/90 transition-colors duration-1000"
+          >
+            Teve um momento. Você estava próxima de um jeito que não é simples
+            de descrever. A temperatura do ar entre os nossos corpos era outra —
+            diferente do resto da sala. Você continuava a conversa, e eu
+            continuava também.
+          </p>
+        </div>
+
+        <div class="poetic-paragraph force-inundation" data-coord="P.02.S3">
+          <p
+            class="font-sans font-light text-lg md:text-xl leading-loose text-tinta/90 transition-colors duration-1000"
+          >
+            A parte que chegou depois mantinha o ritmo. Escolhia as palavras
+            certas. Fazia aquilo que se faz quando se quer parecer inteiro. Mas
+            existia uma pressão por dentro que não obedecia a nenhuma dessas
+            decisões. A outra parte não leu o roteiro. Ela sentiu o peso da tua
+            presença. O calor específico. A distância exata entre nós. E
+            decidiu, sozinha, que aquilo não era suficiente.
+          </p>
+        </div>
+
+        <!-- O TRECHO EM CHAMAS -->
+        <div
+          class="poetic-paragraph force-inundation on-fire"
+          data-coord="P.03.S3"
+        >
+          <p
+            class="font-serif italic text-3xl md:text-4xl text-vazamento leading-relaxed transition-colors duration-1000"
+          >
+            Continuei ali. Do lado de fora, absolutamente normal. Por dentro,
+            completamente em chamas.
+          </p>
+        </div>
+
+        <!-- O Evento Nuclear (Otimizado para Contraste Máximo no Abismo) -->
+        <div
+          class="poetic-paragraph force-inundation mt-40 border-none pl-0"
+          id="trigger-nuclear"
+          data-coord="N.ATOM"
+          style="margin-top: 15rem; max-width: 100% !important"
+        >
+          <div
+            id="registo-atomico-card"
+            class="font-mono text-xs p-8 md:p-10 border border-tinta/20 bg-tinta/[0.02] text-left max-w-xl mx-auto leading-relaxed transition-all duration-1000 text-tinta rounded"
+          >
+            <span
+              class="titulo-atomico block uppercase tracking-widest mb-4 opacity-60 font-semibold"
+              >// REGISTO ATÓMICO</span
+            >
+            <span class="block leading-loose text-sm font-light">
+              A matéria parece sólida, mas não é. Quando dois corpos se
+              encostam, seus átomos nunca chegam a se tocar de verdade — o que
+              sentimos como toque é a repulsão eletromagnética. Espaços vazios
+              em escalas inimagináveis. Se os núcleos atômicos realmente se
+              fundissem ao se encontrarem, não seria um toque.
+            </span>
+            <span
+              id="nuclear-sentence"
+              class="destaque-combustao font-serif italic text-2xl mt-6 block text-vazamento transition-colors duration-1000"
+              >Seria um evento nuclear.</span
+            >
+          </div>
+
+          <!-- Eco de Transição Oculto para o Capítulo V (Destaque em brasa) -->
+          <div
+            class="mt-12 text-center opacity-0 transition-all duration-1000 font-mono text-[9px] uppercase tracking-[0.3em] text-[#FF6B4A]"
+            id="eco-cap-v"
+          >
+            [ eco do capítulo v · "e se a gente deixasse?" ]
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer
+        class="mt-40 border-t border-tinta/10 pt-10 flex justify-between font-mono text-[9px] uppercase tracking-widest text-tinta/50 transition-colors duration-1000"
+        id="main-footer"
+      >
+        <a
+          href="capitulo-3-o-peso-da-dualidade.html"
+          class="hover:text-tinta transition-colors"
+          >← III · O Peso</a
+        >
+        <a
+          href="capitulo-5-a-arquitetura-do-desejo.html"
+          class="hover:text-tinta transition-colors"
+          >V · O Desejo →</a
+        >
+      </footer>
+    </main>
+
+    <script>
+      // Init reveals
+      document.querySelectorAll(".reveal-init").forEach((el) => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(20px)";
+        el.style.filter = "blur(5px)";
+        el.style.transition = "all 2s cubic-bezier(0.16, 1, 0.3, 1)";
+        setTimeout(() => {
+          el.style.opacity = "1";
+          el.style.transform = "translateY(0)";
+          el.style.filter = "blur(0)";
+        }, 100);
+      });
+
+      // Efeito "Guardadas"
+      const sentenceContainer = document.getElementById("sentence-container");
+      const phraseText = sentenceContainer.innerText;
+      sentenceContainer.innerHTML = "";
+      phraseText.split(" ").forEach((word) => {
+        const wordSpan = document.createElement("span");
+        wordSpan.style.display = "inline-block";
+        wordSpan.style.whiteSpace = "nowrap";
+        const cleanWord = word.replace(/[.,]/g, "");
+        if (cleanWord === "guardadas") {
+          const gatilho = document.createElement("span");
+          gatilho.className =
+            "palavra-gatilho text-vazamento font-serif italic";
+          gatilho.innerText = word + " ";
+
+          let timer;
+          let drifted = false;
+          gatilho.addEventListener("mouseenter", () => {
+            if (drifted) return;
+            timer = setTimeout(() => {
+              drifted = true;
+              document.querySelectorAll(".letra-organica").forEach((l) => {
+                l.style.setProperty("--rx", (Math.random() - 0.5) * 120 + "px");
+                l.style.setProperty("--ry", (Math.random() - 0.5) * 80 + "px");
+                l.style.setProperty(
+                  "--rot",
+                  (Math.random() - 0.5) * 180 + "deg",
+                );
+                l.style.setProperty("--s", Math.random() * 0.5 + 0.5);
+                l.classList.add("drifted");
+              });
+            }, 1000);
+          });
+          gatilho.addEventListener("mouseleave", () => clearTimeout(timer));
+          wordSpan.appendChild(gatilho);
+        } else {
+          for (let char of word) {
+            const c = document.createElement("span");
+            c.className = "letra-organica";
+            c.innerText = char;
+            wordSpan.appendChild(c);
+          }
+          const sp = document.createElement("span");
+          sp.innerHTML = "&nbsp;";
+          wordSpan.appendChild(sp);
+        }
+        sentenceContainer.appendChild(wordSpan);
+      });
+
+      // Observer para os parágrafos de foco cirúrgico
+      const paragraphs = document.querySelectorAll(".poetic-paragraph");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("reveal");
+
+              // Disparador de Órbita
+              if (e.target.id === "orbit-container" && !window.orbitStarted) {
+                startOrbit();
+                window.orbitStarted = true;
+              }
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
+      );
+      paragraphs.forEach((p) => observer.observe(p));
+      observer.observe(document.getElementById("orbit-container"));
+
+      // Observer dedicado para o Fio Condutor "Luz de Usina"
+      const fioAzul = document.getElementById("fio-azul");
+      const triggerUsina = document.getElementById("trigger-usina");
+      const palavraUsina = document.getElementById("palavra-usina");
+      const palavraCidade = document.getElementById("palavra-cidade");
+
+      const usinaObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              fioAzul.classList.add("glow");
+              palavraUsina.style.color = "#F59E0B";
+              palavraUsina.style.textShadow =
+                "0 0 10px rgba(245, 158, 11, 0.5)";
+              palavraCidade.style.color = "#F59E0B";
+              palavraCidade.style.textShadow =
+                "0 0 10px rgba(245, 158, 11, 0.5)";
+            } else {
+              fioAzul.classList.remove("glow");
+              palavraUsina.style.color = "";
+              palavraUsina.style.textShadow = "";
+              palavraCidade.style.color = "";
+              palavraCidade.style.textShadow = "";
+            }
+          });
+        },
+        { threshold: 0.5, rootMargin: "-10% 0px -15% 0px" },
+      );
+      if (triggerUsina) usinaObserver.observe(triggerUsina);
+
+      // Observer dedicado para a leitura do "Evento Nuclear"
+      const triggerNuclear = document.getElementById("trigger-nuclear");
+      const nuclearSentence = document.getElementById("nuclear-sentence");
+      const registoAtomicoCard = document.getElementById(
+        "registo-atomico-card",
+      );
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      const orbitLossMap = [
+        ["-18px", "8px"],
+        ["14px", "-6px"],
+        ["-10px", "-12px"],
+        ["20px", "4px"],
+      ];
+      document
+        .querySelectorAll(".poetic-paragraph.force-inundation")
+        .forEach((p, idx) => {
+          const [x, y] = orbitLossMap[idx % orbitLossMap.length];
+          p.style.setProperty("--orbit-loss-x", x);
+          p.style.setProperty("--orbit-loss-y", y);
+        });
+
+      let nuclearReadTimer;
+      let nuclearSequenceStarted = false;
+      let nuclearSilenceActive = false;
+
+      const nuclearBlockObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (nuclearSequenceStarted) return;
+
+            if (e.isIntersecting) {
+              enterNuclearSilence();
+            } else {
+              leaveNuclearSilence();
+              clearTimeout(nuclearReadTimer);
+            }
+          });
+        },
+        { threshold: 0.42, rootMargin: "-5% 0px -12% 0px" },
+      );
+      if (triggerNuclear) nuclearBlockObserver.observe(triggerNuclear);
+
+      const nuclearSentenceObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (nuclearSequenceStarted) return;
+
+            if (e.isIntersecting) {
+              enterNuclearSilence();
+              clearTimeout(nuclearReadTimer);
+              nuclearReadTimer = setTimeout(startNuclearSequence, 2500);
+            } else {
+              clearTimeout(nuclearReadTimer);
+            }
+          });
+        },
+        { threshold: 0.85, rootMargin: "0px 0px -18% 0px" },
+      );
+      if (nuclearSentence) nuclearSentenceObserver.observe(nuclearSentence);
+
+      // Scroll & Monitor System (A INVERSÃO FÍSICA E RUPTURA TOTAL)
+      const monitorTension = document.getElementById("tension-line");
+      const lblTension = document.getElementById("lbl-tension");
+      const lblFreq = document.getElementById("lbl-freq");
+      const lblInt = document.getElementById("lbl-int");
+      const oscWave = document.getElementById("osc-wave");
+      const glitchWarn = document.getElementById("glitch-warning");
+
+      let wavePhase = 0;
+      let globalTension = 0;
+      let isAbismo = false; // Estado de ruptura total
+      let isTerminalCollapse = false; // Estado de colapso atmosférico final
+
+      function enterNuclearSilence() {
+        if (nuclearSilenceActive || nuclearSequenceStarted) return;
+        nuclearSilenceActive = true;
+        document.body.classList.add("nuclear-silence");
+      }
+
+      function leaveNuclearSilence() {
+        if (!nuclearSilenceActive || nuclearSequenceStarted) return;
+        nuclearSilenceActive = false;
+        document.body.classList.remove("nuclear-silence");
+      }
+
+      function setDarkInterface() {
+        document.getElementById("nav-btn").className =
+          "fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-zinc-400 hover:text-white hover:bg-white/10 transition-all duration-500 uppercase";
+        document.getElementById("audio-container").className =
+          "fixed bottom-6 right-6 z-50 flex items-center space-x-3 bg-[#120d0c]/60 backdrop-blur-md border border-white/5 py-2 px-4 rounded-full transition-all hover:bg-[#120d0c]/90";
+        document.querySelector("#audio-container span").className =
+          "text-[9px] font-mono tracking-[0.2em] text-[#ff6b4a] uppercase";
+        document.getElementById("icon-play").className =
+          "w-3.5 h-3.5 text-zinc-400 fill-current group-hover:text-zinc-200 transition-colors";
+      }
+
+      function setLightInterface() {
+        document.getElementById("nav-btn").className =
+          "fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-tinta/5 backdrop-blur-md border border-tinta/10 text-[10px] font-mono tracking-widest text-tinta/60 hover:text-tinta hover:bg-tinta/10 transition-all duration-500 uppercase";
+        document.getElementById("audio-container").className =
+          "fixed bottom-6 right-6 z-50 flex items-center space-x-3 bg-tinta/5 backdrop-blur-md border border-tinta/10 py-2 px-4 rounded-full transition-all hover:bg-tinta/10";
+        document.querySelector("#audio-container span").className =
+          "text-[9px] font-mono tracking-[0.2em] text-tinta/70 uppercase";
+        document.getElementById("icon-play").className =
+          "w-3.5 h-3.5 text-tinta/60 fill-current group-hover:text-tinta transition-colors";
+      }
+
+      // ============================================================
+      //  FOCUS BLUR — a atenção que estreita o campo de visão
+      //  O parágrafo mais visível na janela "puxa" o foco;
+      //  os demais revelados recuam para opacity 0.26 + blur.
+      // ============================================================
+      (function initFocusBlur() {
+        var mainEl = document.querySelector("main");
+        if (!mainEl) return;
+
+        var focusActive = null;
+        var focusHideTimer = null;
+        var EXCLUDE_IDS = ["trigger-nuclear", "orbit-container"];
+
+        var focusObserver = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              var p = entry.target;
+              if (!p.classList.contains("reveal")) return;
+
+              if (entry.intersectionRatio > 0.52) {
+                if (focusActive && focusActive !== p) {
+                  focusActive.classList.remove("para-focus");
+                }
+                p.classList.add("para-focus");
+                focusActive = p;
+                mainEl.classList.add("has-focus");
+                clearTimeout(focusHideTimer);
+              } else if (p.classList.contains("para-focus")) {
+                p.classList.remove("para-focus");
+                clearTimeout(focusHideTimer);
+                focusHideTimer = setTimeout(function () {
+                  if (!mainEl.querySelector(".para-focus")) {
+                    mainEl.classList.remove("has-focus");
+                    focusActive = null;
+                  }
+                }, 420);
+              }
+            });
+          },
+          {
+            threshold: [0.2, 0.52, 0.85],
+            rootMargin: "-8% 0px -8% 0px",
+          },
+        );
+
+        document.querySelectorAll(".poetic-paragraph").forEach(function (p) {
+          if (!EXCLUDE_IDS.includes(p.id)) {
+            focusObserver.observe(p);
+          }
+        });
+      })();
+
+      window.addEventListener("scroll", () => {
+        const h = document.documentElement;
+        const scrollPercent = h.scrollTop / (h.scrollHeight - h.clientHeight);
+        globalTension = scrollPercent;
+
+        // UI do Monitor
+        const p = Math.min(Math.round(scrollPercent * 120), 100);
+        monitorTension.style.width = p + "%";
+        lblTension.innerText = `TENSÃO: ${p}%`;
+        lblFreq.innerText = (52 + p * 0.08).toFixed(2) + " HZ";
+
+        // INTEGRAÇÃO DE ECO DO CAPÍTULO V NO HUD MONITOR
+        if (nuclearSilenceActive && !nuclearSequenceStarted) {
+          lblInt.innerText = "100% [SUSPENSO]";
+          lblInt.className = "text-zinc-400";
+          lblFreq.innerText = "52.00 HZ";
+          glitchWarn.style.opacity = 0;
+          document.getElementById("eco-cap-v").style.opacity = "0";
+        } else if (p > 60 && p < 82) {
+          lblInt.innerText = "54% [FISSURA]";
+          lblInt.className = "text-red-500";
+          glitchWarn.style.opacity = 0.5;
+          glitchWarn.innerHTML =
+            "!!! ATENÇÃO: INFILTRAÇÃO DETETADA !!!<br>ÓRBITA ATUAL INSTÁVEL";
+          document.getElementById("eco-cap-v").style.opacity = "0";
+        } else if (p >= 82) {
+          // Injeta sussurros do Capítulo V diretamente no laudo clínico
+          lblInt.innerText = "!!! ÓRBITA MUDOU !!!";
+          lblInt.className = "text-red-700 glitch-text font-bold";
+          lblFreq.innerText = "COMBUSTÃO COMPLETA";
+          glitchWarn.style.opacity = 1;
+          glitchWarn.innerHTML =
+            "!!! FALHA DE CONTENÇÃO DO DESEJO !!!<br>RABISCOS DETETADOS POR DENTRO";
+          document.getElementById("eco-cap-v").style.opacity = "0.8";
+        } else {
+          lblInt.innerText = "100% [ESTÁVEL]";
+          lblInt.className = "text-tinta";
+          glitchWarn.style.opacity = 0;
+          document.getElementById("eco-cap-v").style.opacity = "0";
+        }
+
+        // O GATILHO DA INUNDAÇÃO
+        // Quando passa de 75%, o papel quebra e vira um abismo de tinta
+        if (scrollPercent > 0.75 && !isAbismo) {
+          document.body.classList.add("inundado");
+          isAbismo = true;
+          setDarkInterface();
+        } else if (
+          scrollPercent <= 0.75 &&
+          isAbismo &&
+          !nuclearSequenceStarted
+        ) {
+          document.body.classList.remove("inundado");
+          isAbismo = false;
+          setLightInterface();
+        }
+
+        if (!nuclearSequenceStarted) {
+          setTerminalCollapseIntensity(0);
+        }
+      });
+
+      function setTerminalCollapseIntensity(intensity) {
+        const eased = intensity * intensity * (3 - 2 * intensity);
+
+        document.documentElement.style.setProperty(
+          "--collapse-intensity",
+          eased.toFixed(3),
+        );
+        document.documentElement.style.setProperty(
+          "--collapse-drift",
+          `${Math.round(eased * 72)}px`,
+        );
+        document.documentElement.style.setProperty(
+          "--collapse-fog",
+          eased.toFixed(3),
+        );
+
+        if (intensity > 0 && !isTerminalCollapse) {
+          document.body.classList.add("terminal-collapse");
+          isTerminalCollapse = true;
+        } else if (intensity === 0 && isTerminalCollapse) {
+          document.body.classList.remove("terminal-collapse");
+          document.body.classList.remove(
+            "collapse-lines",
+            "collapse-hud",
+            "collapse-orbit",
+            "collapse-structure",
+            "collapse-secondary",
+            "collapse-paragraphs",
+            "collapse-environment",
+          );
+          isTerminalCollapse = false;
+        }
+      }
+
+      function activateCollapseStage(className, intensity) {
+        setTerminalCollapseIntensity(intensity);
+        document.body.classList.add(className);
+      }
+
+      function startNuclearSequence() {
+        if (nuclearSequenceStarted) return;
+
+        nuclearSequenceStarted = true;
+        clearTimeout(nuclearReadTimer);
+        nuclearSilenceActive = false;
+        document.body.classList.remove("nuclear-silence");
+        if (triggerNuclear) nuclearBlockObserver.unobserve(triggerNuclear);
+        if (nuclearSentence) nuclearSentenceObserver.unobserve(nuclearSentence);
+
+        if (!isAbismo) {
+          document.body.classList.add("inundado");
+          isAbismo = true;
+          setDarkInterface();
+        }
+
+        if (!prefersReducedMotion) {
+          registoAtomicoCard.classList.add("atomic-shake");
+          setTimeout(() => {
+            registoAtomicoCard.classList.remove("atomic-shake");
+          }, 460);
+        }
+
+        // Pulso crimson — a mancha sangra vermelho no instante do evento nuclear
+        var stainEl = document.getElementById("ink-infiltracao");
+        if (stainEl && !prefersReducedMotion) {
+          stainEl.classList.add("nuclear-pulse");
+          setTimeout(function () {
+            stainEl.classList.add("nuclear-pulse-fade");
+            stainEl.classList.remove("nuclear-pulse");
+          }, 820);
+          setTimeout(function () {
+            stainEl.classList.remove("nuclear-pulse-fade");
+          }, 2820);
+        }
+
+        const time = prefersReducedMotion ? 0 : 1;
+
+        setTimeout(() => {
+          document.body.classList.add("post-detonation");
+        }, 520 * time);
+
+        setTimeout(() => {
+          activateCollapseStage("collapse-lines", 0.26);
+        }, 900 * time);
+
+        setTimeout(() => {
+          activateCollapseStage("collapse-hud", 0.42);
+        }, 1250 * time);
+
+        setTimeout(() => {
+          activateCollapseStage("collapse-orbit", 0.6);
+        }, 1600 * time);
+
+        setTimeout(() => {
+          activateCollapseStage("collapse-structure", 0.74);
+        }, 1950 * time);
+
+        setTimeout(() => {
+          activateCollapseStage("collapse-secondary", 0.86);
+        }, 2300 * time);
+
+        setTimeout(() => {
+          activateCollapseStage("collapse-paragraphs", 1);
+        }, 2650 * time);
+
+        setTimeout(() => {
+          activateCollapseStage("collapse-environment", 1);
+        }, 3000 * time);
+      }
+
+      // Oscilador UI
+      function updateOsc() {
+        wavePhase += 0.1;
+        const amp = 2 + globalTension * 8;
+        const f = 0.1 + globalTension * 0.1;
+        let d = "M0,10 ";
+        for (let i = 0; i <= 100; i += 5) {
+          const glitch =
+            isAbismo && !nuclearSilenceActive ? (Math.random() - 0.5) * 15 : 0; // O silêncio nuclear suspende o ruído antes da causa.
+          d += `L${i},${10 + Math.sin(i * f + wavePhase) * amp + glitch} `;
+        }
+        oscWave.setAttribute("d", d);
+        requestAnimationFrame(updateOsc);
+      }
+      updateOsc();
+
+      // Canvas de Nanquim Orgânico (Dispersão Suave de Fluidos)
+      const canvas = document.getElementById("nevoa-canvas");
+      const ctx = canvas.getContext("2d");
+      let pts = [];
+
+      function rs() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", rs);
+      rs();
+
+      // Estruturação original de partículas flutuantes do nanquim orgânico
+      for (let i = 0; i < 30; i++) {
+        pts.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 150 + 60,
+          a: Math.random() * Math.PI * 2,
+          s: Math.random() * 0.005 + 0.002,
+        });
+      }
+
+      function drawCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pts.forEach((p) => {
+          p.a += p.s;
+          const vx = Math.cos(p.a) * 30;
+          const vy = Math.sin(p.a) * 30;
+
+          // Expansão sutil conforme a tensão sobe
+          const dynamicRadius = p.r * (1 + globalTension * 0.3);
+
+          ctx.beginPath();
+
+          // Criação de degradê radial para simular dissolução real de nanquim líquido
+          let grad = ctx.createRadialGradient(
+            p.x + vx,
+            p.y + vy,
+            0,
+            p.x + vx,
+            p.y + vy,
+            dynamicRadius,
+          );
+
+          if (isAbismo) {
+            grad.addColorStop(0, "rgba(143, 170, 179, 0.12)");
+            grad.addColorStop(0.5, "rgba(143, 170, 179, 0.04)");
+            grad.addColorStop(1, "rgba(143, 170, 179, 0)");
+          } else {
+            grad.addColorStop(0, "rgba(32, 49, 64, 0.07)");
+            grad.addColorStop(0.6, "rgba(32, 49, 64, 0.02)");
+            grad.addColorStop(1, "rgba(32, 49, 64, 0)");
+          }
+
+          ctx.fillStyle = grad;
+          ctx.arc(p.x + vx, p.y + vy, dynamicRadius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        requestAnimationFrame(drawCanvas);
+      }
+      drawCanvas();
+
+      // Órbita Elegante da Escultura
+      function startOrbit() {
+        const container = document.getElementById("orbit-container");
+        const words = ["tempo", "atenção", "orgulho", "identidade"];
+        const rings = 4;
+        let objs = [];
+
+        // Ponto central
+        const core = document.createElement("div");
+        core.className =
+          "w-1.5 h-1.5 bg-vazamento rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-colors duration-1000 shadow-md";
+        container.appendChild(core);
+
+        for (let i = 0; i < rings; i++) {
+          const r = document.createElement("div");
+          const size = 110 + i * 50;
+          r.className = "orbit-ring";
+          r.style.width = size + "px";
+          r.style.height = size + "px";
+          r.style.left = `calc(50% - ${size / 2}px)`;
+          r.style.top = `calc(50% - ${size / 2}px)`;
+          container.appendChild(r);
+
+          const w = document.createElement("div");
+          w.className = "orbit-word";
+          w.innerText = words[i];
+          container.appendChild(w);
+
+          objs.push({
+            el: w,
+            angle: Math.random() * Math.PI * 2,
+            r: size / 2,
+            speed: 0.005 - i * 0.001,
+          });
+        }
+
+        function loopOrbit() {
+          objs.forEach((o) => {
+            o.angle += o.speed + globalTension * 0.012;
+            const x = container.clientWidth / 2 + Math.cos(o.angle) * o.r;
+            const y = container.clientHeight / 2 + Math.sin(o.angle) * o.r;
+            o.el.style.transform = `translate(-50%, -50%)`;
+            o.el.style.left = x + "px";
+            o.el.style.top = y + "px";
+          });
+          requestAnimationFrame(loopOrbit);
+        }
+        loopOrbit();
+      }
+
+      // Candle light / curto-circuito: aplica classes e delays nas seções escuras
+      (function applyDarkTextEffects() {
+        var fps = document.querySelectorAll(
+          ".poetic-paragraph.force-inundation",
+        );
+        fps.forEach(function (p, i) {
+          if (p.classList.contains("on-fire") || p.id === "trigger-nuclear")
+            return;
+          var pEl = p.querySelector("p.font-sans");
+          if (!pEl) return;
+          if (i === 0) {
+            // Primeiro parágrafo visível: curto-circuito
+            p.classList.add("sc-flash");
+            pEl.style.setProperty("--sc-delay", "0.5s");
+          } else {
+            // Demais: luz de vela com stagger
+            pEl.style.setProperty("--candle-delay", i * 1.1 + "s");
+          }
+        });
+      })();
+
+      // ============================================================
+      //  GOOEY INK CANVAS — gotas de nanquim viscoso que se fundem
+      // ============================================================
+      (function initGooeyInk() {
+        var wrapper = document.getElementById("gooey-ink-wrapper");
+        var gCanvas = document.getElementById("gooey-ink-canvas");
+        if (!wrapper || !gCanvas) return;
+
+        var gCtx = gCanvas.getContext("2d");
+        var drops = [];
+        var gooeyReady = false;
+
+        // Aplica o filtro SVG após confirmar suporte no browser
+        if (CSS.supports("filter", "url(#gooey-filter)")) {
+          wrapper.style.filter = "url(#gooey-filter)";
+        }
+
+        function resizeGooey() {
+          gCanvas.width = window.innerWidth;
+          gCanvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeGooey);
+        resizeGooey();
+
+        function spawnDrops() {
+          drops = [];
+          for (var i = 0; i < 22; i++) {
+            var angle = Math.random() * Math.PI * 2;
+            var speed = Math.random() * 0.26 + 0.06;
+            drops.push({
+              x: Math.random() * gCanvas.width,
+              y: Math.random() * gCanvas.height,
+              r: Math.random() * 42 + 16,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+            });
+          }
+        }
+
+        function renderDrops() {
+          gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
+          if (!isAbismo) {
+            requestAnimationFrame(renderDrops);
+            return;
+          }
+          if (!gooeyReady) {
+            spawnDrops();
+            gooeyReady = true;
+          }
+
+          drops.forEach(function (d) {
+            // Física: deriva lenta com atração suave ao centro-baixo
+            d.vx += (gCanvas.width * 0.5 - d.x) * 0.000035;
+            d.vy += (gCanvas.height * 0.58 - d.y) * 0.000035;
+            d.vx *= 0.9988;
+            d.vy *= 0.9988;
+            d.x += d.vx;
+            d.y += d.vy;
+            // Wrap nas bordas
+            if (d.x < -d.r) d.x = gCanvas.width + d.r;
+            if (d.x > gCanvas.width + d.r) d.x = -d.r;
+            if (d.y < -d.r) d.y = gCanvas.height + d.r;
+            if (d.y > gCanvas.height + d.r) d.y = -d.r;
+
+            // Blob sólido — o filtro feColorMatrix faz a fusão ao blur
+            gCtx.beginPath();
+            gCtx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+            gCtx.fillStyle = "rgba(143, 170, 179, 0.80)";
+            gCtx.fill();
+          });
+
+          requestAnimationFrame(renderDrops);
+        }
+        renderDrops();
+      })();
+
+      // Sistema de Áudio (Drone 52Hz)
+      let aCtx = null,
+        osc1 = null,
+        osc2 = null,
+        gain = null,
+        playing = false;
+
+      document.getElementById("btn-audio").addEventListener("click", () => {
+        const iPlay = document.getElementById("icon-play");
+        const iPause = document.getElementById("icon-pause");
+
+        if (!playing) {
+          if (!aCtx)
+            aCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+          const now = aCtx.currentTime;
+          gain = aCtx.createGain();
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.04, now + 3);
+          gain.connect(aCtx.destination);
+
+          // Dois sines para criar interferência de 2.5Hz (Psicologia Sonora)
+          osc1 = aCtx.createOscillator();
+          osc1.type = "sine";
+          osc1.frequency.value = 52;
+          osc1.connect(gain);
+
+          osc2 = aCtx.createOscillator();
+          osc2.type = "sine";
+          osc2.frequency.value = 54.5;
+          osc2.connect(gain);
+
+          osc1.start();
+          osc2.start();
+
+          playing = true;
+          iPlay.classList.add("hidden");
+          iPause.classList.remove("hidden");
+          sessionStorage.setItem("audioState", "playing");
+        } else {
+          const now = aCtx.currentTime;
+          if (gain) gain.gain.linearRampToValueAtTime(0, now + 1.5);
+          if (osc1) osc1.stop(now + 1.6);
+          if (osc2) osc2.stop(now + 1.6);
+          playing = false;
+          sessionStorage.setItem("audioState", "paused");
+          iPlay.classList.remove("hidden");
+          iPause.classList.add("hidden");
+        }
+      });
+    </script>
+
+    <!-- Sistemas compartilhados — sempre ao final, nesta ordem -->
+    <script src="oa-fragmentos.js"></script>
+    <script src="constelacao-header.js"></script>
+  </body>
+</html>

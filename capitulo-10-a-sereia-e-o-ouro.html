@@ -1,0 +1,1158 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>X · A Sereia e o Ouro — O Avesso do Chão</title>
+
+    <script>
+      // TEMP-PUBLIC: remover este bloco antes de enviar para a destinatária
+      window.location.replace('sumario.html');
+      // FIM TEMP-PUBLIC
+      if (!localStorage.getItem('oavesso_key_unlocked')) window.location.replace('chave.html');
+      localStorage.setItem(
+        "oavesso_progress",
+        '{"chapter":10,"title":"X · A Sereia e o Ouro","href":"capitulo-10-a-sereia-e-o-ouro.html"}',
+      );
+    </script>
+    <script>
+      (function () {
+        var k = "avesso_jornada_cap-10b";
+        if (!localStorage.getItem(k)) localStorage.setItem(k, Date.now());
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter+Tight:wght@300;400&family=JetBrains+Mono:wght@100;200&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #04060a;
+        --text: #a8a49c;
+        --dim: #5a5650;
+        --gold: #c8a96e;
+        --gold-dim: rgba(200, 169, 110, 0.12);
+        --gold-glow: rgba(200, 169, 110, 0.06);
+        --border: rgba(200, 169, 110, 0.07);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 300;
+        overflow-x: hidden;
+        cursor: none;
+      }
+
+      /* Grain */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.024;
+        pointer-events: none;
+        z-index: 999;
+        animation: grain 9s steps(1) infinite;
+      }
+
+      @keyframes grain {
+        0% {
+          transform: translate(0, 0);
+        }
+        11% {
+          transform: translate(-1%, -2%);
+        }
+        22% {
+          transform: translate(2%, -1%);
+        }
+        33% {
+          transform: translate(-2%, 2%);
+        }
+        44% {
+          transform: translate(1%, 1%);
+        }
+        55% {
+          transform: translate(-1%, -1%);
+        }
+        66% {
+          transform: translate(2%, 2%);
+        }
+        77% {
+          transform: translate(-2%, -1%);
+        }
+        88% {
+          transform: translate(1%, -2%);
+        }
+      }
+
+      /* Progress */
+      #progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 1px;
+        width: 0%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold) 60%,
+          rgba(200, 169, 110, 0.4)
+        );
+        z-index: 80;
+        transition: width 0.15s linear;
+      }
+
+      /* Canvas */
+      #ambient {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* Cursor */
+      #cur {
+        position: fixed;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--gold);
+        pointer-events: none;
+        z-index: 500;
+        opacity: 0.55;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: screen;
+      }
+      #cur-ring {
+        position: fixed;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 1px solid rgba(200, 169, 110, 0.22);
+        pointer-events: none;
+        z-index: 499;
+        transform: translate(-50%, -50%);
+      }
+
+      /* Vignette */
+      #vignette {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at center,
+          transparent 40%,
+          rgba(4, 6, 10, 0.7) 100%
+        );
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      /* ── NAV TOP ─────────────────────────────────── */
+      .nav-top {
+        position: fixed;
+        top: 1.5rem;
+        left: 1.5rem;
+        z-index: 200;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 0.32em;
+        color: rgba(200, 169, 110, 0.28);
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.4s ease;
+        padding: 0.4rem 0.6rem;
+        cursor: none;
+      }
+      .nav-top:hover {
+        color: rgba(200, 169, 110, 0.65);
+      }
+
+      /* ── MAP BTN ─────────────────────────────────── */
+      #oa-map-btn {
+        position: fixed;
+        bottom: 5.2rem;
+        left: 1.2rem;
+        z-index: 500;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        color: rgba(200, 169, 84, 0.42);
+        cursor: none;
+        opacity: 0;
+        pointer-events: none;
+        letter-spacing: 0.3em;
+        transition: opacity 1.5s ease;
+        text-decoration: none;
+        user-select: none;
+      }
+      #oa-map-btn.on {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* ── ENTRY SCREEN ─────────────────────────────── */
+      #entry {
+        position: fixed;
+        inset: 0;
+        z-index: 90;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        transition:
+          opacity 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+          visibility 2.2s;
+      }
+      #entry.out {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .e-num {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 100;
+        font-size: 0.58rem;
+        letter-spacing: 0.45em;
+        color: var(--dim);
+        text-transform: uppercase;
+        margin-bottom: 2rem;
+      }
+      .e-title {
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 300;
+        font-style: italic;
+        font-size: clamp(2.2rem, 6vw, 4rem);
+        color: var(--gold);
+        opacity: 0.82;
+        letter-spacing: 0.04em;
+        text-align: center;
+        margin-bottom: 0.6rem;
+      }
+      .e-sub {
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 300;
+        font-style: italic;
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        color: var(--dim);
+        text-align: center;
+        margin-bottom: 2.8rem;
+      }
+      .e-hint {
+        font-family: "Inter Tight", sans-serif;
+        font-size: 0.62rem;
+        font-weight: 300;
+        letter-spacing: 0.18em;
+        color: var(--dim);
+        text-align: center;
+        margin-bottom: 2.4rem;
+      }
+      #btn-enter {
+        font-family: "Inter Tight", sans-serif;
+        font-size: 0.6rem;
+        font-weight: 300;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        color: var(--gold);
+        border: 1px solid rgba(200, 169, 110, 0.22);
+        background: transparent;
+        padding: 0.9rem 2.8rem;
+        cursor: none;
+        transition:
+          border-color 0.5s,
+          box-shadow 0.5s,
+          letter-spacing 0.5s;
+      }
+      #btn-enter:hover {
+        border-color: rgba(200, 169, 110, 0.5);
+        box-shadow: 0 0 24px rgba(200, 169, 110, 0.08);
+        letter-spacing: 0.45em;
+      }
+
+      /* ── MAIN CONTENT ─────────────────────────────── */
+      #main {
+        position: relative;
+        z-index: 10;
+        max-width: 660px;
+        margin: 0 auto;
+        padding: 18vh 2rem 28vh;
+        opacity: 0;
+        transition: opacity 1.2s ease;
+      }
+      #main.visible {
+        opacity: 1;
+      }
+
+      /* Header */
+      .ch-header {
+        text-align: center;
+        margin-bottom: 14vh;
+        padding-bottom: 3.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .ch-label {
+        display: block;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 100;
+        font-size: 0.56rem;
+        letter-spacing: 0.42em;
+        color: var(--dim);
+        text-transform: uppercase;
+        margin-bottom: 1.8rem;
+      }
+      .ch-title {
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 300;
+        font-style: italic;
+        font-size: clamp(2.4rem, 7vw, 4.2rem);
+        color: var(--gold);
+        opacity: 0.82;
+        line-height: 1.1;
+        margin-bottom: 0.8rem;
+      }
+      .ch-epigraph {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 0.92rem;
+        color: var(--dim);
+        letter-spacing: 0.03em;
+      }
+
+      /* Section label */
+      .s-mark {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2.2rem;
+      }
+      .hairline {
+        flex: 0 0 1.8rem;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold));
+        opacity: 0.35;
+      }
+      .s-label {
+        font-family: "Inter Tight", sans-serif;
+        font-size: 0.58rem;
+        font-weight: 300;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--dim);
+      }
+
+      /* Paragraphs */
+      .p-block {
+        font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+        line-height: 2.05;
+        color: var(--text);
+        font-weight: 300;
+        margin-bottom: 1.8rem;
+        opacity: 0;
+        transform: translateY(16px);
+        filter: blur(5px);
+        transition:
+          opacity 2s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 2s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .p-block.in {
+        opacity: 1;
+        transform: none;
+        filter: blur(0);
+      }
+
+      /* Glow word */
+      .gw {
+        color: var(--gold);
+        opacity: 0.8;
+        font-style: italic;
+        transition:
+          opacity 0.4s,
+          text-shadow 0.4s;
+      }
+      .gw:hover {
+        opacity: 1;
+        text-shadow: 0 0 18px rgba(200, 169, 110, 0.35);
+      }
+
+      /* Section spacing */
+      section {
+        margin-bottom: 10vh;
+      }
+
+      /* Closing */
+      .close-block {
+        text-align: center;
+        margin-top: 8vh;
+        padding-top: 3.5rem;
+        border-top: 1px solid var(--border);
+      }
+      .close-main {
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 300;
+        font-style: italic;
+        font-size: clamp(1.25rem, 3vw, 1.7rem);
+        color: var(--gold);
+        opacity: 0;
+        line-height: 1.8;
+        transform: translateY(10px);
+        filter: blur(4px);
+        transition:
+          opacity 2.6s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 2.6s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 2.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .close-main.in {
+        opacity: 0.8;
+        transform: none;
+        filter: blur(0);
+      }
+
+      .close-secondary {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(0.88rem, 1.8vw, 1rem);
+        color: var(--dim);
+        margin-top: 1.8rem;
+        line-height: 1.9;
+        opacity: 0;
+        transform: translateY(10px);
+        filter: blur(4px);
+        transition:
+          opacity 2.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s,
+          transform 2.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s,
+          filter 2.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;
+      }
+      .close-secondary.in {
+        opacity: 0.55;
+        transform: none;
+        filter: blur(0);
+      }
+
+      .close-final {
+        font-family: "Inter Tight", sans-serif;
+        font-size: 0.58rem;
+        font-weight: 300;
+        letter-spacing: 0.38em;
+        text-transform: uppercase;
+        color: var(--dim);
+        margin-top: 2.8rem;
+        opacity: 0;
+        transition: opacity 2s ease 1.2s;
+      }
+      .close-final.in {
+        opacity: 0.4;
+      }
+
+      /* ── BOTTOM NAV ──────────────────────────────── */
+      .ch-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 420px;
+        margin: 7vh auto 0;
+        padding-top: 2.8rem;
+        border-top: 1px solid var(--border);
+      }
+      .ch-nav a {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(0.85rem, 1.8vw, 1rem);
+        color: var(--dim);
+        text-decoration: none;
+        transition: color 0.35s ease;
+        cursor: none;
+      }
+      .ch-nav a:hover {
+        color: var(--gold);
+      }
+
+      @media (max-width: 480px) {
+        .ch-nav {
+          flex-direction: column;
+          gap: 1.4rem;
+          text-align: center;
+        }
+      }
+
+      body .poetic-paragraph {
+        line-height: 1.88;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="progress"></div>
+    <div id="cur"></div>
+    <div id="cur-ring"></div>
+    <div id="vignette"></div>
+
+    <a href="Untitled-1.html" class="nav-link nav-top">← Baú</a>
+    <a id="oa-map-btn" href="mapa-do-tesouro.html">◈ mapa</a>
+
+    <!-- Entry -->
+    <div id="entry">
+      <span class="e-num">Capítulo IX</span>
+      <h1 class="e-title">A Sereia e o Ouro</h1>
+      <p class="e-sub">(A Oferenda)</p>
+      <p class="e-hint">Coloque seus fones de ouvido.</p>
+      <button id="btn-enter">Mergulhar</button>
+    </div>
+
+    <canvas id="ambient"></canvas>
+
+    <main id="main">
+      <header class="ch-header">
+        <span class="ch-label">Capítulo IX — A Oferenda</span>
+        <h2 class="ch-title">A Sereia e o Ouro</h2>
+        <p class="ch-epigraph">"A virtude do malandro é saber esperar."</p>
+      </header>
+
+      <section>
+        <div class="s-mark">
+          <span class="hairline"></span>
+          <span class="s-label">§ I — O Altar das Águas Doces</span>
+        </div>
+        <p class="p-block">
+          No fundo do <span class="gw">Panema</span> tem um ouro que não
+          enferruja.<br /><br />
+          Eu soube pelo jeito que a água aquietou<br />
+          quando você entrou.
+        </p>
+        <p class="p-block">
+          Pirata com fome de ouro<br />
+          conhece o cheiro antes de ver.<br /><br />
+          Mas tem um ouro que não é dos cofres —<br />
+          é o que <span class="gw">Oxum</span> guarda no fundo do rio,<br />
+          que só aparece quando a luz bate do ângulo certo.<br /><br />
+          Esse ouro não se rouba.<br /><br />
+          Malandro sabe disso.<br />
+          A virtude dele é a paciência —<br />
+          esperar que a sereia apareça<br />
+          pra quem traz o que vale.<br /><br />
+          Eu vim trazer.
+        </p>
+      </section>
+
+      <section>
+        <div class="s-mark">
+          <span class="hairline"></span>
+          <span class="s-label">§ II — O Oceano Invisível</span>
+        </div>
+        <p class="p-block">
+          <span class="gw">Oxum</span> conhece as suas<br />
+          não pelo rosto —<br />
+          pelo <span class="gw">oceano</span> que carregam.<br /><br />
+          Você guarda o oceano a sete chaves<br />
+          porque aprendeu cedo<br />
+          que oceano dentro assusta as pessoas.<br /><br />
+          Oxum não se assusta.<br /><br />
+          De longe me chega<br />
+          a cintilação dos seus cílios.
+        </p>
+      </section>
+
+      <section>
+        <div class="s-mark">
+          <span class="hairline"></span>
+          <span class="s-label">§ III — A Paciência do Malandro</span>
+        </div>
+        <p class="p-block">
+          Tem coisas de você que não servem pra nada<br />
+          e são tudo:<br /><br />
+          o silêncio de dois segundos antes da frase certa —<br />
+          água parada antes da corredeira.<br /><br />
+          a risada que não combinou com ninguém.<br />
+          a que te pega junto.<br /><br />
+          o jeito de chegar num lugar<br />
+          e o ar mudar de ideia.<br /><br />
+          Essas coisas eu não consigo desguardar.
+        </p>
+        <p class="p-block">
+          Quem nunca foi visto assim não sabe o que é.<br /><br />
+          Você sabe.
+        </p>
+        <p class="p-block">
+          Você disse: fala que sou tua namorada.<br />
+          Eu disse que não.<br /><br />
+          Eu minto bem pra fora.<br />
+          Por dentro, já era.
+        </p>
+        <p class="p-block">
+          Depois de você<br />
+          o mundo saiu do lugar.<br /><br />
+          O lugar ficou vazio.
+        </p>
+      </section>
+
+      <section>
+        <div class="s-mark">
+          <span class="hairline"></span>
+          <span class="s-label">§ IV — A Entrega e o Tempo das Marés</span>
+        </div>
+        <p class="p-block">
+          Guardar mentira tem custo.<br /><br />
+          O custo era você.
+        </p>
+        <p class="p-block">
+          Quem anda no trilho é trem de ferro.<br /><br />
+          Eu sou água que corre entre pedras —<br />
+          a liberdade caça jeito,<br />
+          e eu vim caçar o jeito de te dizer isso.
+        </p>
+        <p class="p-block">
+          Trouxe o anzol mais inútil do mundo.<br /><br />
+          É feito de poema.<br />
+          Nove capítulos de poema.<br /><br />
+          Só <span class="gw">sereia de ouro</span> morde esse anzol.
+        </p>
+      </section>
+
+      <div class="close-block">
+        <p class="close-main">
+          <strong>Beatriz.</strong><br /><br />
+          Era você o tempo inteiro.<br />
+          Não havia outra leitura.<br /><br />
+          Como o nome que o rio já sabia.<br />
+          Como ouro que aparece<br />
+          quando a luz bate do ângulo certo.<br />
+          Como chegada.
+        </p>
+        <p class="close-secondary">
+          Essa é a minha oferenda:<br /><br />
+          palavras com cheiro de flores amarelas<br />
+          e gosto de mel —<br />
+          e tudo que eu escrevi<br />
+          pra chegar até aqui.
+        </p>
+        <p class="close-final">A escolha é tua. &nbsp;·&nbsp; Beijo. Te amo.</p>
+      </div>
+
+      <nav class="ch-nav">
+        <a href="capitulo-10-a-crueza-do-presente.html" class="nav-link"
+          >← IX · A Crueza</a
+        >
+        <a href="capitulo-11-a-espera.html" class="nav-link">X · A Espera →</a>
+      </nav>
+    </main>
+
+    <script>
+      // ── CURSOR ─────────────────────────────────────────────────────
+      let mx = innerWidth / 2,
+        my = innerHeight / 2;
+      let cx = mx,
+        cy = my,
+        rx = mx,
+        ry = my;
+      const cur = document.getElementById("cur");
+      const ring = document.getElementById("cur-ring");
+
+      addEventListener("mousemove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+      });
+
+      (function tick() {
+        cx += (mx - cx) * 0.28;
+        cy += (my - cy) * 0.28;
+        rx += (mx - rx) * 0.1;
+        ry += (my - ry) * 0.1;
+        cur.style.left = cx + "px";
+        cur.style.top = cy + "px";
+        ring.style.left = rx + "px";
+        ring.style.top = ry + "px";
+        requestAnimationFrame(tick);
+      })();
+
+      // ── PROGRESS ───────────────────────────────────────────────────
+      const prog = document.getElementById("progress");
+      addEventListener("scroll", () => {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        prog.style.width = (max > 0 ? (scrollY / max) * 100 : 0) + "%";
+      });
+
+      // ── CANVAS ─────────────────────────────────────────────────────
+      const cvs = document.getElementById("ambient");
+      const ctx = cvs.getContext("2d");
+      let W,
+        H,
+        pts = [];
+
+      function resize() {
+        W = cvs.width = innerWidth;
+        H = cvs.height = innerHeight;
+      }
+      addEventListener("resize", resize);
+      resize();
+
+      class P {
+        constructor(y) {
+          this.y = y ?? H + 10;
+          this.reset(true);
+        }
+        reset(init) {
+          this.x = Math.random() * W;
+          this.y = init ? Math.random() * H : H + 10;
+          this.r = Math.random() * 1.1 + 0.25;
+          this.vy = -(Math.random() * 0.35 + 0.12);
+          this.vx = (Math.random() - 0.5) * 0.18;
+          this.op = Math.random() * 0.1 + 0.02;
+          this.t = Math.random() * 1000;
+        }
+        step() {
+          this.t++;
+          this.x += this.vx + Math.sin(this.t * 0.009) * 0.14;
+          this.y += this.vy;
+          const dx = mx - this.x,
+            dy = my - this.y;
+          const d = Math.hypot(dx, dy);
+          if (d < 110) {
+            this.x += (dx / d) * 0.07;
+            this.y += (dy / d) * 0.07;
+          }
+          if (this.y < -8) this.reset(false);
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(200,169,110,${this.op})`;
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < 52; i++) pts.push(new P(true));
+
+      (function loop() {
+        ctx.clearRect(0, 0, W, H);
+        pts.forEach((p) => {
+          p.step();
+          p.draw();
+        });
+        requestAnimationFrame(loop);
+      })();
+
+      // ── REVEAL (IntersectionObserver) ──────────────────────────────
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              obs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.12 },
+      );
+
+      // ── ENTRY ──────────────────────────────────────────────────────
+      function doEnter() {
+        const entry = document.getElementById("entry");
+        const main = document.getElementById("main");
+        initAudio();
+        entry.classList.add("out");
+        setTimeout(() => {
+          entry.style.display = "none";
+          main.classList.add("visible");
+          document
+            .querySelectorAll(
+              ".p-block, .close-main, .close-secondary, .close-final",
+            )
+            .forEach((el) => obs.observe(el));
+        }, 1800);
+      }
+
+      document.getElementById("btn-enter").addEventListener("click", doEnter);
+
+      // Auto-enter if audio was playing in previous chapter
+      document.addEventListener("DOMContentLoaded", () => {
+        if (sessionStorage.getItem("audioState") === "playing") {
+          setTimeout(doEnter, 600);
+        }
+        // Show map btn if fragments collected
+        try {
+          var letters = JSON.parse(
+            localStorage.getItem("oavesso_letters") || "[]",
+          );
+          if (letters.length > 0) {
+            var mb = document.getElementById("oa-map-btn");
+            if (mb) {
+              mb.classList.add("on");
+            }
+          }
+        } catch (e) {}
+      });
+
+      // ── AUDIO ──────────────────────────────────────────────────────
+      let audioCtx = null,
+        lp = null,
+        plincVol = null;
+
+      function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        const master = audioCtx.createGain();
+        master.gain.setValueAtTime(0, 0);
+        master.gain.linearRampToValueAtTime(0.72, audioCtx.currentTime + 9);
+        master.connect(audioCtx.destination);
+
+        // Drones: F2 sub + F3 água + C4 ouro (Fmaj)
+        [
+          [87.31, "sine", 0.48],
+          [174.61, "sine", 0.28],
+          [261.63, "triangle", 0.13],
+        ].forEach(([f, t, v]) => {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          const lfo = audioCtx.createOscillator();
+          const lf = audioCtx.createGain();
+          osc.type = t;
+          osc.frequency.value = f;
+          lfo.frequency.value = 1 / 11;
+          lf.gain.value = f * 0.004;
+          lfo.connect(lf);
+          lf.connect(osc.frequency);
+          lfo.start();
+          g.gain.value = v;
+          osc.connect(g);
+          g.connect(master);
+          osc.start();
+        });
+
+        // Rio filtrado (ruído rosa suave)
+        const buf = audioCtx.createBuffer(
+          1,
+          audioCtx.sampleRate * 2,
+          audioCtx.sampleRate,
+        );
+        const d = buf.getChannelData(0);
+        let b0 = 0,
+          b1 = 0,
+          b2 = 0;
+        for (let i = 0; i < d.length; i++) {
+          const wn = Math.random() * 2 - 1;
+          b0 = 0.99765 * b0 + wn * 0.099046;
+          b1 = 0.963 * b1 + wn * 0.2965164;
+          b2 = 0.57 * b2 + wn * 1.0526913;
+          d[i] = (b0 + b1 + b2 + wn * 0.1848) * 0.055;
+        }
+        const ns = audioCtx.createBufferSource();
+        ns.buffer = buf;
+        ns.loop = true;
+        lp = audioCtx.createBiquadFilter();
+        lp.type = "lowpass";
+        lp.frequency.value = 260;
+        const ng = audioCtx.createGain();
+        ng.gain.value = 0.28;
+        ns.connect(lp);
+        lp.connect(ng);
+        ng.connect(master);
+        ns.start();
+
+        // Plincs de ouro esparsos
+        plincVol = audioCtx.createGain();
+        plincVol.gain.value = 0;
+        plincVol.connect(master);
+        const freqs = [349.23, 440, 523.25, 659.25, 698.46, 880];
+
+        function plinc() {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          const pan = audioCtx.createStereoPanner();
+          osc.type = "sine";
+          osc.frequency.value = freqs[Math.floor(Math.random() * freqs.length)];
+          pan.pan.value = Math.random() * 2 - 1;
+          const now = audioCtx.currentTime;
+          g.gain.setValueAtTime(0, now);
+          g.gain.linearRampToValueAtTime(0.22, now + 0.04);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 3.8);
+          osc.connect(g);
+          g.connect(pan);
+          pan.connect(plincVol);
+          osc.start(now);
+          osc.stop(now + 3.9);
+          setTimeout(plinc, Math.random() * 4500 + 2200);
+        }
+        setTimeout(plinc, 3500);
+
+        // Áudio reage ao scroll
+        addEventListener("scroll", () => {
+          if (!audioCtx) return;
+          const p =
+            scrollY / (document.documentElement.scrollHeight - innerHeight);
+          lp.frequency.setTargetAtTime(
+            260 + p * 480,
+            audioCtx.currentTime,
+            1.2,
+          );
+          plincVol.gain.setTargetAtTime(p * 0.55, audioCtx.currentTime, 1);
+        });
+
+        sessionStorage.setItem("audioState", "playing");
+      }
+
+      // ── NAV LINKS ──────────────────────────────────────────────────
+      function playNavClick() {
+        try {
+          const c = new (window.AudioContext || window.webkitAudioContext)();
+          const now = c.currentTime;
+          const osc = c.createOscillator();
+          const g = c.createGain();
+          osc.type = "sine";
+          osc.frequency.value = 440;
+          g.gain.setValueAtTime(0.018, now);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.connect(g);
+          g.connect(c.destination);
+          osc.start(now);
+          osc.stop(now + 0.12);
+          setTimeout(() => c.close(), 400);
+        } catch (e) {}
+      }
+
+      function playExitRipple(x, y, cb) {
+        const el = document.createElement("div");
+        const s = Math.hypot(window.innerWidth, window.innerHeight) * 2.4;
+        el.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,0.18) 0%,rgba(4,6,10,0.97) 65%);transform:translate(-50%,-50%) scale(1);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1);pointer-events:none;z-index:9997;`;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(-50%,-50%) scale(${s})`;
+        });
+        setTimeout(() => {
+          el.remove();
+          cb();
+        }, 670);
+      }
+
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (audioCtx && audioCtx.state === "running") {
+            try {
+              const ft = audioCtx.currentTime;
+              if (lp) lp.frequency.setTargetAtTime(80, ft, 0.4);
+              if (plincVol) plincVol.gain.setTargetAtTime(0, ft, 0.4);
+            } catch (_) {}
+          }
+          playNavClick();
+          const rx = e.clientX || window.innerWidth / 2;
+          const ry = e.clientY || window.innerHeight / 2;
+          playExitRipple(rx, ry, () => {
+            window.location.href = link.getAttribute("href");
+          });
+        });
+      });
+    </script>
+
+    <!-- ══ COLETOR DE FRAGMENTOS ══════════════════════════════════════════ -->
+    <style>
+      @keyframes oLetterFlash {
+        0% {
+          opacity: 0;
+          transform: translateY(14px) scale(0.65);
+        }
+        18% {
+          opacity: 1;
+          transform: translateY(0) scale(1.1);
+        }
+        62% {
+          opacity: 0.9;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-12px) scale(1.05);
+        }
+      }
+      #oa-glyph {
+        position: fixed;
+        bottom: 5rem;
+        right: 1.6rem;
+        z-index: 500;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: rgba(200, 169, 84, 0.42);
+        cursor: none;
+        opacity: 0;
+        transition: opacity 2s ease;
+        letter-spacing: 0.2em;
+        user-select: none;
+        text-shadow: 0 0 9px rgba(200, 169, 84, 0.18);
+        padding: 6px;
+      }
+      #oa-glyph.on {
+        opacity: 1;
+      }
+      #oa-overlay {
+        position: fixed;
+        bottom: 6.5rem;
+        right: 1.2rem;
+        z-index: 499;
+        background: rgba(4, 4, 4, 0.97);
+        border: 1px solid rgba(200, 169, 84, 0.08);
+        padding: 1.3rem 1.7rem 1.1rem;
+        backdrop-filter: blur(18px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.42s ease;
+        min-width: 200px;
+      }
+      #oa-overlay.on {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .oa-lbl {
+        display: block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 7px;
+        letter-spacing: 0.44em;
+        color: rgba(200, 169, 84, 0.28);
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+      }
+      .oa-slots {
+        display: flex;
+        gap: 0.78rem;
+        justify-content: center;
+        align-items: baseline;
+      }
+      .oa-slot {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 1.65rem;
+        line-height: 1;
+        min-width: 1rem;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.07);
+        transition:
+          color 1s ease,
+          text-shadow 1s ease;
+      }
+      .oa-slot.found {
+        color: rgba(200, 169, 84, 0.88);
+        text-shadow: 0 0 14px rgba(200, 169, 84, 0.26);
+      }
+      #oa-done {
+        display: none;
+        margin-top: 1.1rem;
+        text-align: center;
+        border-top: 1px solid rgba(200, 169, 84, 0.07);
+        padding-top: 0.9rem;
+      }
+      #oa-done a {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+        letter-spacing: 0.4em;
+        color: rgba(200, 169, 84, 0.55);
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.4s ease;
+      }
+      #oa-done a:hover {
+        color: rgba(200, 169, 84, 1);
+      }
+      .oa-flash {
+        position: fixed;
+        bottom: 7rem;
+        right: 4rem;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 6rem;
+        font-weight: 300;
+        line-height: 1;
+        color: rgba(200, 169, 84, 0.88);
+        pointer-events: none;
+        z-index: 600;
+        animation: oLetterFlash 3s ease forwards;
+      }
+
+      body .poetic-paragraph {
+        line-height: 1.88;
+      }
+    </style>
+    <div id="oa-glyph" onclick="oaToggle()">◈</div>
+    <div id="oa-overlay">
+      <span class="oa-lbl">fragmentos encontrados</span>
+      <div class="oa-slots" id="oa-slots"></div>
+      <div id="oa-done"><a href="chave.html">entrar →</a></div>
+    </div>
+    <script>
+      (function () {
+        var K = "oavesso_letters",
+          O = ["A", "B", "E", "I", "R", "T", "Z"];
+        function gF() {
+          try {
+            return JSON.parse(localStorage.getItem(K) || "[]");
+          } catch (e) {
+            return [];
+          }
+        }
+        function sF(a) {
+          localStorage.setItem(K, JSON.stringify(a));
+        }
+        function render() {
+          var f = gF(),
+            s = document.getElementById("oa-slots");
+          if (!s) return;
+          s.innerHTML = "";
+          O.forEach(function (l) {
+            var el = document.createElement("span");
+            el.className = "oa-slot" + (f.indexOf(l) > -1 ? " found" : "");
+            el.textContent = f.indexOf(l) > -1 ? l : "·";
+            s.appendChild(el);
+          });
+          var d = document.getElementById("oa-done");
+          if (d) d.style.display = f.length === 7 ? "block" : "none";
+        }
+        function showG() {
+          var g = document.getElementById("oa-glyph");
+          if (g)
+            setTimeout(function () {
+              g.classList.add("on");
+            }, 400);
+        }
+        window.oaFoundLetter = function (l) {
+          var f = gF();
+          if (f.indexOf(l) > -1) return;
+          f.push(l);
+          sF(f);
+          showG();
+          render();
+          var fl = document.createElement("div");
+          fl.className = "oa-flash";
+          fl.textContent = l;
+          document.body.appendChild(fl);
+          setTimeout(function () {
+            fl.remove();
+          }, 3200);
+        };
+        window.oaToggle = function () {
+          var o = document.getElementById("oa-overlay");
+          if (o) o.classList.toggle("on");
+          render();
+        };
+        document.addEventListener("DOMContentLoaded", function () {
+          render();
+          if (gF().length > 0) showG();
+        });
+      })();
+    </script>
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <script src="oa-fragmentos.js"></script>
+  <script src="constelacao-header.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1219 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>III · O Peso da Dualidade — O Avesso do Chão</title>
+    <script>
+      localStorage.setItem(
+        "oavesso_progress",
+        '{"chapter":3,"title":"III · O Peso da Dualidade","href":"capitulo-3-o-peso-da-dualidade.html"}',
+      );
+    </script>
+    <script>(function(){var k='avesso_jornada_cap-3';if(!localStorage.getItem(k))localStorage.setItem(k,Date.now());})();</script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter+Tight:wght@100;200;300;400&family=JetBrains+Mono:wght@100;200;300&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans:  ['"Inter Tight"', "sans-serif"],
+              mono:  ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              copper: {
+                300: "#f08a75",
+                400: "#e96c54",
+                500: "#e2583e",
+                600: "#cc462d",
+              },
+              ember: {
+                400: "#ff6b4a",
+                500: "#e2583e",
+                600: "#d94a2e",
+              },
+              shadow: {
+                900: "#080606",
+                800: "#120d0c",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #080606;
+        color: #e6e6e6;
+        opacity: 0;
+        transition:
+          background-color 3s cubic-bezier(0.25, 1, 0.5, 1),
+          opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-x: hidden;
+        hyphens: none;
+      }
+      body.loaded { opacity: 1; }
+
+      ::selection {
+        background: rgba(255, 107, 74, 0.25);
+        color: #ffffff;
+      }
+
+      .reveal-text {
+        opacity: 0;
+        transform: translateY(22px);
+        filter: blur(7px);
+        transition:
+          opacity   2.4s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+          filter    2.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal-text.reveal {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+
+      #heavy-rain-canvas {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.4;
+        transition: opacity 3s ease;
+      }
+      #warm-glow-canvas {
+        pointer-events: none;
+        mix-blend-mode: screen;
+        z-index: 1;
+        position: fixed;
+        inset: 0;
+      }
+
+      @media (min-width: 1024px) {
+        #custom-cursor {
+          width: 600px; height: 600px;
+          background: radial-gradient(
+            circle,
+            rgba(255, 107, 74, 0.08) 0%,
+            rgba(125, 211, 252, 0.02) 40%,
+            rgba(0, 0, 0, 0) 70%
+          );
+          transform: translate(-50%, -50%);
+          pointer-events: none;
+          z-index: 2;
+          transition: width 0.3s ease, height 0.3s ease;
+        }
+        .cursor-breathe {
+          animation: cursorPulse 4s infinite alternate ease-in-out;
+        }
+      }
+      @keyframes cursorPulse {
+        0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.8; }
+        100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+      }
+
+      .vignette {
+        position: fixed; inset: 0;
+        background: radial-gradient(circle at 50% 30%, transparent 20%, #000000 110%);
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      @keyframes fadeIn  { to { opacity: 1; } }
+      @keyframes floatUp {
+        0%   { transform: translateY(20px); opacity: 0; }
+        100% { transform: translateY(0);    opacity: 1; }
+      }
+
+      .glass-panel {
+        background: rgba(18, 13, 12, 0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+
+      .horizon-line {
+        width: 0%; height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 107, 74, 0.5), transparent);
+        transition: width 2.5s ease-out;
+        margin: 0 auto;
+      }
+      .horizon-line.reveal { width: 80%; }
+
+      @keyframes descendHint {
+        0%, 100% { transform: translateY(0);  opacity: 0.3; }
+        50%       { transform: translateY(6px); opacity: 0.55; }
+      }
+      .animate-descend-hint { animation: descendHint 2.8s ease-in-out infinite; }
+
+      @media (hover: none), (pointer: coarse) {
+        body { cursor: auto !important; }
+        a, button { cursor: pointer !important; }
+        #custom-cursor { display: none !important; }
+        .nav-link.fixed { min-height: 44px; display: flex; align-items: center; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+      @media (max-width: 420px) { body { font-size: 15px; } }
+
+      body::after {
+        content: "";
+        position: fixed; inset: -50%;
+        width: 200%; height: 200%;
+        opacity: 0.028;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.4s steps(1) infinite;
+      }
+      @keyframes grain {
+        0%   { transform: translate(0, 0);    }
+        20%  { transform: translate(-3%, 2%); }
+        40%  { transform: translate(2%, -3%); }
+        60%  { transform: translate(-2%, 3%); }
+        80%  { transform: translate(3%, -1%); }
+        100% { transform: translate(1%, 2%);  }
+      }
+
+      body .reveal-text, body .poetic-paragraph { line-height: 1.88; }
+    </style>
+  </head>
+  <body class="antialiased relative">
+    <div class="vignette"></div>
+
+    <a
+      href="sumario.html"
+      class="nav-link fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 uppercase"
+    >
+      ← Sumário
+    </a>
+
+    <canvas id="heavy-rain-canvas"></canvas>
+    <canvas id="warm-glow-canvas"></canvas>
+
+    <div
+      id="custom-cursor"
+      class="fixed top-0 left-0 hidden lg:block pointer-events-none transition-transform duration-75 ease-out rounded-full cursor-breathe"
+    ></div>
+
+    <div class="fixed bottom-6 right-6 z-50 flex items-center space-x-3 bg-shadow-800/60 backdrop-blur-md border border-white/5 py-2 px-4 rounded-full transition-all hover:bg-shadow-800/90">
+      <span class="text-[9px] font-mono tracking-[0.2em] text-ember-400 uppercase">O Peso</span>
+      <button
+        id="btn-audio"
+        class="w-8 h-8 rounded-full border border-white/10 hover:border-ember-400/50 flex items-center justify-center transition-all duration-300 focus:outline-none group"
+      >
+        <svg id="icon-play" class="w-3.5 h-3.5 text-zinc-400 fill-current group-hover:text-zinc-200 transition-colors" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z" />
+        </svg>
+        <svg id="icon-pause" class="w-3.5 h-3.5 text-ember-400 fill-current hidden" viewBox="0 0 24 24">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+        </svg>
+      </button>
+    </div>
+
+    <header class="min-h-[100vh] flex flex-col justify-center items-center px-6 relative z-10 text-center select-none overflow-hidden pb-20">
+      <div class="relative z-10 pointer-events-none flex flex-col items-center max-w-4xl w-full">
+        <span class="text-[10px] md:text-xs font-mono tracking-[0.5em] text-zinc-500 uppercase mb-8 opacity-0 animate-[fadeIn_3s_ease-out_1s_forwards]">
+          capítulo III · o peso
+        </span>
+
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-medium text-white leading-[1.1] mb-6 tracking-tight opacity-0 animate-[floatUp_3s_ease-out_1.5s_forwards]">
+          o peso da<br />
+          <span class="italic text-transparent bg-clip-text bg-gradient-to-r from-zinc-300 via-ember-400 to-zinc-600">dualidade</span>
+        </h1>
+
+        <p class="text-sm md:text-base font-sans font-light text-zinc-400 max-w-lg mt-8 opacity-0 animate-[fadeIn_4s_ease-out_2.5s_forwards] leading-relaxed">
+          Tenho sede de existir além das máscaras.
+        </p>
+      </div>
+
+      <div
+        class="absolute bottom-12 flex flex-col items-center animate-descend-hint transition-opacity hover:opacity-100 cursor-pointer"
+        onclick="window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })"
+      >
+        <span class="text-[8px] font-mono tracking-widest text-zinc-400 uppercase mb-3">Descenda</span>
+        <svg class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </div>
+    </header>
+
+    <main class="w-full flex flex-col items-center pb-32 relative z-10">
+
+      <!-- O peso do que não se diz -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-24 flex flex-col space-y-10">
+        <p class="reveal-text text-xl md:text-2xl font-sans font-light text-zinc-300 leading-loose">
+          Existe um peso que não aparece nas balanças.
+        </p>
+        <p class="reveal-text text-xl md:text-2xl font-sans font-light text-zinc-400 leading-loose">
+          É o peso do que não se diz.
+        </p>
+        <div class="reveal-text space-y-5 font-sans font-light text-zinc-500 text-lg md:text-xl leading-loose">
+          <p>Das palavras interrompidas antes de chegarem à boca.</p>
+          <p>Das perguntas que param na fronteira<br />entre a coragem e o medo.</p>
+          <p>Das verdades que continuam existindo<br />mesmo quando ninguém lhes dá nome.</p>
+        </div>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Sal / armadura / metal -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-20 flex flex-col space-y-8">
+        <p class="reveal-text text-xl md:text-2xl font-sans font-light text-zinc-300 leading-loose">
+          Eu vejo o sal do mundo ressecando a tua pele.
+        </p>
+        <p class="reveal-text text-xl md:text-2xl font-sans font-light text-zinc-400 leading-loose">
+          Vejo essa armadura que você poliu durante anos<br />
+          e percebo os lugares onde o cansaço<br />
+          começou a atravessar o metal.
+        </p>
+        <div class="reveal-text space-y-3 pt-2">
+          <p class="font-serif italic text-xl md:text-2xl text-zinc-500 leading-relaxed">Não como fraqueza.</p>
+          <p class="font-serif italic text-xl md:text-2xl text-zinc-200 leading-relaxed">Como verdade.</p>
+        </div>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto my-4"></div>
+
+      <!-- Nossas sombras — isolada -->
+      <section class="w-full py-16 flex flex-col items-center text-center px-6">
+        <p class="reveal-text font-serif italic text-2xl md:text-3xl text-zinc-300 leading-relaxed max-w-xl">
+          Nossas sombras se reconheceram<br />
+          muito antes das nossas máscaras caírem.
+        </p>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Coragem silenciosa -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-20 flex flex-col space-y-8">
+        <p class="reveal-text text-xl md:text-2xl font-sans font-light text-zinc-300 leading-loose">
+          Eu admiro a coragem silenciosa que existe em você.
+        </p>
+        <div class="reveal-text space-y-5 font-sans font-light text-zinc-500 text-xl md:text-2xl leading-loose">
+          <p>Não a coragem dos grandes gestos.</p>
+          <p class="text-zinc-400">A outra.</p>
+          <div class="space-y-2">
+            <p>A de continuar.</p>
+            <p>A de levantar quando ninguém está olhando.</p>
+            <p>A de sustentar o próprio peso<br />sem transformar isso em espetáculo.</p>
+          </div>
+        </div>
+        <p class="reveal-text text-xl md:text-2xl font-sans font-light text-zinc-300 leading-loose pt-4">
+          Eu admiro quem você é quando as luzes se apagam.
+        </p>
+        <div class="reveal-text space-y-3 font-sans font-light text-zinc-500 text-lg md:text-xl leading-loose">
+          <p>Quando não existe palco.</p>
+          <p>Quando não existe personagem.</p>
+          <p>Quando sobra apenas a pessoa.</p>
+        </div>
+      </section>
+
+      <div class="w-2/3 h-px bg-gradient-to-r from-transparent via-zinc-800/50 to-transparent mx-auto"></div>
+
+      <!-- Era uma coisa / gaveta -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-20 flex flex-col space-y-8">
+        <div class="reveal-text space-y-6 font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          <p>Era uma coisa.</p>
+          <p>Depois foi sendo outra.</p>
+          <p>
+            Não de uma vez —<br />
+            da forma como a água muda de leito<br />
+            sem pedir autorização,<br />
+            sem perder o nome.
+          </p>
+        </div>
+        <div class="reveal-text space-y-3 font-sans font-light text-zinc-500 text-lg md:text-xl leading-loose pt-4">
+          <p>As pessoas gostam de coisas que caibam.</p>
+          <p>Que tenham nome.</p>
+          <p>Como se a vida fosse uma gaveta.</p>
+        </div>
+        <p class="reveal-text text-xl md:text-2xl font-sans font-light text-zinc-300 leading-loose">
+          O que existe entre nós nunca coube em gaveta nenhuma.
+        </p>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Lealdade e desejo -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-20 flex flex-col space-y-8">
+        <div class="reveal-text space-y-5 font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          <p>Tem situações que o mapa não cobre.</p>
+          <p>Que nenhuma regra escrita alcança com precisão.</p>
+        </div>
+        <div class="reveal-text space-y-4">
+          <p class="font-serif italic text-xl md:text-2xl text-copper-400 leading-relaxed">
+            Onde lealdade e desejo moram no mesmo andar.<br />
+            Onde afeto e limite dividem a mesma parede.
+          </p>
+          <p class="font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+            E você tem que escolher por qual porta entrar.
+          </p>
+        </div>
+        <div class="reveal-text space-y-4 font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose pt-4">
+          <p>Eu conheço o peso disso.</p>
+          <div class="space-y-2 text-zinc-500">
+            <p>O que complica.</p>
+            <p>O que exige.</p>
+            <p>O que transforma qualquer passo numa decisão.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- O peso nasce -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-12 flex flex-col space-y-10">
+        <div class="reveal-text space-y-5 font-sans font-light text-zinc-500 text-xl md:text-2xl leading-loose">
+          <p>Se fosse só desejo, seria simples.</p>
+          <p>Se fosse só lealdade, seria simples.</p>
+        </div>
+        <p class="reveal-text font-serif italic text-2xl md:text-3xl text-zinc-200 leading-relaxed">
+          O peso nasce quando nenhum dos dois está mentindo.
+        </p>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Não estou fingindo / É significado -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-20 flex flex-col space-y-8">
+        <div class="reveal-text space-y-5 font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          <p>Não estou fingindo que é simples.</p>
+          <p>Não estou ignorando os nós.</p>
+          <p>
+            Só estou de pé num lugar<br />
+            onde o mesmo nó<br />
+            parece feito de outra coisa.
+          </p>
+        </div>
+        <div class="reveal-text py-6 flex flex-col items-center text-center space-y-4">
+          <p class="font-serif italic text-2xl md:text-3xl text-zinc-500 leading-relaxed">Não é leveza.</p>
+          <p class="font-serif italic text-3xl md:text-4xl text-zinc-200 leading-relaxed">É significado.</p>
+        </div>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Frequência: duas linhas -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-20 flex flex-col space-y-8">
+        <div class="reveal-text space-y-6 font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          <p>Talvez não tenha sido a frequência que eu encontrei.</p>
+          <p>Talvez eu tenha sido quem ficou mais tempo ouvindo.</p>
+        </div>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Inclinação / Você permanece -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-20 flex flex-col space-y-10">
+        <p class="reveal-text font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          Há algo no jeito como me inclino na tua direção.
+        </p>
+        <div class="reveal-text space-y-3 font-sans font-light text-zinc-500 text-xl leading-loose">
+          <p>Desejo.</p>
+          <p>Admiração.</p>
+          <p>Ternura.</p>
+          <p class="text-zinc-400 pt-2">Tudo misturado na mesma corrente.</p>
+        </div>
+        <div class="reveal-text space-y-6 pt-2">
+          <p class="font-serif italic text-2xl md:text-3xl text-zinc-200 leading-relaxed">Eu me inclino.</p>
+          <p class="font-serif italic text-2xl md:text-3xl text-zinc-400 leading-relaxed">Você permanece.</p>
+        </div>
+        <div class="reveal-text space-y-3 font-sans font-light text-zinc-500 text-lg md:text-xl leading-loose">
+          <p>Não distante.</p>
+          <p>Não fria.</p>
+          <p>Apenas vivendo uma experiência emocional<br />diferente da minha.</p>
+        </div>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Eu não quero ser um herói. Eu quero ser um amante. -->
+      <section class="w-full py-20 flex flex-col items-center text-center px-6">
+        <div class="reveal-text space-y-5">
+          <p class="font-serif italic text-2xl md:text-3xl text-zinc-400 leading-relaxed">
+            Eu não quero ser um herói.
+          </p>
+          <p class="font-serif italic text-2xl md:text-3xl text-zinc-200 leading-relaxed">
+            Eu quero ser um amante.
+          </p>
+        </div>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- A Vontade -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-24 flex flex-col space-y-10">
+        <div class="reveal-text space-y-4 font-sans font-light text-zinc-500 text-xl md:text-2xl leading-loose">
+          <p>Não a vontade de resolver.</p>
+          <p>Nem de proteger.</p>
+          <p>Nem de consertar.</p>
+        </div>
+        <p class="reveal-text font-sans font-light text-zinc-300 text-xl md:text-2xl leading-loose">
+          Mas a vontade de ser espaço.
+        </p>
+        <p class="reveal-text font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          O lugar onde você não precise estar inteira<br />
+          para continuar sendo recebida.
+        </p>
+        <div class="reveal-text space-y-3 font-sans font-light text-zinc-500 text-lg md:text-xl leading-loose">
+          <p>Onde cansada seja suficiente.</p>
+          <p>Onde incompleta seja suficiente.</p>
+          <p>Onde humana seja suficiente.</p>
+        </div>
+        <p class="reveal-text font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose pt-4">
+          Não estou esperando uma versão futura de você.
+        </p>
+        <p class="reveal-text font-sans font-light text-zinc-300 text-xl md:text-2xl leading-loose">
+          Estou aqui com esta.
+        </p>
+        <div class="reveal-text space-y-3 font-sans font-light text-zinc-500 text-lg md:text-xl leading-loose">
+          <p>A que carrega.</p>
+          <p>A que desaparece às vezes.</p>
+          <p>A que retorna sem explicação.</p>
+        </div>
+        <p class="reveal-text font-serif italic text-2xl md:text-3xl text-zinc-200 leading-relaxed pt-4">
+          Essa já basta.
+        </p>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- O desejo não é um invasor -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-20 flex flex-col space-y-8">
+        <p class="reveal-text font-serif italic text-2xl md:text-3xl text-zinc-300 leading-relaxed">
+          O desejo não é um invasor.
+        </p>
+        <div class="reveal-text space-y-5 font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          <p>É uma verdade procurando passagem.</p>
+          <p>A febre que indica que o corpo<br />finalmente parou de mentir.</p>
+        </div>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Incêndio: cinzas / pose / distância -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-20 flex flex-col space-y-8">
+        <p class="reveal-text font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          Ninguém sabe o que acontece no meu silêncio.
+        </p>
+        <div class="reveal-text space-y-3 pt-2">
+          <p class="font-serif italic text-xl md:text-2xl text-zinc-300 leading-relaxed">
+            O que está virando cinzas<br />não é o afeto.
+          </p>
+        </div>
+        <div class="reveal-text space-y-3 font-sans font-light text-zinc-500 text-lg md:text-xl leading-loose">
+          <p>É a tentativa de escondê-lo.</p>
+          <p>A pose.</p>
+          <p>A distância segura.</p>
+          <p>A versão editada da verdade.</p>
+        </div>
+        <p class="reveal-text font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose pt-4">
+          Essas coisas precisavam queimar.
+        </p>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Pedra de rio -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-24 flex flex-col space-y-8">
+        <p class="reveal-text font-sans font-light text-zinc-300 text-xl md:text-2xl leading-loose">
+          Existe uma beleza específica nas coisas pesadas.
+        </p>
+        <div class="reveal-text space-y-3 font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          <p>O ouro pesa.</p>
+          <p>A água pesa.</p>
+          <p>O amor pesa.</p>
+        </div>
+        <p class="reveal-text font-sans font-light text-zinc-500 text-lg md:text-xl leading-loose">
+          Tudo o que possui densidade real pesa.
+        </p>
+        <p class="reveal-text font-sans font-light text-zinc-300 text-xl md:text-2xl leading-loose pt-4">
+          O que é difícil entre a gente<br />tem textura de pedra de rio.
+        </p>
+        <div class="reveal-text space-y-5 font-serif italic text-zinc-400 text-xl md:text-2xl leading-relaxed">
+          <p>Você pega na mão<br />e entende que foi feita pela água<br />que bateu durante anos.</p>
+          <p>Que o que é duro nela<br />não é dureza.</p>
+          <p class="text-zinc-300">É memória.</p>
+          <p>É a correnteza que ficou.</p>
+        </div>
+        <p class="reveal-text font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose pt-4">
+          Carregar uma pedra de rio<br />é carregar o tempo que demorou<br />para ela se tornar o que é.
+        </p>
+        <div class="reveal-text space-y-4 font-sans font-light text-zinc-400 text-lg md:text-xl leading-loose">
+          <p>Talvez seja por isso que algumas pessoas<br />pesem tanto dentro da gente.</p>
+          <p>Porque junto delas<br />carregamos também o tempo.</p>
+        </div>
+      </section>
+
+      <div class="w-2/3 h-px bg-gradient-to-r from-transparent via-zinc-700/40 to-transparent mx-auto"></div>
+
+      <!-- Esconder / Sentir demais / A colisão honesta -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-24 flex flex-col space-y-10">
+        <p class="reveal-text font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          Esconder o que eu sinto<br />começou a parecer menos honesto<br />do que admitir.
+        </p>
+        <div class="reveal-text space-y-5 font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose pt-4">
+          <p>A colisão honesta<br />entre aquilo que eu sinto<br />e aquilo que existe.</p>
+          <div class="space-y-2 text-zinc-500">
+            <p>Sem garantias.</p>
+            <p>Sem roteiro.</p>
+            <p>Sem conclusão obrigatória.</p>
+          </div>
+          <div class="space-y-2 text-zinc-300 pt-4">
+            <p>Apenas este instante.</p>
+            <p>Este chão.</p>
+            <p>Esta verdade.</p>
+          </div>
+        </div>
+        <p class="reveal-text font-serif italic text-xl md:text-2xl text-zinc-300 leading-relaxed">
+          Pesada como uma pedra de rio.
+        </p>
+        <p class="reveal-text font-sans font-light text-zinc-400 text-xl md:text-2xl leading-loose">
+          E, justamente por isso,<br />impossível de confundir com algo passageiro.
+        </p>
+        <p class="reveal-text font-serif italic text-xl md:text-2xl text-zinc-300 leading-relaxed pt-4">
+          Sentir demais é um erro que eu cometeria mil vezes.
+        </p>
+      </section>
+
+      <div class="w-2/3 h-px bg-gradient-to-r from-transparent via-zinc-700/40 to-transparent mx-auto"></div>
+
+      <!-- CLÍMAX: Entregar o fato -->
+      <section class="w-full max-w-4xl px-6 py-28 md:py-36 reveal-text flex flex-col items-center text-center">
+        <p class="font-serif italic text-4xl md:text-6xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-br from-zinc-200 via-copper-300 to-zinc-500 leading-tight tracking-tight max-w-3xl">
+          Entregar o fato<br />
+          é a única forma<br />
+          de não morrer sufocado<br />
+          pelo próprio silêncio.
+        </p>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Aurora — Fragment T dispara aqui -->
+      <section class="w-full max-w-3xl px-6 py-20 reveal-text flex flex-col items-center text-center space-y-8">
+        <p class="font-serif italic text-2xl md:text-3xl text-zinc-300 leading-relaxed">
+          Dissolvem-se os entraves.
+        </p>
+        <p
+          id="aurora-trigger"
+          class="font-serif italic text-2xl md:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-ember-400 to-amber-400 leading-relaxed"
+        >
+          É tempo de auroras.
+        </p>
+      </section>
+
+      <div class="w-40 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto"></div>
+
+      <!-- Tese final -->
+      <section class="w-full max-w-2xl px-6 md:px-12 py-20 reveal-text flex flex-col items-center text-center">
+        <p class="font-serif italic text-2xl md:text-3xl text-zinc-300 leading-relaxed">
+          Algumas coisas valem exatamente<br />o custo do que complicam.
+        </p>
+      </section>
+
+      <!-- Footer -->
+      <section class="w-full max-w-4xl px-6 py-12 flex flex-col items-center">
+        <div class="w-1.5 h-1.5 rounded-full bg-ember-600 animate-pulse mb-16"></div>
+        <footer class="flex flex-col items-center space-y-10 w-full">
+          <div class="w-[1px] h-16 bg-gradient-to-b from-ember-500/30 to-transparent"></div>
+          <div class="flex justify-between w-full max-w-sm font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+            <a href="capitulo-2-a-linha.html" class="nav-link hover:text-ember-400 transition-colors">← II · A Linha</a>
+            <a href="capitulo-4-a-arquitetura-da-atencao.html" class="nav-link group flex items-center space-x-2 hover:text-ember-400 transition-colors"><span>IV · A Atenção</span>
+              <svg class="w-3 h-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          </div>
+        </footer>
+      </section>
+
+    </main>
+
+    <script>
+      const isTouch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+      const mouse = { x: -1000, y: -1000, moved: false };
+      let scrollY = 0;
+      let auroraActive = false;
+      let auroraAlpha = 0;
+
+      if (!isTouch) {
+        window.addEventListener("mousemove", (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+          mouse.moved = true;
+          const cursor = document.getElementById("custom-cursor");
+          if (cursor) {
+            cursor.style.left = e.clientX + "px";
+            cursor.style.top  = e.clientY + "px";
+            cursor.classList.remove("cursor-breathe");
+            clearTimeout(cursor.idleTimeout);
+            cursor.idleTimeout = setTimeout(() => {
+              cursor.classList.add("cursor-breathe");
+            }, 1000);
+          }
+        });
+      }
+
+      window.addEventListener("scroll", () => { scrollY = window.scrollY; });
+
+      // Rain canvas
+      const rainCanvas = document.getElementById("heavy-rain-canvas");
+      const rCtx = rainCanvas.getContext("2d");
+      let raindrops = [];
+      let rainRafId = null;
+
+      function resizeRainCanvas() {
+        rainCanvas.width  = window.innerWidth;
+        rainCanvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeRainCanvas);
+      resizeRainCanvas();
+
+      class Raindrop {
+        constructor() {
+          this.reset();
+          this.y = Math.random() * rainCanvas.height;
+        }
+        reset() {
+          this.x       = Math.random() * rainCanvas.width;
+          this.y       = -20;
+          this.length  = Math.random() * 30 + 10;
+          this.speed   = Math.random() * 2 + 1;
+          this.opacity = Math.random() * 0.15 + 0.05;
+        }
+        update() {
+          this.y += this.speed;
+          this.y -= scrollY * 0.002 * this.speed;
+          if (this.y > rainCanvas.height) this.reset();
+        }
+        draw() {
+          rCtx.beginPath();
+          rCtx.moveTo(this.x, this.y);
+          rCtx.lineTo(this.x, this.y + this.length);
+          rCtx.strokeStyle = `rgba(200, 200, 200, ${this.opacity})`;
+          rCtx.lineWidth = 1;
+          rCtx.stroke();
+        }
+      }
+
+      for (let i = 0; i < (isTouch ? 50 : 100); i++) raindrops.push(new Raindrop());
+
+      function animateRain() {
+        rCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+        raindrops.forEach((drop) => { drop.update(); drop.draw(); });
+        rainRafId = requestAnimationFrame(animateRain);
+      }
+      animateRain();
+
+      // Glow canvas
+      const glowCanvas = document.getElementById("warm-glow-canvas");
+      const gCtx = glowCanvas.getContext("2d");
+      let glowParticles = [];
+      let glowRafId = null;
+
+      function resizeGlowCanvas() {
+        glowCanvas.width  = window.innerWidth;
+        glowCanvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeGlowCanvas);
+      resizeGlowCanvas();
+
+      class GlowParticle {
+        constructor() {
+          this.x           = Math.random() * glowCanvas.width;
+          this.y           = Math.random() * glowCanvas.height;
+          this.baseRadius  = Math.random() * 2 + 1;
+          this.radius      = this.baseRadius;
+          this.vx          = (Math.random() - 0.5) * 0.2;
+          this.vy          = (Math.random() - 0.5) * 0.2;
+          this.baseOpacity = Math.random() * 0.3 + 0.1;
+          this.opacity     = this.baseOpacity;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0 || this.x > glowCanvas.width)  this.vx *= -1;
+          if (this.y < 0 || this.y > glowCanvas.height) this.vy *= -1;
+          if (mouse.moved) {
+            const dx   = mouse.x - this.x;
+            const dy   = mouse.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 200) {
+              this.x += dx * 0.001;
+              this.y += dy * 0.001;
+              this.opacity = Math.min(0.8, this.baseOpacity + (200 - dist) / 200);
+              this.radius  = this.baseRadius * 1.5;
+            } else {
+              this.opacity = this.baseOpacity;
+              this.radius  = this.baseRadius;
+            }
+          }
+        }
+        draw() {
+          // Interpola brasa (255,107,74) → âmbar (239,176,87) com auroraAlpha
+          const r = Math.round(255 + (239 - 255) * auroraAlpha);
+          const g = Math.round(107 + (176 - 107) * auroraAlpha);
+          const b = Math.round(74  + (87  - 74)  * auroraAlpha);
+          gCtx.beginPath();
+          gCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          gCtx.fillStyle  = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
+          gCtx.shadowBlur = 10;
+          gCtx.shadowColor = `rgba(${r}, ${g}, ${b}, ${this.opacity * 2})`;
+          gCtx.fill();
+          gCtx.shadowBlur = 0;
+        }
+      }
+
+      for (let i = 0; i < (isTouch ? 30 : 60); i++) glowParticles.push(new GlowParticle());
+
+      function animateGlow() {
+        gCtx.clearRect(0, 0, glowCanvas.width, glowCanvas.height);
+        if (auroraActive) {
+          auroraAlpha += (1 - auroraAlpha) * 0.005;
+          const grad = gCtx.createLinearGradient(0, glowCanvas.height, 0, 0);
+          grad.addColorStop(0, `rgba(239, 176, 87, ${0.15 * auroraAlpha})`);
+          grad.addColorStop(1, `rgba(0,0,0,0)`);
+          gCtx.fillStyle = grad;
+          gCtx.fillRect(0, 0, glowCanvas.width, glowCanvas.height);
+          rainCanvas.style.opacity = (0.4 * (1 - auroraAlpha)).toString();
+        }
+        glowParticles.forEach((p) => { p.update(); p.draw(); });
+        glowRafId = requestAnimationFrame(animateGlow);
+      }
+      animateGlow();
+
+      window.addEventListener("pagehide", () => {
+        cancelAnimationFrame(rainRafId);
+        cancelAnimationFrame(glowRafId);
+      });
+
+      // Reveal observer
+      const scrollObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) e.target.classList.add("reveal");
+          });
+        },
+        { threshold: 0.1 },
+      );
+      document.querySelectorAll(".reveal-text, .horizon-line").forEach((el) => {
+        scrollObserver.observe(el);
+      });
+
+      // Aurora observer — Fragment T dispara aqui (CONTRATO-03 cumprido)
+      const auroraObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              auroraActive = true;
+              if (window._fnCap3Reveal) window._fnCap3Reveal();
+              if (window.oaFoundLetter) window.oaFoundLetter('T');
+            }
+          });
+        },
+        { threshold: 0.5 },
+      );
+      const triggerEl = document.getElementById("aurora-trigger");
+      if (triggerEl) auroraObserver.observe(triggerEl);
+
+      // Audio
+      let audioCtx    = null;
+      let isPlaying   = false;
+      let droneOsc    = null;
+      let droneGain   = null;
+      let noiseGain   = null;
+      let playTimeout = null;
+      let noiseSource = null;
+      let pulseInterval = null;
+
+      const btnAudio  = document.getElementById("btn-audio");
+      const iconPlay  = document.getElementById("icon-play");
+      const iconPause = document.getElementById("icon-pause");
+
+      btnAudio.addEventListener("click", () => {
+        if (!isPlaying) {
+          startAudio();
+          iconPlay.classList.add("hidden");
+          iconPause.classList.remove("hidden");
+          isPlaying = true;
+        } else {
+          stopAudio();
+          iconPlay.classList.remove("hidden");
+          iconPause.classList.add("hidden");
+          isPlaying = false;
+        }
+      });
+
+      function createBrownNoiseBuffer() {
+        const bufferSize = audioCtx.sampleRate * 2;
+        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        let lastOut = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          let white = Math.random() * 2 - 1;
+          output[i] = (lastOut + 0.02 * white) / 1.02;
+          lastOut = output[i];
+          output[i] *= 3.5;
+        }
+        return noiseBuffer;
+      }
+
+      function startAudio() {
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === "suspended") audioCtx.resume();
+
+          droneOsc = audioCtx.createOscillator();
+          droneGain = audioCtx.createGain();
+          droneOsc.type = "sine";
+          droneOsc.frequency.value = 43.65;
+          droneGain.gain.setValueAtTime(0, audioCtx.currentTime);
+          droneGain.gain.linearRampToValueAtTime(0.04, audioCtx.currentTime + 5.0);
+
+          const lowpass = audioCtx.createBiquadFilter();
+          lowpass.type = "lowpass";
+          lowpass.frequency.value = 80;
+
+          droneOsc.connect(lowpass);
+          lowpass.connect(droneGain);
+          droneGain.connect(audioCtx.destination);
+          droneOsc.start();
+
+          const noiseBuffer = createBrownNoiseBuffer();
+          noiseSource = audioCtx.createBufferSource();
+          noiseSource.buffer = noiseBuffer;
+          noiseSource.loop = true;
+
+          noiseGain = audioCtx.createGain();
+          noiseGain.gain.setValueAtTime(0, audioCtx.currentTime);
+          noiseGain.gain.linearRampToValueAtTime(0.02, audioCtx.currentTime + 3.0);
+
+          const noiseFilter = audioCtx.createBiquadFilter();
+          noiseFilter.type = "lowpass";
+          noiseFilter.frequency.value = 250;
+
+          noiseSource.connect(noiseFilter);
+          noiseFilter.connect(noiseGain);
+          noiseGain.connect(audioCtx.destination);
+          noiseSource.start();
+
+          playWarmNote();
+          triggerSlowPulse();
+          sessionStorage.setItem('audioState', 'playing');
+        } catch (e) {
+          console.warn("Audio blocked.");
+        }
+      }
+
+      function triggerSlowPulse() {
+        if (!isPlaying) return;
+        try {
+          const now = audioCtx.currentTime;
+          const thud = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          thud.type = "sine";
+          thud.frequency.setValueAtTime(35, now);
+          thud.frequency.exponentialRampToValueAtTime(0.01, now + 0.3);
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.05, now + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+          thud.connect(gain);
+          gain.connect(audioCtx.destination);
+          thud.start(now);
+          thud.stop(now + 0.4);
+        } catch (e) {}
+        pulseInterval = setTimeout(triggerSlowPulse, 2000);
+      }
+
+      const scaleNotes = [130.81, 146.83, 174.61, 196.0, 261.63];
+      function playWarmNote() {
+        if (!isPlaying) return;
+        try {
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gainNode    = audioCtx.createGain();
+          const delayNode   = audioCtx.createDelay(1.0);
+          const feedbackNode = audioCtx.createGain();
+          const filter      = audioCtx.createBiquadFilter();
+          osc.type = "triangle";
+          osc.frequency.value = scaleNotes[Math.floor(Math.random() * scaleNotes.length)];
+          filter.type = "lowpass";
+          filter.frequency.value = 600;
+          delayNode.delayTime.value = 0.8;
+          feedbackNode.gain.value = 0.5;
+          gainNode.gain.setValueAtTime(0, now);
+          gainNode.gain.linearRampToValueAtTime(0.015, now + 2.0);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 10.0);
+          osc.connect(filter);
+          filter.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          gainNode.connect(delayNode);
+          delayNode.connect(feedbackNode);
+          feedbackNode.connect(delayNode);
+          delayNode.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 11.0);
+        } catch (e) {}
+        playTimeout = setTimeout(playWarmNote, 4000 + Math.random() * 5000);
+      }
+
+      function stopAudio() {
+        if (droneGain) try {
+          droneGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.5);
+        } catch (e) {}
+        if (noiseGain) try {
+          noiseGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.5);
+        } catch (e) {}
+        if (noiseSource) try {
+          noiseSource.stop(audioCtx.currentTime + 1.5);
+        } catch (e) {}
+        clearTimeout(playTimeout);
+        clearTimeout(pulseInterval);
+        sessionStorage.setItem('audioState', 'paused');
+        isPlaying = false;
+      }
+
+      function playNavClick() {
+        try {
+          const c = new (window.AudioContext || window.webkitAudioContext)();
+          const now = c.currentTime;
+          const bufLen = Math.floor(c.sampleRate * 0.14);
+          const buf = c.createBuffer(1, bufLen, c.sampleRate);
+          const d = buf.getChannelData(0);
+          for (let i = 0; i < bufLen; i++) d[i] = Math.random() * 2 - 1;
+          const noise = c.createBufferSource();
+          noise.buffer = buf;
+          const filter = c.createBiquadFilter();
+          filter.type = "bandpass";
+          filter.frequency.value = 2000;
+          filter.Q.value = 0.7;
+          const g = c.createGain();
+          g.gain.setValueAtTime(0, now);
+          g.gain.linearRampToValueAtTime(0.13, now + 0.008);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+          noise.connect(filter);
+          filter.connect(g);
+          g.connect(c.destination);
+          noise.start(now);
+          noise.stop(now + 0.14);
+          const thump = c.createOscillator();
+          const tg = c.createGain();
+          thump.type = "sine";
+          thump.frequency.setValueAtTime(110, now + 0.07);
+          thump.frequency.exponentialRampToValueAtTime(55, now + 0.16);
+          tg.gain.setValueAtTime(0.055, now + 0.07);
+          tg.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+          thump.connect(tg);
+          tg.connect(c.destination);
+          thump.start(now + 0.07);
+          thump.stop(now + 0.16);
+          setTimeout(() => c.close(), 600);
+        } catch (e) {}
+      }
+
+      function playExitRipple(x, y, cb) {
+        const el = document.createElement("div");
+        const s = Math.hypot(window.innerWidth, window.innerHeight) * 2.4;
+        el.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(239,176,87,0.18) 0%,rgba(1,7,9,0.97) 65%);transform:translate(-50%,-50%) scale(1);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1);pointer-events:none;z-index:9997;`;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(-50%,-50%) scale(${s})`;
+        });
+        setTimeout(() => { el.remove(); cb(); }, 670);
+      }
+
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (audioCtx && audioCtx.state === "running") {
+            try {
+              const _ft = audioCtx.currentTime;
+              [droneGain, noiseGain].forEach((g) => {
+                if (g) {
+                  g.gain.cancelScheduledValues(_ft);
+                  g.gain.linearRampToValueAtTime(0, _ft + 0.5);
+                }
+              });
+            } catch (_) {}
+          }
+          playNavClick();
+          const rx = e.clientX || window.innerWidth / 2;
+          const ry = e.clientY || window.innerHeight / 2;
+          playExitRipple(rx, ry, () => {
+            document.body.classList.remove("loaded");
+            setTimeout(() => { window.location.href = link.getAttribute("href"); }, 60);
+          });
+        });
+      });
+
+      if (!isTouch) {
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("mouseenter", () => {
+            try {
+              const c = new (window.AudioContext || window.webkitAudioContext)();
+              const o = c.createOscillator();
+              const g = c.createGain();
+              o.type = "sine";
+              o.frequency.value = 800;
+              g.gain.setValueAtTime(0.018, c.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+              o.connect(g);
+              g.connect(c.destination);
+              o.start();
+              o.stop(c.currentTime + 0.12);
+              setTimeout(() => c.close(), 400);
+            } catch (e) {}
+          });
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("loaded");
+        if (sessionStorage.getItem('audioState') === 'playing') {
+          startAudio();
+          isPlaying = true;
+          if (iconPlay)  iconPlay.classList.add("hidden");
+          if (iconPause) iconPause.classList.remove("hidden");
+        }
+      });
+    </script>
+
+    <!-- Nota de rodapé -->
+    <aside id="fn-cap-3" style="font-family:'JetBrains Mono',monospace;font-size:0.595rem;line-height:1.95;color:rgba(255,255,255,0.22);border-left:1px solid rgba(208,168,88,0.14);padding:1.1rem 1.6rem;max-width:38rem;margin:4.5rem auto 0;opacity:0;transform:translateY(10px);transition:opacity 2.4s cubic-bezier(0.16,1,0.3,1),transform 2.4s cubic-bezier(0.16,1,0.3,1);letter-spacing:0.025em;display:block;"><span style="display:block;width:1.8rem;height:1px;background:rgba(208,168,88,0.2);margin-bottom:0.8rem;"></span><em>aurora</em> [meteor.] — fenômeno óptico causado por partículas carregadas colidindo com a atmosfera superior. Não escolhe onde aparecer. Não pede condições ideais. Acontece quando a tempestade já passou e o campo ainda está carregado.<br /><br />Não é metáfora. É o mecanismo.</aside>
+    <script>
+    (function(){
+      var fn=document.getElementById('fn-cap-3'),fired=false;
+      if(!fn)return;
+      window._fnCap3Reveal=function(){
+        if(fired)return;fired=true;
+        setTimeout(function(){fn.style.opacity='1';fn.style.transform='translateY(0)';},1800);
+      };
+      window.addEventListener('scroll',function(){
+        if(fired)return;
+        var t=document.documentElement.scrollHeight-window.innerHeight;
+        if(t>0&&window.scrollY/t>0.85){fired=true;fn.style.opacity='1';fn.style.transform='translateY(0)';}
+      });
+    })();
+    </script>
+
+    <!-- Coletor de fragmentos -->
+    <style>
+    @keyframes oLetterFlash{0%{opacity:0;transform:translateY(14px) scale(.65)}18%{opacity:1;transform:translateY(0) scale(1.1)}62%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:translateY(-12px) scale(1.05)}}
+    #oa-glyph{position:fixed;bottom:5rem;right:1.6rem;z-index:500;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(200,169,84,.42);cursor:pointer;opacity:0;transition:opacity 2s ease;letter-spacing:.2em;user-select:none;text-shadow:0 0 9px rgba(200,169,84,.18);padding:6px}
+    #oa-glyph.on{opacity:1}
+    #oa-overlay{position:fixed;bottom:6.5rem;right:1.2rem;z-index:499;background:rgba(4,4,4,.97);border:1px solid rgba(200,169,84,.08);padding:1.3rem 1.7rem 1.1rem;backdrop-filter:blur(18px);opacity:0;pointer-events:none;transition:opacity .42s ease;min-width:200px}
+    #oa-overlay.on{opacity:1;pointer-events:auto}
+    .oa-lbl{display:block;font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.44em;color:rgba(200,169,84,.28);text-transform:uppercase;margin-bottom:1rem}
+    .oa-slots{display:flex;gap:.78rem;justify-content:center;align-items:baseline}
+    .oa-slot{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.65rem;line-height:1;min-width:1rem;text-align:center;color:rgba(255,255,255,.07);transition:color 1s ease,text-shadow 1s ease}
+    .oa-slot.found{color:rgba(200,169,84,.88);text-shadow:0 0 14px rgba(200,169,84,.26)}
+    #oa-done{display:none;margin-top:1.1rem;text-align:center;border-top:1px solid rgba(200,169,84,.07);padding-top:.9rem}
+    #oa-done a{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.4em;color:rgba(200,169,84,.55);text-decoration:none;text-transform:uppercase;transition:color .4s ease}
+    #oa-done a:hover{color:rgba(200,169,84,1)}
+    .oa-flash{position:fixed;bottom:7rem;right:4rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:6rem;font-weight:300;line-height:1;color:rgba(200,169,84,.88);pointer-events:none;z-index:600;animation:oLetterFlash 3s ease forwards}
+    body .reveal-text, body .poetic-paragraph { line-height: 1.88; }
+    </style>
+    <div id="oa-glyph" onclick="oaToggle()">◈</div>
+    <div id="oa-overlay"><span class="oa-lbl">fragmentos encontrados</span><div class="oa-slots" id="oa-slots"></div><div id="oa-done"><a href="chave.html">entrar →</a></div></div>
+    <script>
+    (function(){var K='oavesso_letters',O=['A','B','E','I','R','T','Z'];function gF(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return[]}}function sF(a){localStorage.setItem(K,JSON.stringify(a))}function render(){var f=gF(),s=document.getElementById('oa-slots');if(!s)return;s.innerHTML='';O.forEach(function(l){var el=document.createElement('span');el.className='oa-slot'+(f.indexOf(l)>-1?' found':'');el.textContent=f.indexOf(l)>-1?l:'·';s.appendChild(el)});var d=document.getElementById('oa-done');if(d)d.style.display=f.length===7?'block':'none'}function showG(){var g=document.getElementById('oa-glyph');if(g)setTimeout(function(){g.classList.add('on')},400)}window.oaFoundLetter=function(l){var f=gF();if(f.indexOf(l)>-1)return;f.push(l);sF(f);showG();render();var fl=document.createElement('div');fl.className='oa-flash';fl.textContent=l;document.body.appendChild(fl);setTimeout(function(){fl.remove()},3200)};window.oaToggle=function(){var o=document.getElementById('oa-overlay');if(o)o.classList.toggle('on');render()};document.addEventListener('DOMContentLoaded',function(){render();if(gF().length>0)showG()})})();
+    </script>
+
+    <!-- Matéria escura -->
+    <canvas id="dm-canvas" aria-hidden="true"></canvas>
+    <script>
+    (function(){
+      var cvs=document.getElementById('dm-canvas'),ctx=cvs.getContext('2d'),W,H,att=[],tick=0,scrolled=false;
+      cvs.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:2;';
+      function resize(){W=cvs.width=innerWidth;H=cvs.height=innerHeight;}
+      addEventListener('resize',resize);resize();
+      var SEL='p,blockquote,h2,h3,.poetic-paragraph,.reveal-text,.reveal-item,.burn-text';
+      function refreshAtt(){
+        att=[];
+        document.querySelectorAll(SEL).forEach(function(el){
+          var r=el.getBoundingClientRect();
+          if(r.height<24)return;
+          var cy=r.top+r.height*0.5;
+          if(cy<-H*0.6||cy>H*1.6)return;
+          var w=Math.max(0.08,1-Math.abs(cy-H*0.5)/(H*0.85));
+          att.push({x:r.left+r.width*(0.3+Math.random()*0.4),y:cy,w:w});
+        });
+      }
+      function Pt(){
+        this.x=Math.random()*W;this.y=Math.random()*H;
+        this.vx=(Math.random()-0.5)*0.22;this.vy=(Math.random()-0.5)*0.22;
+        this.r=Math.random()*1.0+0.2;this.op=Math.random()*0.05+0.015;this.t=Math.random()*800;
+      }
+      Pt.prototype.step=function(){
+        this.t++;
+        this.vx+=Math.sin(this.t*0.009)*0.005;
+        this.vy+=Math.cos(this.t*0.011)*0.004;
+        if(att.length){
+          var bx=0,by=0,bd=Infinity,bw=1;
+          for(var i=0;i<att.length;i++){
+            var dx=att[i].x-this.x,dy=att[i].y-this.y,d=Math.sqrt(dx*dx+dy*dy);
+            if(d<bd){bd=d;bx=dx;by=dy;bw=att[i].w;}
+          }
+          if(bd<350&&bd>0){var f=(1-bd/350)*0.008*bw;this.vx+=(bx/bd)*f;this.vy+=(by/bd)*f;}
+        }
+        this.vx*=0.95;this.vy*=0.95;
+        this.x+=this.vx;this.y+=this.vy;
+        if(this.x<-6)this.x=W+6;if(this.x>W+6)this.x=-6;
+        if(this.y<-6)this.y=H+6;if(this.y>H+6)this.y=-6;
+      };
+      Pt.prototype.draw=function(){
+        ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+        ctx.fillStyle='rgba(200,169,110,'+this.op+')';ctx.fill();
+      };
+      var pts=[];for(var i=0;i<10;i++)pts.push(new Pt());
+      addEventListener('scroll',function(){scrolled=true;});
+      (function loop(){
+        ctx.clearRect(0,0,W,H);tick++;
+        if(tick%40===0||scrolled){refreshAtt();scrolled=false;}
+        pts.forEach(function(p){p.step();p.draw();});
+        requestAnimationFrame(loop);
+      })();
+      document.addEventListener('DOMContentLoaded',refreshAtt);
+    })();
+    </script>
+
+    <script src="oa-fragmentos.js"></script>
+    <script src="constelacao-header.js"></script>
+    <script>
+    (function(){
+      window.addEventListener('load', function() {
+        var btn = document.getElementById('btn-audio') || document.getElementById('soundtrack-toggle');
+        if (!btn) return;
+        function _playing() {
+          if (btn.id === 'btn-audio') {
+            var ip = document.getElementById('icon-play');
+            return ip && ip.classList.contains('hidden');
+          }
+          return btn.classList.contains('is-playing');
+        }
+        if (_playing()) return;
+        document.addEventListener('pointerdown', function oa_auto() {
+          document.removeEventListener('pointerdown', oa_auto, true);
+          if (!_playing()) btn.click();
+        }, { capture: true });
+      });
+    })();
+    </script>
+  </body>
+</html>

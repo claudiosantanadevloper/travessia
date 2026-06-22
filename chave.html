@@ -1,0 +1,1139 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fragmento não catalogado — O Avesso do Chão</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=JetBrains+Mono:wght@100;200;300&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --mx: -200px;
+        --my: -200px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #040406;
+        background-image: radial-gradient(
+          circle at 50% 50%,
+          rgba(20, 15, 30, 0.4) 0%,
+          #040406 80%
+        );
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 200;
+        opacity: 0;
+        transition: opacity 3s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        hyphens: none;
+        user-select: none;
+      }
+      body.loaded {
+        opacity: 1;
+      }
+      body.exiting {
+        opacity: 0 !important;
+        transition: opacity 1s ease !important;
+      }
+
+      /* ── GRAIN ─────────────────────────────────────────── */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0.025;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.4s steps(1) infinite;
+      }
+      @keyframes grain {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-3%, 2%);
+        }
+        40% {
+          transform: translate(2%, -3%);
+        }
+        60% {
+          transform: translate(-2%, 3%);
+        }
+        80% {
+          transform: translate(3%, -1%);
+        }
+        100% {
+          transform: translate(1%, 2%);
+        }
+      }
+
+      /* ── CANVAS ESTELAR ────────────────────────────────── */
+      #bg-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: all;
+        z-index: 0;
+      }
+
+      /* ── CAMADA DE LANTERNA (PALAVRAS OCULTAS) ─────────── */
+      #flashlight-layer {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 5;
+        transition: opacity 1.5s ease;
+        mask-image: radial-gradient(
+          circle 180px at var(--mx) var(--my),
+          black 0%,
+          transparent 100%
+        );
+        -webkit-mask-image: radial-gradient(
+          circle 180px at var(--mx) var(--my),
+          black 0%,
+          transparent 100%
+        );
+      }
+      .hidden-word {
+        position: absolute;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-weight: 300;
+        color: rgba(200, 169, 110, 0.4);
+        font-size: clamp(1.2rem, 2vw, 1.5rem);
+        letter-spacing: 0.05em;
+        filter: blur(0.5px);
+        transform: translate(-50%, -50%);
+        animation: word-shimmer 4s ease-in-out infinite alternate;
+      }
+      @keyframes word-shimmer {
+        from {
+          opacity: 0.3;
+          text-shadow: 0 0 5px rgba(200, 169, 110, 0);
+        }
+        to {
+          opacity: 0.7;
+          text-shadow: 0 0 10px rgba(200, 169, 110, 0.4);
+        }
+      }
+
+      /* ── GLOW AMBIENTE ─────────────────────────────────── */
+      #ambient-glow {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 55% 50% at center bottom,
+          rgba(200, 169, 110, 0.08) 0%,
+          transparent 65%
+        );
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 2.4s ease;
+      }
+
+      /* ── ESTRUTURA PRINCIPAL ───────────────────────────── */
+      #gate {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: min(420px, 88vw);
+        height: 100%;
+        gap: 2rem;
+      }
+
+      /* ── TEXTO NARRATIVO ───────────────────────────────── */
+      #narrative {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-weight: 300;
+        font-size: clamp(1.15rem, 3vw, 1.5rem);
+        color: rgba(200, 169, 110, 0.85);
+        text-shadow: 0 0 15px rgba(200, 169, 110, 0.2);
+        letter-spacing: 0.03em;
+        line-height: 1.8;
+        text-align: center;
+        opacity: 0;
+        filter: blur(14px);
+        transform: translateY(16px);
+        transition:
+          opacity 3.2s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 3.2s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 3.2s cubic-bezier(0.16, 1, 0.3, 1),
+          color 2s ease;
+      }
+      #narrative.visible {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+      }
+      #narrative.dimmed {
+        color: rgba(200, 169, 110, 0.25);
+        text-shadow: none;
+      }
+
+      /* ── BAÚ DOURADO INTERATIVO ────────────────────────── */
+      #chest-container {
+        margin-top: 1rem;
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+        transition: all 2s cubic-bezier(0.16, 1, 0.3, 1) 1.5s;
+        cursor: pointer;
+        position: relative;
+      }
+      #chest-container.visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        animation: floatChest 6s ease-in-out infinite;
+      }
+      #chest-container.hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(0);
+        transition: all 1.2s cubic-bezier(0.5, 0, 0, 1);
+        position: absolute;
+      }
+      #chest-container.absorbing .chest-svg {
+        filter: drop-shadow(0 0 40px rgba(255, 223, 142, 1));
+        stroke: rgba(255, 223, 142, 1);
+        animation: tremor 0.1s linear infinite;
+      }
+
+      @keyframes floatChest {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+      @keyframes tremor {
+        0% {
+          transform: translate(1px, 1px) rotate(0deg);
+        }
+        25% {
+          transform: translate(-1px, -2px) rotate(-1deg);
+        }
+        50% {
+          transform: translate(-3px, 0px) rotate(1deg);
+        }
+        75% {
+          transform: translate(2px, 2px) rotate(0deg);
+        }
+        100% {
+          transform: translate(1px, -1px) rotate(-1deg);
+        }
+      }
+
+      .chest-svg {
+        width: 64px;
+        height: 64px;
+        fill: none;
+        stroke: rgba(200, 169, 110, 0.7);
+        stroke-width: 1.5;
+        filter: drop-shadow(0 0 8px rgba(200, 169, 110, 0.3));
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #chest-container:hover .chest-svg {
+        stroke: rgba(255, 223, 142, 1);
+        filter: drop-shadow(0 0 20px rgba(200, 169, 110, 0.8));
+        transform: scale(1.1) rotate(2deg);
+      }
+      #chest-container.near .chest-svg {
+        animation: gentle-throb 1.5s ease-in-out infinite;
+      }
+      @keyframes gentle-throb {
+        0%,
+        100% {
+          transform: scale(1);
+          filter: drop-shadow(0 0 8px rgba(200, 169, 110, 0.3));
+        }
+        50% {
+          transform: scale(1.05);
+          filter: drop-shadow(0 0 15px rgba(200, 169, 110, 0.5));
+        }
+      }
+
+      /* ── ÁREA DE ASSINATURA (CHAVE) ────────────────────── */
+      #signature-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2.4rem;
+        width: 100%;
+        opacity: 0;
+        filter: blur(10px);
+        transform: translateY(20px);
+        pointer-events: none;
+        position: absolute;
+        top: 60%;
+        transition:
+          opacity 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 2.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #signature-area.visible {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+        pointer-events: all;
+        position: relative;
+        top: auto;
+      }
+
+      #input-wrap {
+        width: min(300px, 78vw);
+        display: flex;
+        align-items: baseline;
+        gap: 0.35rem;
+        border-bottom: 1px solid rgba(200, 169, 84, 0.16);
+        padding-bottom: 0.55rem;
+      }
+      #input-wrap.shaking {
+        animation: shake 0.44s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        15% {
+          transform: translateX(-8px);
+        }
+        30% {
+          transform: translateX(8px);
+        }
+        45% {
+          transform: translateX(-6px);
+        }
+        60% {
+          transform: translateX(6px);
+        }
+        75% {
+          transform: translateX(-4px);
+        }
+        90% {
+          transform: translateX(3px);
+        }
+      }
+
+      #dash {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(1.4rem, 3.5vw, 1.65rem);
+        color: rgba(200, 169, 84, 0.26);
+        flex-shrink: 0;
+        line-height: 1;
+        transition: color 0.7s ease;
+      }
+
+      #key-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: rgba(212, 216, 224, 0.76);
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-weight: 300;
+        font-size: clamp(1.4rem, 3.5vw, 1.65rem);
+        letter-spacing: 0.24em;
+        caret-color: rgba(200, 169, 84, 0.6);
+        transition:
+          color 0.7s ease,
+          text-shadow 0.7s ease,
+          letter-spacing 0.5s ease;
+        user-select: text;
+        min-width: 0;
+        text-align: center;
+      }
+      #key-input.glow-warm {
+        color: rgba(210, 188, 110, 0.95);
+        text-shadow: 0 0 32px rgba(210, 188, 110, 0.42);
+        letter-spacing: 0.3em;
+      }
+
+      #no-key-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 100;
+        font-size: 9px;
+        letter-spacing: 0.45em;
+        text-transform: lowercase;
+        color: rgba(200, 169, 84, 0.2);
+        transition:
+          color 0.9s ease,
+          text-shadow 0.4s ease;
+        padding: 0.7rem 1.2rem;
+      }
+      #no-key-btn:hover {
+        color: rgba(200, 169, 84, 0.7);
+        text-shadow: 0 0 10px rgba(200, 169, 84, 0.3);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        body::after,
+        #bg-canvas,
+        #flashlight-layer {
+          display: none !important;
+        }
+        #chest-container.visible {
+          animation: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="bg-canvas"></canvas>
+    <div id="ambient-glow"></div>
+
+    <!-- Facho de luz revelando palavras -->
+    <div id="flashlight-layer">
+      <span class="hidden-word" style="top: 14%; left: 18%"
+        >esse cuidado quase sagrado que você tem</span
+      >
+      <span class="hidden-word" style="top: 78%; left: 82%"
+        >você, que canta sem perceber que está cantando</span
+      >
+      <span class="hidden-word" style="top: 72%; left: 12%"
+        >existe uma versão de você que vive no meu sistema sem autorização</span
+      >
+      <span class="hidden-word" style="top: 24%; left: 76%"
+        >isso me faz alguma coisa que não tem nome ainda</span
+      >
+      <span class="hidden-word" style="top: 48%; left: 8%"
+        >o resto, a gente cria no agora</span
+      >
+      <span class="hidden-word" style="top: 52%; left: 88%"
+        >obrigado por não ter largado no meio</span
+      >
+    </div>
+
+    <div id="gate">
+      <p id="narrative">
+        estes fragmentos não estavam catalogados.<br /><br />
+        sete letras dispersas.<br />
+        sete lugares.<br /><br />
+        você as encontrou<br />
+        uma por uma.
+      </p>
+
+      <!-- O Baú -->
+      <div id="chest-container" aria-label="Abrir o baú" tabindex="0">
+        <svg
+          class="chest-svg"
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="rgba(255, 223, 142, 0.3)" />
+              <stop offset="100%" stop-color="rgba(200, 169, 110, 0)" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M 15 50 L 85 50 L 80 85 L 20 85 Z"
+            fill="url(#gold)"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M 12 50 C 12 25, 88 25, 88 50 Z"
+            fill="none"
+            stroke-linejoin="round"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r="5"
+            fill="#040406"
+            stroke="rgba(255, 223, 142, 0.9)"
+          />
+          <path
+            d="M 48 53 L 52 53 L 51 60 L 49 60 Z"
+            fill="rgba(255, 223, 142, 0.9)"
+            stroke="none"
+          />
+          <line x1="25" y1="50" x2="25" y2="85" opacity="0.4" />
+          <line x1="75" y1="50" x2="75" y2="85" opacity="0.4" />
+          <path d="M 25 50 C 30 35, 70 35, 75 50" opacity="0.4" />
+        </svg>
+      </div>
+
+      <!-- Área da Senha -->
+      <div id="signature-area">
+        <div id="input-wrap">
+          <span id="dash" aria-hidden="true">—&nbsp;</span>
+          <input
+            id="key-input"
+            type="text"
+            autocomplete="new-password"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            maxlength="7"
+            aria-label="chave de acesso"
+            placeholder="o nome fragmentado..."
+          />
+        </div>
+        <button id="no-key-btn" aria-label="Aceitar a espera">
+          aceitar a espera
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const isTouch = window.matchMedia(
+        "(hover: none), (pointer: coarse)",
+      ).matches;
+
+      const narrative = document.getElementById("narrative");
+      const chestWrap = document.getElementById("chest-container");
+      const sigArea = document.getElementById("signature-area");
+      const inputWrap = document.getElementById("input-wrap");
+      const keyInput = document.getElementById("key-input");
+      const noKeyBtn = document.getElementById("no-key-btn");
+      const ambientGlow = document.getElementById("ambient-glow");
+      const dash = document.getElementById("dash");
+      const flashLayer = document.getElementById("flashlight-layer");
+
+      const TARGET = "beatriz";
+      let phase = "narrative";
+      let busy = false;
+      let sigRevealed = false;
+      let narrativeReady = false;
+      let isSucking = false;
+      let autoRevealTimer = null;
+
+      // ── CANVAS MOTOR DA GALÁXIA ────────────────────────────────
+      const canvas = document.getElementById("bg-canvas");
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+
+      let W, H;
+      let cx, cy; // Centro da galáxia (com parallax dinâmico)
+      let stars = [];
+      let particles = [];
+      let mouse = { x: -1000, y: -1000, moved: false };
+
+      const specialWords = [
+        "a poeira",
+        "o tempo",
+        "a falta",
+        "a voz",
+        "o rastro",
+      ];
+
+      function resizeCanvas() {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.style.width = W + "px";
+        canvas.style.height = H + "px";
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.scale(dpr, dpr);
+        cx = W / 2;
+        cy = H / 2;
+      }
+
+      function initStars() {
+        const N = isTouch ? 120 : 250;
+        const maxRadius = Math.max(W, H) * 1.2;
+
+        stars = Array.from({ length: N }, (_, i) => {
+          let special = i < 5;
+          return {
+            angle: Math.random() * Math.PI * 2,
+            // Distribuição que concentra mais estrelas no centro (Math.sqrt)
+            radius: Math.sqrt(Math.random()) * maxRadius,
+            // Velocidade orbital contínua
+            orbitalSpeed: Math.random() * 0.001 + 0.0002,
+            size: special ? 2.5 : Math.random() * 1.2 + 0.2,
+            baseAlpha: special ? 0.8 : Math.random() * 0.6 + 0.1,
+            twinklePhase: Math.random() * Math.PI * 2,
+            twinkleSpeed: Math.random() * 0.02 + 0.005,
+            color:
+              Math.random() > 0.8 || special
+                ? "255, 223, 142"
+                : "255, 255, 255",
+            isSpecial: special,
+            word: special ? specialWords[i] : null,
+            hovered: false,
+            // Offsets de repulsão do mouse
+            offX: 0,
+            offY: 0,
+          };
+        });
+      }
+
+      // Clique para criar poeira estelar
+      canvas.addEventListener("mousedown", (e) => {
+        if (!isSucking) createParticles(e.clientX, e.clientY);
+        bootAudio();
+      });
+
+      function createParticles(x, y) {
+        for (let i = 0; i < 12; i++) {
+          particles.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6,
+            life: 1,
+            size: Math.random() * 2 + 1,
+          });
+        }
+      }
+
+      // Rastrear Mouse / Touch
+      function updateMousePos(clientX, clientY) {
+        mouse.x = clientX;
+        mouse.y = clientY;
+        mouse.moved = true;
+        document.documentElement.style.setProperty("--mx", mouse.x + "px");
+        document.documentElement.style.setProperty("--my", mouse.y + "px");
+
+        if (autoRevealTimer && !isSucking) {
+          clearTimeout(autoRevealTimer);
+          autoRevealTimer = null;
+        }
+      }
+
+      window.addEventListener("mousemove", (e) =>
+        updateMousePos(e.clientX, e.clientY),
+      );
+      window.addEventListener("touchmove", (e) =>
+        updateMousePos(e.touches[0].clientX, e.touches[0].clientY),
+      );
+
+      // Loop de Animação Principal
+      function animGalaxy() {
+        ctx.clearRect(0, 0, W, H);
+
+        // Suavização do Parallax (Camera segue o mouse levemente)
+        let targetCx = W / 2;
+        let targetCy = H / 2;
+        if (mouse.moved && !isSucking) {
+          targetCx += (W / 2 - mouse.x) * 0.04;
+          targetCy += (H / 2 - mouse.y) * 0.04;
+        }
+
+        // Interação de proximidade com o baú
+        if (!isSucking && narrativeReady) {
+          const dChest = Math.hypot(W / 2 - mouse.x, H / 2 + 30 - mouse.y);
+          if (dChest < 180) {
+            chestWrap.classList.add("near");
+          } else {
+            chestWrap.classList.remove("near");
+          }
+        }
+
+        cx += (targetCx - cx) * 0.05;
+        cy += (targetCy - cy) * 0.05;
+
+        const chestPosX = W / 2;
+        const chestPosY = H / 2 + 30;
+
+        // Renderizar Estrelas
+        stars.forEach((s) => {
+          // Movimento natural contínuo
+          s.angle += s.orbitalSpeed;
+          s.twinklePhase += s.twinkleSpeed;
+
+          // Se estiver sugando para o baú
+          if (isSucking) {
+            s.radius *= 0.94; // Puxa para o centro
+            s.angle += 0.05; // Gira mais rápido (espiral)
+            s.offX *= 0.8; // Zera repulsões antigas
+            s.offY *= 0.8;
+          }
+
+          // Posição base na órbita
+          let basePx =
+            (isSucking ? chestPosX : cx) + Math.cos(s.angle) * s.radius;
+          let basePy =
+            (isSucking ? chestPosY : cy) + Math.sin(s.angle) * s.radius;
+
+          // Repulsão Fluida Magnética pelo Mouse
+          if (mouse.moved && !isSucking) {
+            let dx = basePx + s.offX - mouse.x;
+            let dy = basePy + s.offY - mouse.y;
+            let dist = Math.hypot(dx, dy);
+
+            // Se o mouse chegar perto, afasta a estrela
+            if (dist < 120) {
+              let force = (120 - dist) / 120;
+              s.offX += dx * force * 0.08;
+              s.offY += dy * force * 0.08;
+            }
+          }
+
+          // As estrelas tentam voltar elásticamente para a órbita original
+          s.offX += (0 - s.offX) * 0.04;
+          s.offY += (0 - s.offY) * 0.04;
+
+          let px = basePx + s.offX;
+          let py = basePy + s.offY;
+
+          let twinkle = Math.sin(s.twinklePhase) * 0.3 + 0.7;
+          let alpha = s.baseAlpha * twinkle;
+
+          // Interação com Estrelas Especiais (Sussurros Musicais)
+          if (s.isSpecial && !isSucking && mouse.moved) {
+            let dMouse = Math.hypot(px - mouse.x, py - mouse.y);
+            if (dMouse < 50) {
+              if (!s.hovered) {
+                s.hovered = true;
+                playCrystal(300 + Math.random() * 500);
+              }
+              // Desenha a palavra associada acompanhando a estrela
+              ctx.font = "italic 300 15px 'Cormorant Garamond'";
+              ctx.fillStyle = `rgba(200, 169, 110, ${1 - dMouse / 50})`;
+              ctx.fillText(s.word, px + 12, py - 12);
+            } else {
+              s.hovered = false;
+            }
+          }
+
+          // Desenhar Estrela e Aura
+          if (s.size > 0.05 && s.radius > 2) {
+            ctx.fillStyle = `rgba(${s.color}, ${alpha})`;
+            ctx.beginPath();
+            ctx.arc(px, py, s.size, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (s.isSpecial && !isSucking) {
+              ctx.fillStyle = `rgba(${s.color}, ${alpha * 0.25})`;
+              ctx.beginPath();
+              ctx.arc(px, py, s.size * 3.5, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        });
+
+        // Partículas (Explosões ao clicar)
+        for (let i = particles.length - 1; i >= 0; i--) {
+          let p = particles[i];
+          if (isSucking) {
+            p.x += (chestPosX - p.x) * 0.1;
+            p.y += (chestPosY - p.y) * 0.1;
+            p.size *= 0.85;
+          } else {
+            p.x += p.vx;
+            p.y += p.vy;
+          }
+          p.life -= 0.02;
+
+          if (p.life <= 0 || p.size < 0.1) {
+            particles.splice(i, 1);
+          } else {
+            ctx.fillStyle = `rgba(200, 169, 110, ${p.life})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        requestAnimationFrame(animGalaxy);
+      }
+
+      window.addEventListener("resize", () => {
+        resizeCanvas();
+        initStars();
+      });
+
+      // ── ÁUDIO (Sintetizadores Dinâmicos) ───────────────────────
+      let AC = null;
+      function bootAudio() {
+        if (AC) return;
+        try {
+          AC = new (window.AudioContext || window.webkitAudioContext)();
+          startDrone();
+        } catch (e) {}
+      }
+
+      function startDrone() {
+        if (!AC) return;
+        try {
+          const master = AC.createGain();
+          master.gain.value = 0;
+          master.connect(AC.destination);
+          [
+            [73.42, "triangle", 0.007],
+            [110, "sine", 0.005],
+            [185, "sine", 0.004],
+            [220, "sine", 0.003],
+            [293.66, "sine", 0.002],
+          ].forEach(([f, t, g]) => {
+            const o = AC.createOscillator(),
+              gn = AC.createGain();
+            const lfo = AC.createOscillator(),
+              lg = AC.createGain();
+            o.type = t;
+            o.frequency.value = f;
+            gn.gain.value = g;
+            lfo.type = "sine";
+            lfo.frequency.value = 0.08 + Math.random() * 0.15;
+            lg.gain.value = f * 0.0015;
+            lfo.connect(lg);
+            lg.connect(o.detune);
+            o.connect(gn);
+            gn.connect(master);
+            o.start();
+            lfo.start();
+          });
+          master.gain.linearRampToValueAtTime(1, AC.currentTime + 6);
+        } catch (e) {}
+      }
+
+      function playCrystal(freq) {
+        if (!AC) return;
+        try {
+          const o = AC.createOscillator(),
+            g = AC.createGain();
+          o.type = "sine";
+          o.frequency.value = freq;
+          g.gain.setValueAtTime(0, AC.currentTime);
+          g.gain.linearRampToValueAtTime(0.015, AC.currentTime + 0.05);
+          g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 1.2);
+          o.connect(g);
+          g.connect(AC.destination);
+          o.start();
+          o.stop(AC.currentTime + 1.5);
+        } catch (e) {}
+      }
+
+      function playKey(pitch) {
+        if (!AC) return;
+        try {
+          const o = AC.createOscillator(),
+            g = AC.createGain();
+          o.type = "sine";
+          o.frequency.value = pitch || 900;
+          g.gain.setValueAtTime(0.009, AC.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 0.1);
+          o.connect(g);
+          g.connect(AC.destination);
+          o.start();
+          o.stop(AC.currentTime + 0.1);
+        } catch (e) {}
+      }
+
+      function playError() {
+        if (!AC) return;
+        try {
+          const o = AC.createOscillator(),
+            g = AC.createGain();
+          o.type = "sine";
+          o.frequency.value = 90;
+          o.frequency.exponentialRampToValueAtTime(38, AC.currentTime + 0.32);
+          g.gain.setValueAtTime(0.055, AC.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 0.38);
+          o.connect(g);
+          g.connect(AC.destination);
+          o.start();
+          o.stop(AC.currentTime + 0.4);
+        } catch (e) {}
+      }
+
+      function playUnlock(cb) {
+        const delay = AC ? 4200 : 1800;
+        if (AC) {
+          try {
+            const now = AC.currentTime;
+            // Eb Major 7th (Resolução do Capítulo IX) - Brilho Cristalino
+            const freqs = [155.56, 196.0, 233.08, 293.66, 311.13, 466.16];
+            freqs.forEach((f, i) => {
+              const o = AC.createOscillator(),
+                g = AC.createGain();
+              o.type = "sine";
+              o.frequency.value = f;
+              g.gain.setValueAtTime(0, now + i * 0.15);
+              g.gain.linearRampToValueAtTime(0.02, now + i * 0.15 + 0.8);
+              g.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
+              o.connect(g);
+              g.connect(AC.destination);
+              o.start(now + i * 0.15);
+              o.stop(now + 4);
+            });
+          } catch (e) {}
+        }
+        setTimeout(cb, delay);
+      }
+
+      function playSuction() {
+        if (!AC) return;
+        try {
+          const now = AC.currentTime;
+
+          // Deep Sub Pull (Vácuo gravitacional)
+          const sub = AC.createOscillator();
+          const subG = AC.createGain();
+          sub.type = "sine";
+          sub.frequency.setValueAtTime(60, now);
+          sub.frequency.exponentialRampToValueAtTime(30, now + 1.2);
+          subG.gain.setValueAtTime(0, now);
+          subG.gain.linearRampToValueAtTime(0.12, now + 0.1);
+          subG.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+          sub.connect(subG);
+          subG.connect(AC.destination);
+          sub.start();
+          sub.stop(now + 1.2);
+
+          // Ethereal Wind (Ruído de aspiração)
+          const bufSize = AC.sampleRate * 1.5;
+          const buf = AC.createBuffer(1, bufSize, AC.sampleRate);
+          const d = buf.getChannelData(0);
+          for (let i = 0; i < bufSize; i++) d[i] = Math.random() * 2 - 1;
+          const src = AC.createBufferSource();
+          src.buffer = buf;
+          const filter = AC.createBiquadFilter();
+          const gn = AC.createGain();
+          filter.type = "bandpass";
+          filter.frequency.setValueAtTime(200, now);
+          filter.frequency.exponentialRampToValueAtTime(2200, now + 1.2);
+          filter.Q.value = 2;
+          gn.gain.setValueAtTime(0, now);
+          gn.gain.linearRampToValueAtTime(0.03, now + 0.6);
+          gn.gain.exponentialRampToValueAtTime(0.001, now + 1.3);
+          src.connect(filter);
+          filter.connect(gn);
+          gn.connect(AC.destination);
+          src.start();
+          src.stop(now + 1.3);
+        } catch (e) {}
+      }
+
+      // ── FLUXO DE REVELAÇÃO DO BAÚ ────────────────────────────
+      function startSuctionEvent() {
+        if (sigRevealed || isSucking || !narrativeReady) return;
+        isSucking = true;
+        bootAudio();
+        playSuction();
+
+        chestWrap.classList.add("absorbing");
+        flashLayer.style.opacity = 0;
+
+        setTimeout(() => revealSig(), 1300);
+      }
+
+      function revealSig() {
+        sigRevealed = true;
+        phase = "input";
+        if (autoRevealTimer) {
+          clearTimeout(autoRevealTimer);
+          autoRevealTimer = null;
+        }
+
+        narrative.classList.add("dimmed");
+        chestWrap.classList.remove("visible");
+        chestWrap.classList.remove("absorbing");
+        chestWrap.classList.add("hidden");
+
+        sigArea.classList.add("visible");
+        ambientGlow.style.opacity = "0.7";
+
+        if (!isTouch) setTimeout(() => keyInput.focus(), 600);
+      }
+
+      chestWrap.addEventListener("click", startSuctionEvent);
+      chestWrap.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") startSuctionEvent();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (
+          !sigRevealed &&
+          !isSucking &&
+          narrativeReady &&
+          e.key.length === 1
+        ) {
+          revealSig();
+          keyInput.value = e.key;
+          keyInput.dispatchEvent(new Event("input"));
+        }
+      });
+
+      // ── LÓGICA DO INPUT (SENHA) ──────────────────────────────
+      function updateGlow(n) {
+        ambientGlow.style.opacity = 0.7 + (n / 7) * 0.28;
+        dash.style.color = `rgba(200,169,84,${0.26 + (n / 7) * 0.55})`;
+      }
+
+      function triggerError() {
+        busy = true;
+        updateGlow(0);
+        inputWrap.classList.add("shaking");
+        playError();
+        setTimeout(() => {
+          inputWrap.classList.remove("shaking");
+          keyInput.value = "";
+          keyInput.classList.remove("glow-warm");
+          busy = false;
+        }, 440);
+      }
+
+      function unlock() {
+        if (phase !== "input" || busy) return;
+        phase = "done";
+        busy = true;
+        keyInput.classList.add("glow-warm");
+        updateGlow(7);
+
+        // Fade out, then reveal the name acknowledgment
+        narrative.style.transition = "opacity 0.6s ease, filter 0.6s ease";
+        narrative.style.opacity = "0";
+        narrative.style.filter = "blur(10px)";
+
+        setTimeout(function () {
+          narrative.innerHTML =
+            "sim.<br/><br/>era esse o nome.<br/><br/>sempre foi.";
+          narrative.classList.remove("dimmed");
+          narrative.style.transition =
+            "opacity 1.6s cubic-bezier(0.16,1,0.3,1), filter 1.6s cubic-bezier(0.16,1,0.3,1), color 1s ease, text-shadow 1s ease";
+          narrative.style.opacity = "1";
+          narrative.style.filter = "blur(0)";
+          narrative.style.color = "rgba(200,169,110,0.92)";
+          narrative.style.textShadow = "0 0 28px rgba(200,169,110,0.38)";
+        }, 650);
+
+        playUnlock(function () {
+          localStorage.setItem("oavesso_key_unlocked", "1");
+          document.body.classList.add("exiting");
+          setTimeout(function () {
+            window.location.href = "o-bau.html";
+          }, 800);
+        });
+      }
+
+      keyInput.addEventListener("input", () => {
+        if (phase !== "input" || busy) return;
+        bootAudio();
+        const val = keyInput.value.replace(/\s/g, "").toLowerCase().slice(0, 7);
+        if (val !== keyInput.value.toLowerCase()) keyInput.value = val;
+
+        let correct = 0;
+        for (let i = 0; i < val.length; i++) {
+          if (val[i] === TARGET[i]) correct++;
+          else {
+            correct = 0;
+            break;
+          }
+        }
+        updateGlow(correct);
+        playKey(680 + correct * 110);
+
+        if (val.length === 7) {
+          val === TARGET ? unlock() : triggerError();
+        }
+      });
+
+      keyInput.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const p = (e.clipboardData || window.clipboardData)
+          .getData("text")
+          .replace(/\s/g, "")
+          .toLowerCase()
+          .slice(0, 7);
+        keyInput.value = p;
+        keyInput.dispatchEvent(new Event("input"));
+      });
+
+      noKeyBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (busy) return;
+        busy = true;
+        document.body.classList.add("exiting");
+        setTimeout(() => {
+          window.location.href = "capitulo-11-a-espera.html";
+        }, 800);
+      });
+
+      // ── INIT ────────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        resizeCanvas();
+        initStars();
+        animGalaxy();
+        document.body.classList.add("loaded");
+
+        setTimeout(() => {
+          narrative.classList.add("visible");
+          chestWrap.classList.add("visible");
+          narrativeReady = true;
+          // Temporizador longo caso o usuário não toque em absolutamente nada
+          autoRevealTimer = setTimeout(() => revealSig(), 12000);
+        }, 1500);
+      });
+    </script>
+
+    <!-- Botão de volta — aponta para Sumário, ponto natural de retorno para quem chegou aqui mid-journey -->
+    <a
+      href="sumario.html"
+      onclick="
+        event.preventDefault();
+        document.body.classList.add('exiting');
+        setTimeout(() => {
+          location.href = 'sumario.html';
+        }, 800);
+      "
+      style="
+        position: fixed;
+        top: 1.5rem;
+        left: 1.5rem;
+        z-index: 100;
+        font-family: &quot;JetBrains Mono&quot;, monospace;
+        font-size: 10px;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        color: rgba(200, 169, 110, 0.35);
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border: 1px solid rgba(200, 169, 110, 0.08);
+        border-radius: 99px;
+        backdrop-filter: blur(8px);
+        transition:
+          color 0.5s ease,
+          border-color 0.5s ease;
+      "
+      onmouseover="
+        this.style.color = 'rgba(200,169,110,0.85)';
+        this.style.borderColor = 'rgba(200,169,110,0.25)';
+      "
+      onmouseout="
+        this.style.color = 'rgba(200,169,110,0.35)';
+        this.style.borderColor = 'rgba(200,169,110,0.08)';
+      "
+      >← Sumário</a
+    >
+  </body>
+</html>

@@ -1,0 +1,1540 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XI · A Espera — O Avesso do Chão</title>
+    <script>
+      localStorage.setItem(
+        "oavesso_progress",
+        '{"chapter":11,"title":"XI · A Espera","href":"capitulo-11-a-espera.html"}',
+      );
+      (function () {
+        var k = "avesso_jornada_cap-11";
+        if (!localStorage.getItem(k)) localStorage.setItem(k, Date.now());
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Inter+Tight:wght@100;200;300;400;500&family=JetBrains+Mono:wght@100;200;300&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans: ['"Inter Tight"', "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              espera: {
+                steel: "#8a98a8",
+                dim: "rgba(138,152,168,0.25)",
+                glow: "rgba(138,152,168,0.12)",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* ── BASE ───────────────────────────────────────────── */
+      body {
+        background-color: #020305;
+        color: #d4d8e0;
+        opacity: 0;
+        transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        overflow-x: hidden;
+        hyphens: none;
+      }
+      body.loaded {
+        opacity: 1;
+      }
+
+      ::selection {
+        background: rgba(138, 152, 168, 0.15);
+        color: #ffffff;
+      }
+      ::-webkit-scrollbar {
+        width: 3px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(138, 152, 168, 0.15);
+        border-radius: 99px;
+      }
+
+      /* ── CANVAS ─────────────────────────────────────────── */
+      #wait-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.48;
+      }
+
+      /* ── GRAIN (idêntico ao padrão do projeto) ─────────── */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0.025;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.4s steps(1) infinite;
+      }
+      @keyframes grain {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-3%, 2%);
+        }
+        40% {
+          transform: translate(2%, -3%);
+        }
+        60% {
+          transform: translate(-2%, 3%);
+        }
+        80% {
+          transform: translate(3%, -1%);
+        }
+        100% {
+          transform: translate(1%, 2%);
+        }
+      }
+
+      /* ── CURSOR CALMO ───────────────────────────────────── */
+      #calm-cursor {
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        border: 1px solid rgba(138, 152, 168, 0.22);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.5s,
+          height 0.5s,
+          background 0.5s;
+      }
+
+      /* ── BOSSA BARS (áudio) ─────────────────────────────── */
+      .bossa-bar {
+        display: inline-block;
+        width: 2px;
+        height: 7px;
+        background: linear-gradient(to top, #8a98a8, rgba(138, 152, 168, 0.2));
+        margin: 0 1px;
+        animation: none;
+        transform-origin: bottom center;
+        border-radius: 1px;
+      }
+      .is-playing .bossa-bar {
+        animation: bounceBossa 2s ease-in-out infinite alternate;
+        animation-delay: calc((var(--i, 1) - 1) * 0.4s);
+      }
+      @keyframes bounceBossa {
+        from {
+          transform: scaleY(0.2);
+          opacity: 0.3;
+        }
+        to {
+          transform: scaleY(1.4);
+          opacity: 0.8;
+        }
+      }
+
+      /* ── REVEAL (padrão poetic-paragraph) ──────────────── */
+      .poetic-paragraph {
+        opacity: 0;
+        transform: translateY(30px);
+        filter: blur(10px);
+        transition:
+          opacity 3s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 3s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        z-index: 10;
+      }
+      .poetic-paragraph.reveal {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+      body .poetic-paragraph p,
+      body .poetic-paragraph {
+        line-height: 1.88;
+      }
+
+      /* ── LABELS E DIVISORES ─────────────────────────────── */
+      .section-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 0.48em;
+        text-transform: uppercase;
+        color: rgba(138, 152, 168, 0.25);
+        display: inline-block;
+        margin-bottom: 2rem;
+        transition: color 1.2s;
+        cursor: default;
+        user-select: none;
+      }
+      .section-label:hover {
+        color: rgba(138, 152, 168, 0.8);
+      }
+
+      .section-rule {
+        width: 1px;
+        height: 80px;
+        background: linear-gradient(
+          to bottom,
+          rgba(138, 152, 168, 0.08),
+          transparent
+        );
+        margin: 0 auto;
+        position: relative;
+        z-index: 10;
+      }
+
+      /* ── BREATH GLOW ────────────────────────────────────── */
+      .breath-glow {
+        animation: breathGlow 6s ease-in-out infinite;
+      }
+      @keyframes breathGlow {
+        0%,
+        100% {
+          text-shadow: 0 0 0px rgba(138, 152, 168, 0);
+        }
+        50% {
+          text-shadow: 0 0 28px rgba(138, 152, 168, 0.28);
+        }
+      }
+
+      /* ── LINHA DO TEMPO LATERAL ─────────────────────────── */
+      .timeline-line {
+        position: fixed;
+        top: 0;
+        left: 10vw;
+        width: 1px;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          rgba(138, 152, 168, 0.08) 10%,
+          rgba(138, 152, 168, 0.04) 90%,
+          transparent
+        );
+        z-index: 1;
+        transition: opacity 2s ease;
+      }
+      .timeline-line.fading {
+        opacity: 0;
+      }
+
+      /* ── SWITCH WORDS (hesitação) ───────────────────────── */
+      .switch-word {
+        color: rgba(255, 255, 255, 0.26);
+        transition: color 1.5s ease;
+        cursor: default;
+      }
+      .switch-word.revealed {
+        color: #ffffff;
+        font-style: italic;
+      }
+
+      @keyframes subtle-glitch {
+        0% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        20% {
+          opacity: 0.8;
+          transform: translateX(-2px);
+        }
+        40% {
+          opacity: 0.4;
+          transform: translateX(2px);
+          filter: blur(1px);
+        }
+        60% {
+          opacity: 0.8;
+          transform: translateX(-1px);
+        }
+        80% {
+          opacity: 1;
+          transform: translateX(1px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+          filter: blur(0);
+        }
+      }
+      .animate-glitch {
+        animation: subtle-glitch 0.4s ease forwards;
+      }
+
+      /* ── TREMOR DA PALAVRA (substitui o hint de texto) ── */
+      @keyframes wordSlap {
+        0%,
+        68%,
+        100% {
+          transform: skewX(0deg) translateX(0);
+        }
+        70% {
+          transform: skewX(-3deg) translateX(-4px);
+        }
+        72% {
+          transform: skewX(2.5deg) translateX(4px);
+        }
+        74% {
+          transform: skewX(-1.5deg) translateX(-2px);
+        }
+        76% {
+          transform: skewX(0.8deg) translateX(1px);
+        }
+        78% {
+          transform: skewX(0deg) translateX(0);
+        }
+      }
+      .switch-word:not(.revealed) {
+        display: inline-block;
+        animation: wordSlap 5.2s ease-in-out infinite;
+        animation-delay: var(--slap-d, 0s);
+      }
+
+      /* ── INDICADOR DE DIGITAÇÃO ─────────────────────────── */
+      .typing-dot {
+        animation: typing-bounce calc(1.4s * var(--scroll-d, 1)) infinite
+          ease-in-out both;
+      }
+      .typing-dot:nth-child(1) {
+        animation-delay: -0.32s;
+      }
+      .typing-dot:nth-child(2) {
+        animation-delay: -0.16s;
+      }
+      @keyframes typing-bounce {
+        0%,
+        80%,
+        100% {
+          transform: scale(0);
+          opacity: 0.3;
+        }
+        40% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* ── GHOST ELEMENTS ─────────────────────────────────── */
+      .ghost-el {
+        opacity: 0;
+        transition: opacity 1.5s ease;
+      }
+      .ghost-el.visible {
+        opacity: 1;
+      }
+      .typing-container {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+      .typing-container.visible {
+        opacity: 1;
+      }
+
+      /* ── BOTÃO FINAL ────────────────────────────────────── */
+      .final-button {
+        position: relative;
+        overflow: hidden;
+      }
+      .final-button::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(138, 152, 168, 0.1),
+          transparent
+        );
+        transition: left 0.7s ease;
+      }
+      .final-button:hover::after {
+        left: 100%;
+      }
+
+      /* ── RESPONSIVIDADE E ACESSIBILIDADE ────────────────── */
+      @media (hover: none), (pointer: coarse) {
+        body {
+          cursor: auto !important;
+        }
+        #calm-cursor {
+          display: none !important;
+        }
+        .nav-link {
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        canvas {
+          display: none !important;
+        }
+      }
+
+      /* ── SEGREDO ─────────────────────────────────────────── */
+      #secret-room {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        padding: 0 0 7rem;
+      }
+      #secret-link {
+        display: block;
+        padding: 2.2rem 7rem;
+        text-decoration: none;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-weight: 300;
+        font-size: 0.78rem;
+        letter-spacing: 0.56em;
+        color: rgba(138, 152, 168, 0);
+        transition: color 3s ease;
+      }
+      #secret-link:hover {
+        color: rgba(138, 152, 168, 0.14);
+      }
+      @media (hover: none), (pointer: coarse) {
+        #secret-room {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="font-sans antialiased relative">
+    <!-- Cursor calmo -->
+    <div id="calm-cursor" aria-hidden="true"></div>
+
+    <!-- Canvas: pixels em espera -->
+    <canvas id="wait-canvas"></canvas>
+
+    <!-- Linha do tempo lateral (elemento único deste capítulo) -->
+    <div class="timeline-line hidden md:block" id="timeline-line"></div>
+
+    <!-- ← Sumário -->
+    <a
+      href="sumario.html"
+      class="nav-link fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 uppercase"
+    >
+      ← Sumário
+    </a>
+
+    <!-- Toggle de áudio -->
+    <div
+      id="soundtrack-toggle"
+      class="fixed top-6 right-6 z-[100] flex items-center space-x-3 bg-white/[0.02] backdrop-blur-md px-5 py-2.5 rounded-full border border-white/[0.03] text-[10px] font-mono text-zinc-500 transition-all cursor-pointer group"
+      style="
+        transition:
+          color 0.4s,
+          border-color 0.4s;
+      "
+      onmouseover="
+        this.style.color = '#8a98a8';
+        this.style.borderColor = 'rgba(138,152,168,0.3)';
+      "
+      onmouseout="
+        this.style.color = '';
+        this.style.borderColor = '';
+      "
+    >
+      <div class="flex items-center h-4 mr-1 opacity-60">
+        <span class="bossa-bar" style="--i: 1"></span>
+        <span class="bossa-bar" style="--i: 2"></span>
+        <span class="bossa-bar" style="--i: 3"></span>
+        <span class="bossa-bar" style="--i: 4"></span>
+      </div>
+      <span class="tracking-widest uppercase">A Espera</span>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <main
+      class="min-h-screen flex flex-col justify-center px-6 md:px-20 max-w-3xl mx-auto py-32 md:py-28 relative z-10"
+    >
+      <div class="space-y-16 md:space-y-24 flex flex-col">
+        <!-- HEADER ──────────────────────────────────────── -->
+        <div
+          class="poetic-paragraph flex flex-col items-center justify-center space-y-6 text-center"
+        >
+          <span class="section-label">capítulo XI · A Espera</span>
+          <h1
+            class="font-serif italic text-4xl md:text-6xl text-zinc-200 font-extralight leading-none"
+          >
+            Já faz algum tempo.
+          </h1>
+          <p class="font-sans font-light text-xl text-zinc-500 mt-2">
+            Ou talvez tenham sido apenas segundos.
+          </p>
+          <div
+            class="w-12 h-[1px] bg-gradient-to-r from-transparent via-zinc-600 to-transparent mt-8"
+          ></div>
+        </div>
+
+        <!-- I · A TELA ───────────────────────────────────── -->
+        <div class="poetic-paragraph text-center space-y-8">
+          <p
+            class="text-3xl md:text-5xl font-serif italic font-light leading-snug text-zinc-200"
+          >
+            Eu olho para a tela.
+          </p>
+          <p
+            class="text-3xl md:text-5xl font-serif italic font-light leading-snug text-zinc-500 breath-glow"
+          >
+            A tela olha de volta.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- II · A ESPERA SEM NOME ──────────────────────── -->
+        <div class="poetic-paragraph text-center space-y-10">
+          <p
+            class="text-lg md:text-2xl font-serif italic font-light leading-relaxed text-zinc-400 max-w-xl mx-auto"
+          >
+            Tem uma posição que o corpo assume<br />
+            sem decisão:<br /><br />
+            a de quem espera<br />
+            sem querer que apareça<br />
+            que está esperando.
+          </p>
+          <p
+            class="text-lg md:text-2xl font-serif italic font-light leading-relaxed text-zinc-500 max-w-xl mx-auto"
+          >
+            O telefone não saiu da mão.<br />
+            Não porque eu precisava.<br />
+            Porque largar parecia<br />
+            desistir de alguma coisa.
+          </p>
+          <p
+            class="text-base md:text-xl font-serif italic font-light leading-relaxed text-zinc-500 max-w-xl mx-auto"
+          >
+            Não é esperança.<br />
+            É o hábito de uma atenção<br />
+            que não tem mais pra onde ir.
+          </p>
+          <p
+            class="text-lg md:text-2xl font-serif italic font-light leading-relaxed text-zinc-400 max-w-xl mx-auto"
+          >
+            Parei de esperar.<br />
+            E mesmo assim espero.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- III · HESITAÇÃO ─────────────────────────────── -->
+        <div class="poetic-paragraph text-center">
+          <div class="space-y-24 md:space-y-32">
+            <div>
+              <p
+                class="text-xl md:text-4xl font-serif italic font-light leading-tight text-zinc-300"
+              >
+                Eu quebrei o silêncio porque fingir costume estava me<br />
+                <span
+                  class="switch-word"
+                  data-alt="matando."
+                  style="--slap-d: 0s"
+                  >cansando.</span
+                >
+              </p>
+            </div>
+
+            <div>
+              <p
+                class="text-xl md:text-4xl font-serif italic font-light leading-tight text-zinc-300"
+              >
+                E se você não disser nada, eu prometo que<br />
+                <span
+                  class="switch-word"
+                  data-alt="desmorono."
+                  style="--slap-d: 2.6s"
+                  >te dou espaço.</span
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- A meditação da espera — última respiração antes da coreografia -->
+        <div class="poetic-paragraph text-center pt-4 pb-16">
+          <p
+            class="font-serif italic text-sm md:text-base font-light max-w-xs mx-auto leading-loose"
+            style="color: rgba(138, 152, 168, 0.55)"
+          >
+            Esperar tem um peso que ocupa lugar no peito como
+            <span class="breath-glow">pedra de rio</span> — lisa, quieta, mas
+            presente. A espera não é ausência de
+            movimento. É o
+            <span
+              class="switch-word"
+              data-alt="o movimento mais difícil"
+              style="--slap-d: 1.2s"
+              >movimento mais honesto</span
+            >
+            — o de ficar parado enquanto tudo dentro está em
+            <span class="breath-glow">correnteza</span>.
+          </p>
+        </div>
+
+        <div class="section-rule" style="height: 8rem"></div>
+
+        <!-- IV · COREOGRAFIA FINAL ──────────────────────── -->
+        <div
+          class="poetic-paragraph text-center space-y-12 pb-32"
+          id="final-act"
+        >
+          <span class="section-label">fim da transmissão</span>
+
+          <div class="relative h-64 flex flex-col justify-end items-center">
+            <!-- Checks (lida) -->
+            <div
+              class="absolute right-0 top-0 flex flex-col items-end gap-3 ghost-el"
+              id="read-receipt"
+            >
+              <svg
+                class="w-11 h-11"
+                style="opacity: 0.58"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke="rgba(138,152,168,0.9)"
+                  stroke-width="1.3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4 12l4 4 8-8"
+                />
+                <path
+                  stroke="rgba(138,152,168,0.9)"
+                  stroke-width="1.3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M10 12l4 4 8-8"
+                />
+              </svg>
+              <span
+                class="font-mono text-xs tracking-widest uppercase"
+                style="color: rgba(138, 152, 168, 0.6)"
+                >Lida</span
+              >
+            </div>
+
+            <!-- Indicador de digitação -->
+            <div
+              class="typing-container absolute flex flex-col items-center gap-3"
+              style="bottom: 5rem"
+              id="typing-indicator"
+            >
+              <div
+                class="flex gap-2 items-end justify-center"
+                style="height: 1.5rem"
+              >
+                <div
+                  class="w-3 h-3 rounded-full typing-dot"
+                  style="background: rgba(138, 152, 168, 0.52)"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full typing-dot"
+                  style="background: rgba(138, 152, 168, 0.52)"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full typing-dot"
+                  style="background: rgba(138, 152, 168, 0.52)"
+                ></div>
+              </div>
+              <span
+                class="font-mono text-xs tracking-widest uppercase"
+                style="color: rgba(138, 152, 168, 0.48)"
+                >Digitando</span
+              >
+            </div>
+
+            <!-- O silêncio final -->
+            <p
+              class="absolute bottom-0 ghost-el font-mono text-xs tracking-widest lowercase"
+              id="online-status"
+              style="color: rgba(138, 152, 168, 0.42)"
+            >
+              online há 2 minutos
+            </p>
+
+            <p
+              id="coda"
+              class="ghost-el font-mono text-center"
+              style="
+                position: absolute;
+                bottom: -3.2rem;
+                left: 0;
+                right: 0;
+                color: rgba(138, 152, 168, 0.22);
+                font-size: 8px;
+                letter-spacing: 0.45em;
+                line-height: 2;
+                text-transform: lowercase;
+                pointer-events: none;
+              "
+            >
+              esta obra terminou.<br />a resposta, não.
+            </p>
+          </div>
+
+          <!-- Fragmentos encontrados após a obra -->
+          <div
+            id="post-obra"
+            style="
+              opacity: 0;
+              transition: opacity 6s ease;
+              text-align: center;
+              padding: 2.5rem 0 0.5rem;
+              pointer-events: none;
+            "
+          >
+            <p
+              class="font-mono"
+              id="post-obra-text"
+              style="
+                font-size: 7px;
+                letter-spacing: 0.55em;
+                color: rgba(138, 152, 168, 0);
+                text-transform: lowercase;
+                line-height: 3;
+                transition: color 6s ease 1.5s;
+              "
+            >
+              foram encontrados fragmentos adicionais
+            </p>
+          </div>
+
+          <!-- Botão de retorno -->
+          <div class="pt-8 flex justify-center">
+            <a
+              href="sumario.html"
+              class="nav-link final-button px-8 py-3 rounded-full border text-xs font-mono uppercase tracking-[0.25em] transition-all duration-700"
+              style="
+                border-color: rgba(138, 152, 168, 0.22);
+                color: rgba(138, 152, 168, 0.6);
+              "
+              onmouseover="
+                this.style.color = '#8a98a8';
+                this.style.borderColor = 'rgba(138,152,168,0.5)';
+                this.style.background = 'rgba(138,152,168,0.05)';
+              "
+              onmouseout="
+                this.style.color = 'rgba(138,152,168,0.6)';
+                this.style.borderColor = 'rgba(138,152,168,0.22)';
+                this.style.background = '';
+              "
+            >
+              Retornar ao Sumário
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Rodapé de capítulo -->
+    <footer
+      class="mt-16 mb-20 flex flex-col items-center space-y-10 w-full relative z-10"
+    >
+      <div
+        class="w-[1px] h-16"
+        style="
+          background: linear-gradient(
+            to bottom,
+            rgba(138, 152, 168, 0.2),
+            transparent
+          );
+        "
+      ></div>
+      <div
+        class="flex justify-between w-full max-w-md px-6 font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500"
+      >
+        <a
+          href="capitulo-10-a-crueza-do-presente.html"
+          class="nav-link hover:text-zinc-300 transition-colors duration-300"
+        >
+          ← X · A Crueza
+        </a>
+        <a
+          href="sumario.html"
+          class="nav-link group flex items-center space-x-3 hover:text-zinc-300 transition-colors duration-300"
+        >
+          <span>Sumário</span>
+          <svg
+            class="w-3 h-3 transition-transform duration-300 group-hover:translate-x-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
+    </footer>
+
+    <!-- o silêncio tem outro nome -->
+    <div id="secret-room" aria-hidden="true">
+      <a href="rejeicao.html" id="secret-link" class="nav-link" tabindex="-1"
+        >rejeição</a
+      >
+    </div>
+
+    <script>
+      const isTouch = window.matchMedia(
+        "(hover: none), (pointer: coarse)",
+      ).matches;
+
+      // ── CANVAS: PIXELS EM ESPERA ─────────────────────────
+      const canvas = document.getElementById("wait-canvas");
+      const ctx = canvas.getContext("2d");
+      let W, H;
+      const mouse = { x: -1000, y: -1000 };
+      const NUM = isTouch ? 60 : 140;
+      let particles = [];
+
+      if (!isTouch) {
+        document.addEventListener("mousemove", (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+        });
+      }
+
+      function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.scale(dpr, dpr);
+        initParticles();
+      }
+
+      function initParticles() {
+        particles = [];
+        for (let i = 0; i < NUM; i++) {
+          particles.push({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            size: Math.random() * 1.3 + 0.1,
+            vy: Math.random() * 0.14 + 0.04,
+            vx: (Math.random() - 0.5) * 0.07,
+            baseAlpha: Math.random() * 0.28 + 0.06,
+            phase: Math.random() * Math.PI * 2,
+            speed: Math.random() * 0.009 + 0.004,
+            isPixel: Math.random() < 0.07,
+          });
+        }
+      }
+
+      function renderParticles() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach((p) => {
+          p.y += p.vy;
+          p.x += p.vx + Math.sin(p.phase) * 0.06;
+          p.phase += p.speed;
+
+          if (!isTouch) {
+            const dx = mouse.x - p.x,
+              dy = mouse.y - p.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 120) {
+              const f = (120 - d) / 120;
+              p.x -= (dx / d) * f * 0.4;
+              p.y -= (dy / d) * f * 0.4;
+            }
+          }
+
+          if (p.y > H + 8) {
+            p.y = -8;
+            p.x = Math.random() * W;
+          }
+          if (p.x < -8) p.x = W + 8;
+          if (p.x > W + 8) p.x = -8;
+
+          const alpha = p.baseAlpha * (0.5 + 0.5 * Math.sin(p.phase * 2));
+          ctx.fillStyle = p.isPixel
+            ? `rgba(210,220,232,${alpha * 1.5})`
+            : `rgba(138,152,168,${alpha})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        requestAnimationFrame(renderParticles);
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+
+      // ── CURSOR CALMO ─────────────────────────────────────
+      if (!isTouch) {
+        const cursorEl = document.getElementById("calm-cursor");
+        const cursorPos = { x: -200, y: -200 };
+        function trackCursor() {
+          cursorPos.x += (mouse.x - cursorPos.x) * 0.05;
+          cursorPos.y += (mouse.y - cursorPos.y) * 0.05;
+          cursorEl.style.left = cursorPos.x + "px";
+          cursorEl.style.top = cursorPos.y + "px";
+          requestAnimationFrame(trackCursor);
+        }
+        trackCursor();
+      }
+
+      // ── ÁUDIO: DRONE DA ESPERA ────────────────────────────
+      let audioCtx = null,
+        isPlaying = false;
+      let globalGain = null,
+        masterFilter = null,
+        droneOscs = [],
+        noiseSource = null;
+
+      function startAudio() {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+        globalGain = audioCtx.createGain();
+        masterFilter = audioCtx.createBiquadFilter();
+        masterFilter.type = "lowpass";
+        masterFilter.frequency.value = 900;
+        globalGain.gain.setValueAtTime(0, now);
+        globalGain.gain.linearRampToValueAtTime(0.05, now + 9);
+        globalGain.connect(masterFilter);
+        masterFilter.connect(audioCtx.destination);
+
+        // Três osciladores para o drone
+        droneOscs = [];
+        [
+          [35, "sine", 0.9],
+          [110, "sine", 0.3],
+          [138, "sine", 0.2],
+        ].forEach(([freq, type, vol]) => {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          const lfo = audioCtx.createOscillator();
+          const lfoG = audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.value = freq;
+          g.gain.value = vol * 0.08;
+          lfo.type = "sine";
+          lfo.frequency.value = 0.07 + Math.random() * 0.12;
+          lfoG.gain.value = freq * 0.002;
+          lfo.connect(lfoG);
+          lfoG.connect(osc.frequency);
+          osc.connect(g);
+          g.connect(globalGain);
+          osc.start();
+          lfo.start();
+          droneOscs.push(osc);
+        });
+
+        // Ruído de sala (muito baixo)
+        const buf = audioCtx.createBuffer(
+          1,
+          audioCtx.sampleRate * 2,
+          audioCtx.sampleRate,
+        );
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+        noiseSource = audioCtx.createBufferSource();
+        const ng = audioCtx.createGain();
+        noiseSource.buffer = buf;
+        noiseSource.loop = true;
+        ng.gain.value = 0.003;
+        noiseSource.connect(ng);
+        ng.connect(globalGain);
+        noiseSource.start();
+
+        isPlaying = true;
+        document
+          .getElementById("soundtrack-toggle")
+          .classList.add("is-playing");
+        sessionStorage.setItem("audioState", "playing");
+      }
+
+      function stopAudio() {
+        if (!audioCtx || !globalGain) return;
+        const now = audioCtx.currentTime;
+        globalGain.gain.linearRampToValueAtTime(0, now + 1.5);
+        droneOscs.forEach((o) => o.stop(now + 1.6));
+        if (noiseSource) noiseSource.stop(now + 1.6);
+        isPlaying = false;
+        document
+          .getElementById("soundtrack-toggle")
+          .classList.remove("is-playing");
+        sessionStorage.setItem("audioState", "paused");
+      }
+
+      document
+        .getElementById("soundtrack-toggle")
+        .addEventListener("click", () => {
+          isPlaying ? stopAudio() : startAudio();
+        });
+
+      // Scroll: abafa som + distorce animações + progresso
+      window.addEventListener("scroll", () => {
+        const pct =
+          window.scrollY /
+          Math.max(1, document.body.scrollHeight - innerHeight);
+        document.documentElement.style.setProperty("--scroll-d", 1 + pct * 3);
+        if (audioCtx && masterFilter) {
+          masterFilter.frequency.setTargetAtTime(
+            Math.max(900 - pct * 750, 150),
+            audioCtx.currentTime,
+            0.1,
+          );
+        }
+      });
+
+      // ── HESITAÇÃO DAS PALAVRAS ────────────────────────────
+      function playGlitch() {
+        try {
+          const c = new (window.AudioContext || window.webkitAudioContext)();
+          const buf = c.createBuffer(1, c.sampleRate * 0.07, c.sampleRate);
+          const d = buf.getChannelData(0);
+          for (let i = 0; i < d.length; i++)
+            d[i] = (Math.random() * 2 - 1) * 0.11;
+          const src = c.createBufferSource();
+          const g = c.createGain();
+          src.buffer = buf;
+          g.gain.setValueAtTime(0.5, c.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.07);
+          src.connect(g);
+          g.connect(c.destination);
+          src.start();
+          setTimeout(() => c.close(), 400);
+        } catch (e) {}
+      }
+
+      document.querySelectorAll(".switch-word").forEach((el) => {
+        let timer;
+        const reveal = function () {
+          if (this.classList.contains("revealed")) return;
+          timer = setTimeout(() => {
+            this.innerText = this.getAttribute("data-alt");
+            this.classList.add("animate-glitch", "revealed");
+            playGlitch();
+          }, 1500);
+        };
+        const cancel = function () {
+          clearTimeout(timer);
+        };
+        el.addEventListener("mouseenter", reveal);
+        el.addEventListener("mouseleave", cancel);
+        el.addEventListener("touchstart", reveal, { passive: true });
+        el.addEventListener("touchend", cancel);
+      });
+
+      // ── TÍTULO DA ABA: A DOR DO STANDBY ──────────────────
+      let idleTimer;
+      const originalTitle = document.title;
+      function resetIdleTimer() {
+        if (document.title !== originalTitle) document.title = originalTitle;
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+          document.title = "(1) nova mensagem";
+        }, 12000);
+      }
+      ["mousemove", "keydown", "scroll", "touchstart"].forEach((ev) =>
+        window.addEventListener(ev, resetIdleTimer),
+      );
+
+      // ── OBSERVERS DE REVEAL ───────────────────────────────
+      const poeticObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            e.target.classList.add("reveal");
+            poeticObserver.unobserve(e.target);
+          });
+        },
+        { threshold: 0.15, rootMargin: "0px 0px -5% 0px" },
+      );
+
+      document
+        .querySelectorAll(".poetic-paragraph")
+        .forEach((el) => poeticObserver.observe(el));
+
+      // ── COREOGRAFIA FINAL ─────────────────────────────────
+      // Som WhatsApp — double tick da mensagem lida
+      function playLidaSound() {
+        try {
+          var c = new (window.AudioContext || window.webkitAudioContext)();
+          [0, 0.115].forEach(function (delay) {
+            var o = c.createOscillator();
+            var g = c.createGain();
+            o.type = "sine";
+            o.frequency.value = 1380;
+            g.gain.setValueAtTime(0, c.currentTime + delay);
+            g.gain.linearRampToValueAtTime(
+              0.048,
+              c.currentTime + delay + 0.009,
+            );
+            g.gain.exponentialRampToValueAtTime(
+              0.001,
+              c.currentTime + delay + 0.09,
+            );
+            o.connect(g);
+            g.connect(c.destination);
+            o.start(c.currentTime + delay);
+            o.stop(c.currentTime + delay + 0.12);
+          });
+          setTimeout(function () {
+            c.close();
+          }, 600);
+        } catch (e) {}
+      }
+
+      // Som de digitação — breve padrão de teclas
+      var typingPatternTimer = null;
+      function playTypingPattern() {
+        var count = 0;
+        var maxTicks = 9;
+        function tick() {
+          if (
+            count >= maxTicks ||
+            !document
+              .getElementById("typing-indicator")
+              .classList.contains("visible")
+          )
+            return;
+          try {
+            var c2 = new (window.AudioContext || window.webkitAudioContext)();
+            var buf = c2.createBuffer(
+              1,
+              Math.floor(c2.sampleRate * 0.016),
+              c2.sampleRate,
+            );
+            var d = buf.getChannelData(0);
+            for (var i = 0; i < d.length; i++)
+              d[i] = (Math.random() * 2 - 1) * 0.28;
+            var src = c2.createBufferSource();
+            var filt = c2.createBiquadFilter();
+            var g = c2.createGain();
+            filt.type = "bandpass";
+            filt.frequency.value = 2600;
+            filt.Q.value = 1.0;
+            g.gain.setValueAtTime(0.1, c2.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, c2.currentTime + 0.016);
+            src.buffer = buf;
+            src.connect(filt);
+            filt.connect(g);
+            g.connect(c2.destination);
+            src.start();
+            setTimeout(function () {
+              c2.close();
+            }, 200);
+          } catch (e) {}
+          count++;
+          typingPatternTimer = setTimeout(tick, 220 + Math.random() * 380);
+        }
+        tick();
+      }
+      function stopTypingPattern() {
+        if (typingPatternTimer) {
+          clearTimeout(typingPatternTimer);
+          typingPatternTimer = null;
+        }
+      }
+
+      const timelineEl = document.getElementById("timeline-line");
+
+      const finalObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting || entry.target.dataset.triggered) return;
+            entry.target.dataset.triggered = "true";
+
+            timelineEl && timelineEl.classList.add("fading");
+
+            if (globalGain && audioCtx) {
+              globalGain.gain.linearRampToValueAtTime(
+                0.008,
+                audioCtx.currentTime + 2,
+              );
+            }
+
+            setTimeout(function () {
+              playLidaSound();
+              document.getElementById("read-receipt").classList.add("visible");
+
+              setTimeout(function () {
+                document
+                  .getElementById("typing-indicator")
+                  .classList.add("visible");
+                playTypingPattern();
+
+                setTimeout(function () {
+                  stopTypingPattern();
+                  document
+                    .getElementById("typing-indicator")
+                    .classList.remove("visible");
+
+                  setTimeout(function () {
+                    document
+                      .getElementById("online-status")
+                      .classList.add("visible");
+                    setTimeout(function () {
+                      document.getElementById("coda").classList.add("visible");
+                      // 6s de silêncio — então os fragmentos emergem
+                      setTimeout(function () {
+                        var po = document.getElementById("post-obra");
+                        var pt = document.getElementById("post-obra-text");
+                        if (po) po.style.opacity = "1";
+                        if (pt) pt.style.color = "rgba(138,152,168,0.30)";
+                        if (globalGain && audioCtx) {
+                          globalGain.gain.linearRampToValueAtTime(
+                            0.0004,
+                            audioCtx.currentTime + 10,
+                          );
+                        }
+                      }, 6000);
+                    }, 12000);
+                  }, 250);
+                }, 40000);
+              }, 3800);
+            }, 300);
+          });
+        },
+        { threshold: 0.6 },
+      );
+
+      finalObserver.observe(document.getElementById("final-act"));
+
+      // ── NAVEGAÇÃO COM RIPPLE E SOM ────────────────────────
+      function playNavClick() {
+        try {
+          const c = new (window.AudioContext || window.webkitAudioContext)();
+          const o = c.createOscillator();
+          const g = c.createGain();
+          o.type = "sine";
+          o.frequency.setValueAtTime(520, c.currentTime);
+          o.frequency.exponentialRampToValueAtTime(260, c.currentTime + 0.18);
+          g.gain.setValueAtTime(0.07, c.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.22);
+          o.connect(g);
+          g.connect(c.destination);
+          o.start();
+          o.stop(c.currentTime + 0.22);
+          setTimeout(() => c.close(), 600);
+        } catch (e) {}
+      }
+
+      function playExitRipple(x, y, cb) {
+        const el = document.createElement("div");
+        const s = Math.hypot(innerWidth, innerHeight) * 2.4;
+        el.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(138,152,168,0.15) 0%,rgba(2,3,5,0.97) 65%);transform:translate(-50%,-50%) scale(1);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1);pointer-events:none;z-index:9997;`;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(-50%,-50%) scale(${s})`;
+        });
+        setTimeout(() => {
+          el.remove();
+          cb();
+        }, 670);
+      }
+
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        // Prefetch no hover
+        link.addEventListener("mouseenter", () => {
+          const href = link.getAttribute("href");
+          if (
+            href &&
+            href !== "index.html" &&
+            !document.querySelector(`link[rel='prefetch'][href='${href}']`)
+          ) {
+            const pf = document.createElement("link");
+            pf.rel = "prefetch";
+            pf.href = href;
+            document.head.appendChild(pf);
+          }
+        });
+        // Transição com ripple
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          let dest = link.getAttribute("href");
+          if (
+            dest === "capitulo-10-a-crueza-do-presente.html" &&
+            !localStorage.getItem("oavesso_key_unlocked")
+          ) {
+            dest = "chave.html";
+          }
+          playNavClick();
+          const rx = e.clientX || innerWidth / 2;
+          const ry = e.clientY || innerHeight / 2;
+          playExitRipple(rx, ry, () => {
+            document.body.classList.remove("loaded");
+            setTimeout(() => {
+              window.location.href = dest;
+            }, 60);
+          });
+        });
+      });
+
+      // Som de hover nos links (apenas desktop)
+      if (!isTouch) {
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("mouseenter", () => {
+            try {
+              const c = new (
+                window.AudioContext || window.webkitAudioContext
+              )();
+              const o = c.createOscillator();
+              const g = c.createGain();
+              o.type = "sine";
+              o.frequency.value = 800;
+              g.gain.setValueAtTime(0.018, c.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+              o.connect(g);
+              g.connect(c.destination);
+              o.start();
+              o.stop(c.currentTime + 0.12);
+              setTimeout(() => c.close(), 400);
+            } catch (e) {}
+          });
+        });
+      }
+
+      // ── INIT ─────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("loaded");
+        resizeCanvas();
+        renderParticles();
+        resetIdleTimer();
+        if (sessionStorage.getItem("audioState") === "playing") {
+          startAudio();
+          const btnPlay = document.getElementById("icon-play");
+          const btnPause = document.getElementById("icon-pause");
+          if (btnPlay) btnPlay.classList.add("hidden");
+          if (btnPause) btnPause.classList.remove("hidden");
+        }
+
+        localStorage.setItem(
+          "oavesso_progress",
+          JSON.stringify({
+            chapter: 10,
+            title: "XI · A Espera",
+            href: "capitulo-11-a-espera.html",
+          }),
+        );
+
+        // Sombra do Cap IX — visível apenas para quem não desbloqueou a chave
+        if (!localStorage.getItem("oavesso_key_unlocked")) {
+          const prevLink = document.querySelector(
+            'a[href="capitulo-10-a-crueza-do-presente.html"].nav-link',
+          );
+          if (prevLink) {
+            prevLink.setAttribute("href", "capitulo-9-a-entrega.html");
+            prevLink.textContent = "← VIII · A Entrega";
+          }
+          const shadow = document.createElement("p");
+          shadow.style.cssText = [
+            "position:fixed",
+            "top:3.2rem",
+            "left:50%",
+            "transform:translateX(-50%)",
+            "z-index:180",
+            'font-family:"JetBrains Mono",monospace',
+            "font-size:8px",
+            "letter-spacing:0.45em",
+            "color:rgba(226,88,62,0)",
+            "text-transform:lowercase",
+            "white-space:nowrap",
+            "pointer-events:none",
+            "transition:color 3s ease",
+            "text-align:center",
+          ].join(";");
+          shadow.textContent = "existe um capítulo entre nós";
+          document.body.appendChild(shadow);
+          setTimeout(() => {
+            shadow.style.color = "rgba(226,88,62,0.16)";
+          }, 5000);
+          setTimeout(() => {
+            shadow.style.color = "rgba(226,88,62,0)";
+          }, 13000);
+          setTimeout(() => {
+            shadow.remove();
+          }, 16000);
+        }
+      });
+    </script>
+
+    <!-- ◈ MATÉRIA ESCURA — campo gravitacional invisível -->
+    <canvas id="dm-canvas" aria-hidden="true"></canvas>
+    <script>
+      (function () {
+        var cvs = document.getElementById("dm-canvas"),
+          ctx = cvs.getContext("2d"),
+          W,
+          H,
+          att = [],
+          tick = 0,
+          scrolled = false;
+        cvs.style.cssText =
+          "position:fixed;inset:0;pointer-events:none;z-index:2;";
+        function resize() {
+          W = cvs.width = innerWidth;
+          H = cvs.height = innerHeight;
+        }
+        addEventListener("resize", resize);
+        resize();
+        var SEL =
+          "p,blockquote,h2,h3,.poetic-paragraph,.reveal-text,.reveal-item,.switch-word,.breath-glow";
+        function refreshAtt() {
+          att = [];
+          document.querySelectorAll(SEL).forEach(function (el) {
+            var r = el.getBoundingClientRect();
+            if (r.height < 24) return;
+            var cy = r.top + r.height * 0.5;
+            if (cy < -H * 0.6 || cy > H * 1.6) return;
+            var w = Math.max(0.08, 1 - Math.abs(cy - H * 0.5) / (H * 0.85));
+            att.push({
+              x: r.left + r.width * (0.3 + Math.random() * 0.4),
+              y: cy,
+              w: w,
+            });
+          });
+        }
+        function Pt() {
+          this.x = Math.random() * W;
+          this.y = Math.random() * H;
+          this.vx = (Math.random() - 0.5) * 0.22;
+          this.vy = (Math.random() - 0.5) * 0.22;
+          this.r = Math.random() * 1.0 + 0.2;
+          this.op = Math.random() * 0.05 + 0.015;
+          this.t = Math.random() * 800;
+        }
+        Pt.prototype.step = function () {
+          this.t++;
+          this.vx += Math.sin(this.t * 0.009) * 0.005;
+          this.vy += Math.cos(this.t * 0.011) * 0.004;
+          if (att.length) {
+            var bx = 0,
+              by = 0,
+              bd = Infinity,
+              bw = 1;
+            for (var i = 0; i < att.length; i++) {
+              var dx = att[i].x - this.x,
+                dy = att[i].y - this.y,
+                d = Math.sqrt(dx * dx + dy * dy);
+              if (d < bd) {
+                bd = d;
+                bx = dx;
+                by = dy;
+                bw = att[i].w;
+              }
+            }
+            if (bd < 350 && bd > 0) {
+              var f = (1 - bd / 350) * 0.008 * bw;
+              this.vx += (bx / bd) * f;
+              this.vy += (by / bd) * f;
+            }
+          }
+          this.vx *= 0.95;
+          this.vy *= 0.95;
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < -6) this.x = W + 6;
+          if (this.x > W + 6) this.x = -6;
+          if (this.y < -6) this.y = H + 6;
+          if (this.y > H + 6) this.y = -6;
+        };
+        Pt.prototype.draw = function () {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(200,169,110," + this.op + ")";
+          ctx.fill();
+        };
+        var pts = [];
+        for (var i = 0; i < 10; i++) pts.push(new Pt());
+        addEventListener("scroll", function () {
+          scrolled = true;
+        });
+        (function loop() {
+          ctx.clearRect(0, 0, W, H);
+          tick++;
+          if (tick % 40 === 0 || scrolled) {
+            refreshAtt();
+            scrolled = false;
+          }
+          pts.forEach(function (p) {
+            p.step();
+            p.draw();
+          });
+          requestAnimationFrame(loop);
+        })();
+        document.addEventListener("DOMContentLoaded", refreshAtt);
+      })();
+    </script>
+    <script src="oa-fragmentos.js"></script>
+  <script src="constelacao-header.js"></script>
+    <script src="rio-nav.js"></script>
+    <script>
+      /* Autoplay: inicia o audio no primeiro gesto do usuario em cada capitulo */
+      (function () {
+        window.addEventListener("load", function () {
+          var btn =
+            document.getElementById("btn-audio") ||
+            document.getElementById("soundtrack-toggle");
+          if (!btn) return;
+          function _playing() {
+            if (btn.id === "btn-audio") {
+              var ip = document.getElementById("icon-play");
+              return ip && ip.classList.contains("hidden");
+            }
+            return btn.classList.contains("is-playing");
+          }
+          if (_playing()) return;
+          document.addEventListener(
+            "pointerdown",
+            function oa_auto() {
+              document.removeEventListener("pointerdown", oa_auto, true);
+              if (!_playing()) btn.click();
+            },
+            { capture: true },
+          );
+        });
+      })();
+    </script>
+  </body>
+</html>

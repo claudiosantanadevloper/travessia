@@ -1,0 +1,1566 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>O Avesso do Chão</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter+Tight:wght@100;200;300;400&family=JetBrains+Mono:wght@100;200;300&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans: ['"Inter Tight"', "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+
+            colors: {
+              copper: {
+                300: "#f08a75",
+                500: "#e2583e",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      :root {
+        --bg: #020203;
+        --copper: #e2583e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        hyphens: none;
+      }
+
+      body {
+        background:
+          radial-gradient(
+            circle at center,
+            rgba(18, 18, 22, 0.85),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at top,
+            rgba(226, 88, 62, 0.06),
+            transparent 30%
+          ),
+          var(--bg);
+
+        color: white;
+
+        min-height: 100vh;
+
+        opacity: 0;
+
+        transition: opacity 1.4s ease;
+
+        cursor: none;
+      }
+
+      body.loaded {
+        opacity: 1;
+      }
+
+      canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* ─────────────────────────────
+         CURSOR
+      ───────────────────────────── */
+
+      #cursor-glow {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border-radius: 999px;
+
+        background: radial-gradient(
+          circle,
+          rgba(226, 88, 62, 0.08),
+          transparent 65%
+        );
+
+        pointer-events: none;
+        z-index: 30;
+
+        transform: translate(-50%, -50%);
+      }
+
+      #cursor-dot {
+        position: fixed;
+
+        width: 5px;
+        height: 5px;
+
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, 0.95);
+
+        box-shadow:
+          0 0 12px rgba(255, 255, 255, 0.7),
+          0 0 20px rgba(226, 88, 62, 0.45);
+
+        z-index: 31;
+
+        pointer-events: none;
+
+        transform: translate(-50%, -50%);
+      }
+
+      /* ─────────────────────────────
+         FADE
+      ───────────────────────────── */
+
+      .fade-in {
+        opacity: 0;
+        transform: translateY(22px);
+        transition:
+          opacity 2s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .delay-1 { transition-delay: 0.15s; }
+      .delay-2 { transition-delay: 0.35s; }
+      .delay-3 { transition-delay: 0.6s; }
+
+      /* ─────────────────────────────
+         TÍTULO
+      ───────────────────────────── */
+
+      h1.title-main {
+        font-size: clamp(2.5rem, 7vw, 8rem);
+        white-space: nowrap;
+      }
+
+      /* ── Entrada letra a letra ────────────────────────────────────────── */
+      .title-char {
+        opacity: 0;
+        transform: translateY(-14px);
+        filter: blur(5px);
+        display: inline-block;
+        position: relative;
+
+        transition:
+          transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.7s ease,
+          text-shadow 0.7s ease;
+      }
+
+      .title-char::before,
+      .title-char::after {
+        content: attr(data-char);
+
+        position: absolute;
+        inset: 0;
+
+        opacity: 0;
+
+        transition:
+          transform 0.7s ease,
+          opacity 0.5s ease;
+      }
+
+      .title-char::before {
+        clip-path: polygon(0 0, 100% 0, 100% 45%, 0 55%);
+      }
+
+      .title-char::after {
+        clip-path: polygon(0 55%, 100% 45%, 100% 100%, 0 100%);
+      }
+
+      .title-char.cracking::before,
+      .title-char.cracking::after {
+        opacity: 1;
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      /* Animação de entrada — dispara quando pai recebe .visible */
+      @keyframes charSettle {
+        from {
+          opacity: 0;
+          transform: translateY(-14px);
+          filter: blur(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+          filter: blur(0);
+        }
+      }
+
+      .fade-in.visible .title-char {
+        animation: charSettle 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: var(--char-delay, 0ms);
+      }
+
+      .title-char.cracking::before {
+        transform: translate(-3px, -5px) rotate(-7deg);
+      }
+
+      .title-char.cracking::after {
+        transform: translate(4px, 5px) rotate(8deg);
+      }
+
+      @keyframes fractureShake {
+        0% {
+          transform: translate(0px, 0px);
+        }
+
+        20% {
+          transform: translate(-1px, 1px);
+        }
+
+        40% {
+          transform: translate(1px, -1px);
+        }
+
+        60% {
+          transform: translate(-2px, 2px);
+        }
+
+        80% {
+          transform: translate(2px, -1px);
+        }
+
+        100% {
+          transform: translate(0px, 0px);
+        }
+      }
+
+      .title-break {
+        animation: fractureShake 0.08s linear infinite;
+      }
+
+      /* ─────────────────────────────
+         BOTÃO
+      ───────────────────────────── */
+
+      .start-button {
+        position: relative;
+
+        overflow: hidden;
+
+        transition: all 0.7s ease;
+      }
+
+      .start-button::before {
+        content: "";
+
+        position: absolute;
+        inset: 0;
+
+        background: linear-gradient(
+          120deg,
+          transparent,
+          rgba(255, 255, 255, 0.08),
+          transparent
+        );
+
+        transform: translateX(-120%);
+
+        transition: transform 1s ease;
+      }
+
+      .start-button:hover::before {
+        transform: translateX(120%);
+      }
+
+      .start-button::after {
+        content: "";
+
+        position: absolute;
+
+        left: 50%;
+        bottom: 0;
+
+        width: 0%;
+        height: 1px;
+
+        background: var(--copper);
+
+        transform: translateX(-50%);
+
+        transition: width 0.8s ease;
+      }
+
+      .start-button:hover::after {
+        width: 100%;
+      }
+
+      /* ─────────────────────────────
+         TEXTO
+      ───────────────────────────── */
+
+      .ghost-prologue {
+        font-family: "Cormorant Garamond", serif;
+
+        font-style: italic;
+        font-weight: 300;
+
+        line-height: 1.9;
+
+        color: rgba(230, 230, 235, 0.65);
+
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.03);
+      }
+
+      /* ─────────────────────────────
+         MOBILE
+      ───────────────────────────── */
+
+      @media (hover: none), (pointer: coarse) {
+        body {
+          cursor: auto;
+        }
+
+        #cursor-dot,
+        #cursor-glow {
+          display: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0.028;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.4s steps(1) infinite;
+      }
+      @keyframes grain {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-3%, 2%);
+        }
+        40% {
+          transform: translate(2%, -3%);
+        }
+        60% {
+          transform: translate(-2%, 3%);
+        }
+        80% {
+          transform: translate(3%, -1%);
+        }
+        100% {
+          transform: translate(1%, 2%);
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    class="font-sans antialiased flex items-center justify-center min-h-screen relative py-16 selection:bg-copper-500/20"
+  >
+    <!-- CANVAS -->
+    <canvas id="universe"></canvas>
+
+    <!-- CURSOR -->
+    <div id="cursor-glow"></div>
+    <div id="cursor-dot"></div>
+
+    <!-- CONTEÚDO -->
+
+    <main class="relative z-10 text-center max-w-3xl w-full px-6 pt-[40vh]">
+      <!-- PRÓLOGO -->
+
+      <section
+        id="manifesto"
+        class="mb-[70vh] space-y-12 ghost-prologue text-lg md:text-2xl px-4"
+      >
+        <p class="fade-in">
+          Existem pessoas que entram na nossa vida sem fazer barulho.
+        </p>
+
+        <p class="fade-in">
+          Não chegam quebrando portas. Não anunciam revoluções. Apenas ocupam
+          espaço devagar.
+        </p>
+
+        <p class="fade-in">
+          Uma música enviada tarde da noite. Um silêncio que de repente não pesa
+          mais.
+        </p>
+
+        <p class="fade-in">
+          O instante em que você percebe que começou a procurar alguém em cada
+          detalhe pequeno do dia.
+        </p>
+
+        <p class="fade-in">
+          Quando percebi, você já havia entrado em mim de um jeito impossível de
+          desfazer sem arrancar alguma parte junto.
+        </p>
+
+        <p class="fade-in">
+          E foi exatamente aí que o chão começou a virar do avesso.
+        </p>
+
+        <div
+          style="
+            height: 0.9rem;
+            position: relative;
+            overflow: visible;
+            text-align: center;
+          "
+        >
+          <span
+            style="
+              position: absolute;
+              left: 50%;
+              transform: translateX(-50%);
+              font-size: 8px;
+              letter-spacing: 0.6em;
+              white-space: nowrap;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-weight: 100;
+              color: rgba(226, 88, 62, 0);
+              transition: color 0.35s ease;
+              padding: 0.5rem 1.5rem;
+              cursor: default;
+              user-select: none;
+            "
+            onmouseenter="
+              this.style.transition = 'color 0.35s ease';
+              this.style.color = 'rgba(226,88,62,0.52)';
+            "
+            onmouseleave="
+              this.style.transition = 'color 2s ease';
+              this.style.color = 'rgba(226,88,62,0)';
+            "
+            >ela existe.</span
+          >
+        </div>
+      </section>
+
+      <!-- TÍTULO -->
+
+      <div class="space-y-10 md:space-y-14">
+        <div class="fade-in delay-1">
+          <div
+            class="w-px h-12 bg-gradient-to-b from-transparent via-copper-500 to-transparent mx-auto mb-10 opacity-40"
+          ></div>
+
+          <span
+            class="block mb-6 text-[10px] md:text-[11px] uppercase tracking-[0.6em] text-copper-500/70 font-mono"
+          >
+            Volume I • Piraju
+          </span>
+
+          <h1
+            class="title-main font-serif italic font-light tracking-tighter leading-none"
+          >
+            O Avesso do Chão
+          </h1>
+        </div>
+
+        <!-- SUB -->
+
+        <div class="fade-in delay-2">
+          <p
+            class="font-mono text-zinc-500 text-[9px] tracking-[0.45em] uppercase"
+          >
+            “Tem dias que eu não sei bem o que isso aqui é. E talvez não precise
+            saber ""
+          </p>
+        </div>
+
+        <!-- CONVITE DE EXPERIÊNCIA -->
+        <div class="fade-in delay-2 pt-2">
+          <p
+            class="font-mono text-zinc-700/80 text-[7px] tracking-[0.5em] uppercase select-none"
+          >
+            melhor com fone de ouvido · no escuro · sem pressa
+          </p>
+        </div>
+
+        <!-- BOTÃO -->
+
+        <div class="fade-in delay-3 pt-6">
+          <a
+            href="capitulo-0-prologo.html"
+            class="nav-link start-button inline-block px-10 md:px-16 py-5 border border-white/10 hover:border-copper-500/40 text-zinc-300 hover:text-copper-300 backdrop-blur-sm font-mono text-[10px] tracking-[0.4em] uppercase"
+          >
+            Iniciar a Travessia
+          </a>
+        </div>
+
+        <!-- SUMÁRIO -->
+
+        <div class="fade-in delay-3 pt-4">
+          <a
+            href="sumario.html"
+            class="nav-link text-zinc-600 hover:text-zinc-400 transition-colors duration-500 font-mono text-[8px] tracking-[0.45em] uppercase"
+          >
+            ver sumário →
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const canvas = document.getElementById("universe");
+      const ctx = canvas.getContext("2d");
+
+      let w;
+      let h;
+
+      const mouse = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      };
+
+      const stars = [];
+      const galaxy = [];
+      const shootingStars = [];
+      const titleParticles = [];
+
+      /* ─────────────────────────────
+         CURSOR
+      ───────────────────────────── */
+
+      const glow = document.getElementById("cursor-glow");
+      const dot = document.getElementById("cursor-dot");
+
+      document.addEventListener("mousemove", (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+
+        glow.style.left = e.clientX + "px";
+        glow.style.top = e.clientY + "px";
+
+        dot.style.left = e.clientX + "px";
+        dot.style.top = e.clientY + "px";
+
+        // Hover nos capítulos da jornada
+        jornadaHovered = null;
+        JORNADA.forEach((c) => {
+          if (!jornadaVisited[c.id]) return;
+          const dx = e.clientX - c.x * w;
+          const dy = e.clientY - c.y * h;
+          if (Math.sqrt(dx * dx + dy * dy) < 20) jornadaHovered = c.id;
+        });
+      });
+
+      /* ─────────────────────────────
+         RESIZE
+      ───────────────────────────── */
+
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      }
+
+      resize();
+
+      window.addEventListener("resize", resize);
+
+      /* ─────────────────────────────
+         ESTRELAS
+      ───────────────────────────── */
+
+      class Star {
+        constructor() {
+          this.x = Math.random() * w;
+          this.y = Math.random() * h;
+
+          this.size = Math.random() * 1.4;
+
+          this.alpha = Math.random() * 0.5 + 0.1;
+
+          this.twinkle = Math.random() * 0.02;
+        }
+
+        draw(t) {
+          const a = this.alpha + Math.sin(t * this.twinkle) * 0.2;
+
+          ctx.fillStyle = `rgba(255,255,255,${a})`;
+
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      /* ─────────────────────────────
+         GALÁXIA
+      ───────────────────────────── */
+
+      class GalaxyParticle {
+        constructor() {
+          this.angle = Math.random() * Math.PI * 2;
+
+          this.radius = Math.random() * Math.max(w, h) * 0.55;
+
+          this.speed = (Math.random() * 0.0005 + 0.0001) * 5;
+
+          this.size = Math.random() * 1.5;
+
+          this.color = Math.random() > 0.85 ? "226,88,62" : "255,255,255";
+        }
+
+        update() {
+          this.angle += this.speed;
+        }
+
+        draw() {
+          const x = w / 2 + Math.cos(this.angle) * this.radius;
+
+          const y = h / 2 + Math.sin(this.angle) * this.radius * 0.6;
+
+          ctx.fillStyle = `rgba(${this.color},0.18)`;
+
+          ctx.beginPath();
+          ctx.arc(x, y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      /* ─────────────────────────────
+         ESTRELAS CADENTES
+      ───────────────────────────── */
+
+      class ShootingStar {
+        constructor() {
+          this.reset();
+        }
+
+        reset() {
+          this.x = Math.random() * w;
+          this.y = Math.random() * h * 0.4;
+
+          this.length = Math.random() * 140 + 80;
+
+          this.speed = Math.random() * 14 + 10;
+
+          this.opacity = Math.random() * 0.5 + 0.3;
+        }
+
+        update() {
+          this.x -= this.speed;
+          this.y += this.speed * 0.35;
+
+          if (this.x < -200 || this.y > h + 200) {
+            this.reset();
+            this.x = w + 100;
+          }
+        }
+
+        draw() {
+          const gradient = ctx.createLinearGradient(
+            this.x,
+            this.y,
+            this.x + this.length,
+            this.y - this.length * 0.35,
+          );
+
+          gradient.addColorStop(0, `rgba(255,255,255,${this.opacity})`);
+
+          gradient.addColorStop(1, `rgba(255,255,255,0)`);
+
+          ctx.strokeStyle = gradient;
+
+          ctx.lineWidth = 1.2;
+
+          ctx.beginPath();
+
+          ctx.moveTo(this.x, this.y);
+
+          ctx.lineTo(this.x + this.length, this.y - this.length * 0.35);
+
+          ctx.stroke();
+        }
+      }
+
+      /* ─────────────────────────────
+         MEMÓRIA DA JORNADA
+      ───────────────────────────── */
+
+      const JORNADA = [
+        {
+          id: "cap-0",
+          label: "O Prólogo",
+          palavra: "início",
+          rgb: "138,154,176",
+          x: 0.5,
+          y: 0.1,
+        },
+        {
+          id: "cap-1",
+          label: "I · O Segredo",
+          palavra: "segredo",
+          rgb: "90,122,84",
+          x: 0.27,
+          y: 0.22,
+        },
+        {
+          id: "cap-2",
+          label: "II · A Linha",
+          palavra: "tensão",
+          rgb: "196,132,58",
+          x: 0.73,
+          y: 0.22,
+        },
+        {
+          id: "cap-3",
+          label: "III · O Peso",
+          palavra: "peso",
+          rgb: "138,106,72",
+          x: 0.33,
+          y: 0.38,
+        },
+        {
+          id: "cap-4",
+          label: "IV · A Atenção",
+          palavra: "atenção",
+          rgb: "108,148,168",
+          x: 0.50,
+          y: 0.38,
+        },
+        {
+          id: "cap-5",
+          label: "V · O Desejo",
+          palavra: "desejo",
+          rgb: "160,50,50",
+          x: 0.67,
+          y: 0.38,
+        },
+        {
+          id: "cap-7",
+          label: "VII · O Deslocamento",
+          palavra: "desvio",
+          rgb: "74,122,154",
+          x: 0.25,
+          y: 0.55,
+        },
+        {
+          id: "cap-8",
+          label: "VIII · O Risco",
+          palavra: "risco",
+          rgb: "196,100,48",
+          x: 0.5,
+          y: 0.49,
+        },
+        {
+          id: "cap-6",
+          label: "VI · A Bolha",
+          palavra: "bolha",
+          rgb: "201,168,76",
+          x: 0.75,
+          y: 0.55,
+        },
+        {
+          id: "cap-9",
+          label: "IX · A Entrega",
+          palavra: "entrega",
+          rgb: "192,184,172",
+          x: 0.5,
+          y: 0.66,
+        },
+        {
+          id: "cap-10a",
+          label: "X · A Crueza",
+          palavra: "crueza",
+          rgb: "155,58,80",
+          x: 0.29,
+          y: 0.8,
+        },
+        {
+          id: "cap-10b",
+          label: "X · A Sereia",
+          palavra: "sereia",
+          rgb: "201,168,76",
+          x: 0.71,
+          y: 0.8,
+        },
+        {
+          id: "cap-11",
+          label: "XI · A Espera",
+          palavra: "espera",
+          rgb: "90,106,128",
+          x: 0.5,
+          y: 0.9,
+        },
+      ];
+
+      let jornadaVisited = {};
+      let jornadaOrder = [];
+      let jornadaHovered = null;
+
+      (function loadJornada() {
+        JORNADA.forEach((c) => {
+          const v = localStorage.getItem("avesso_jornada_" + c.id);
+          if (v) jornadaVisited[c.id] = parseInt(v, 10) || Date.now();
+        });
+        jornadaOrder = Object.entries(jornadaVisited)
+          .sort((a, b) => a[1] - b[1])
+          .map((e) => e[0]);
+      })();
+
+      function drawJornada(t) {
+        if (jornadaOrder.length === 0) return;
+
+        ctx.save();
+
+        // Linhas de conexão em ordem de visita
+        if (jornadaOrder.length > 1) {
+          for (let i = 0; i < jornadaOrder.length - 1; i++) {
+            const ca = JORNADA.find((c) => c.id === jornadaOrder[i]);
+            const cb = JORNADA.find((c) => c.id === jornadaOrder[i + 1]);
+            if (!ca || !cb) continue;
+            const ax = ca.x * w,
+              ay = ca.y * h;
+            const bx = cb.x * w,
+              by = cb.y * h;
+            const gr = ctx.createLinearGradient(ax, ay, bx, by);
+            gr.addColorStop(0, `rgba(${ca.rgb},.10)`);
+            gr.addColorStop(1, `rgba(${cb.rgb},.10)`);
+            ctx.beginPath();
+            ctx.strokeStyle = gr;
+            ctx.lineWidth = 0.5;
+            ctx.setLineDash([2, 8]);
+            ctx.moveTo(ax, ay);
+            ctx.lineTo(bx, by);
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+        }
+
+        // Estrelas
+        JORNADA.forEach((c) => {
+          if (!jornadaVisited[c.id]) return;
+          const px = c.x * w;
+          const py = c.y * h;
+          const pulse = 0.65 + Math.sin(t * 0.016 + c.x * 12) * 0.35;
+          const hov = jornadaHovered === c.id;
+
+          // Glow externo
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(${c.rgb},${(hov ? 0.22 : 0.07) * pulse})`;
+          ctx.arc(px, py, hov ? 26 : 15, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Ponto central
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(${c.rgb},${hov ? 0.95 : 0.72 * pulse})`;
+          ctx.arc(px, py, hov ? 4.2 : 2.6, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Label no hover
+          if (hov) {
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = '700 8px "JetBrains Mono", monospace';
+            ctx.fillStyle = `rgba(${c.rgb},.92)`;
+            ctx.fillText(c.palavra, px, py - 20);
+            ctx.font = '300 7px "JetBrains Mono", monospace';
+            ctx.fillStyle = "rgba(255,255,255,.30)";
+            ctx.fillText(c.label, px, py - 11);
+            ctx.textAlign = "left";
+            ctx.textBaseline = "alphabetic";
+          }
+        });
+
+        ctx.restore();
+      }
+
+      /* ─────────────────────────────
+         CONSTELAÇÕES
+      ───────────────────────────── */
+
+      const constellations = {
+        aries: {
+          points: [
+            { x: 0.22, y: 0.26 },
+            { x: 0.28, y: 0.23 },
+            { x: 0.34, y: 0.18 },
+          ],
+
+          lines: [
+            [0, 1],
+            [1, 2],
+          ],
+        },
+
+        pisces: {
+          points: [
+            { x: 0.68, y: 0.62 },
+            { x: 0.73, y: 0.56 },
+            { x: 0.78, y: 0.5 },
+            { x: 0.82, y: 0.46 },
+            { x: 0.74, y: 0.68 },
+            { x: 0.79, y: 0.74 },
+            { x: 0.84, y: 0.78 },
+          ],
+
+          lines: [
+            [0, 1],
+            [1, 2],
+            [2, 3],
+            [0, 4],
+            [4, 5],
+            [5, 6],
+          ],
+        },
+      };
+
+      function drawConstellation(c, t) {
+        const pulse = 0.4 + (Math.sin(t * 0.02) + 1) * 0.2;
+
+        ctx.strokeStyle = `rgba(226,88,62,${pulse})`;
+
+        ctx.lineWidth = 0.8;
+
+        ctx.beginPath();
+
+        c.lines.forEach((line) => {
+          const p1 = c.points[line[0]];
+          const p2 = c.points[line[1]];
+
+          ctx.moveTo(p1.x * w, p1.y * h);
+
+          ctx.lineTo(p2.x * w, p2.y * h);
+        });
+
+        ctx.stroke();
+
+        c.points.forEach((p) => {
+          const x = p.x * w;
+          const y = p.y * h;
+
+          ctx.fillStyle = `rgba(255,255,255,${0.7 + pulse * 0.3})`;
+
+          ctx.beginPath();
+          ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = `rgba(226,88,62,${0.08 + pulse * 0.12})`;
+
+          ctx.beginPath();
+          ctx.arc(x, y, 7, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      /* ─────────────────────────────
+         INIT
+      ───────────────────────────── */
+
+      function init() {
+        for (let i = 0; i < 260; i++) {
+          stars.push(new Star());
+        }
+
+        for (let i = 0; i < 420; i++) {
+          galaxy.push(new GalaxyParticle());
+        }
+
+        for (let i = 0; i < 5; i++) {
+          shootingStars.push(new ShootingStar());
+        }
+      }
+
+      init();
+
+      // ── PARTÍCULA DOURADA (letra B) ──────────────────────
+      let _gpAngle = Math.random() * Math.PI * 2;
+      let _gpPhase = 0;
+      const _gpR = Math.max(w, h) * 0.26;
+      function _gpPos() {
+        return {
+          x: w / 2 + Math.cos(_gpAngle) * _gpR,
+          y: h / 2 + Math.sin(_gpAngle) * _gpR * 0.52,
+        };
+      }
+
+      /* ─────────────────────────────
+         TÍTULO INTERATIVO
+      ───────────────────────────── */
+
+      function splitTitle() {
+        const h1 = document.querySelector("h1");
+        h1.classList.add("title-main");
+
+        const text = h1.textContent.trim();
+
+        h1.innerHTML = text
+          .split("")
+          .map((char) =>
+            char === " "
+              ? `<span class="title-char" style="width:0.3em"></span>`
+              : `<span class="title-char" data-char="${char}">${char}</span>`,
+          )
+          .join("");
+
+        const chars = h1.querySelectorAll(".title-char");
+
+        /* Stagger de entrada: cada letra com delay crescente */
+        chars.forEach((char, i) => {
+          char.style.setProperty("--char-delay", (i * 48 + 120) + "ms");
+        });
+
+        /* Interação por proximidade: levita + escala + glow cobre */
+        document.addEventListener("mousemove", () => {
+          chars.forEach((char) => {
+            const rect = char.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const dx = mouse.x - cx;
+            const dy = mouse.y - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 120) {
+              const force = 1 - dist / 120;
+              char.style.transform = `translateY(${-force * 11}px) scale(${1 + force * 0.06})`;
+              char.style.textShadow = `
+                0 0 ${20 + force * 22}px rgba(255,255,255,${force * 0.28}),
+                0 0 ${12 + force * 18}px rgba(226,88,62,${force * 0.22})
+              `;
+            } else {
+              char.style.transform = "";
+              char.style.textShadow = "";
+            }
+          });
+        });
+      }
+
+      /* ─────────────────────────────
+         DESINTEGRAÇÃO
+      ───────────────────────────── */
+
+      function disintegrateTitle() {
+        const h1 = document.querySelector("h1");
+
+        const chars = h1.querySelectorAll(".title-char");
+
+        h1.classList.add("title-break");
+
+        chars.forEach((char, index) => {
+          setTimeout(() => {
+            char.classList.add("cracking");
+
+            char.style.transform = `
+              translate(
+                ${(Math.random() - 0.5) * 28}px,
+                ${(Math.random() - 0.5) * 28}px
+              )
+              rotate(${(Math.random() - 0.5) * 30}deg)
+            `;
+
+            char.style.opacity = "0";
+          }, index * 40);
+        });
+
+        const rect = h1.getBoundingClientRect();
+
+        setTimeout(() => {
+          for (let i = 0; i < 700; i++) {
+            titleParticles.push({
+              x: rect.left + Math.random() * rect.width,
+
+              y: rect.top + Math.random() * rect.height,
+
+              size: Math.random() * 2.8 + 0.4,
+
+              vx: (Math.random() - 0.5) * 20,
+
+              vy: (Math.random() - 0.5) * 20 - 4,
+
+              alpha: 1,
+            });
+          }
+        }, 350);
+      }
+
+      /* ─────────────────────────────
+         ANIMAÇÃO
+      ───────────────────────────── */
+
+      let time = 0;
+
+      function animate() {
+        time++;
+
+        ctx.clearRect(0, 0, w, h);
+
+        stars.forEach((s) => s.draw(time));
+
+        galaxy.forEach((g) => {
+          g.update();
+          g.draw();
+        });
+
+        shootingStars.forEach((s) => {
+          s.update();
+          s.draw();
+        });
+
+        drawConstellation(constellations.aries, time);
+
+        drawConstellation(constellations.pisces, time);
+
+        drawJornada(time);
+
+        for (let i = titleParticles.length - 1; i >= 0; i--) {
+          const p = titleParticles[i];
+
+          p.x += p.vx;
+          p.y += p.vy;
+
+          p.vy += 0.04;
+
+          p.alpha -= 0.012;
+
+          if (p.alpha <= 0) {
+            titleParticles.splice(i, 1);
+            continue;
+          }
+
+          ctx.fillStyle = `rgba(226,88,62,${p.alpha})`;
+
+          ctx.beginPath();
+
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+
+          ctx.fill();
+        }
+
+        // golden particle draw
+        _gpAngle += 0.00026;
+        _gpPhase += 0.024;
+        const _gpp = _gpPos();
+        const _gpa = 0.46 + Math.sin(_gpPhase) * 0.32;
+        ctx.fillStyle = `rgba(200,169,84,${_gpa})`;
+        ctx.beginPath();
+        ctx.arc(_gpp.x, _gpp.y, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(200,169,84,${_gpa * 0.09})`;
+        ctx.beginPath();
+        ctx.arc(_gpp.x, _gpp.y, 18, 0, Math.PI * 2);
+        ctx.fill();
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+
+      // click na partícula dourada → revela B + desbloqueia mapa
+      window.addEventListener("click", function (e) {
+        const gp = _gpPos();
+        const dx = e.clientX - gp.x;
+        const dy = e.clientY - gp.y;
+        if (Math.sqrt(dx * dx + dy * dy) < 28) {
+          oaFoundLetter("A");
+          localStorage.setItem("oavesso_map_unlocked", "1");
+          if (window.oaRevealMap) window.oaRevealMap();
+        }
+      });
+
+      /* ─────────────────────────────
+         LOAD
+      ───────────────────────────── */
+
+      window.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("loaded");
+
+        splitTitle();
+
+        // Revelar elementos conforme o leitor chega por scroll
+        // 600ms de delay: deixa o fade-in da página terminar antes de começar o texto
+        setTimeout(function () {
+          var revealObs = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("visible");
+                  revealObs.unobserve(entry.target);
+                }
+              });
+            },
+            {
+              threshold: 0.18,
+              rootMargin: "0px 0px -30px 0px",
+            }
+          );
+          document.querySelectorAll(".fade-in").forEach(function (el) {
+            revealObs.observe(el);
+          });
+        }, 600);
+      });
+
+      /* ─────────────────────────────
+         LINKS
+      ───────────────────────────── */
+
+      function playNavClick() {
+        try {
+          const c = new (window.AudioContext || window.webkitAudioContext)();
+          const o = c.createOscillator();
+          const g = c.createGain();
+          o.type = "sine";
+          o.frequency.setValueAtTime(520, c.currentTime);
+          o.frequency.exponentialRampToValueAtTime(260, c.currentTime + 0.18);
+          g.gain.setValueAtTime(0.07, c.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.22);
+          o.connect(g);
+          g.connect(c.destination);
+          o.start();
+          o.stop(c.currentTime + 0.22);
+          setTimeout(() => c.close(), 600);
+        } catch (e) {}
+      }
+
+      function playExitRipple(x, y, cb) {
+        const el = document.createElement("div");
+        const s = Math.hypot(window.innerWidth, window.innerHeight) * 2.4;
+        el.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(239,176,87,0.18) 0%,rgba(1,7,9,0.97) 65%);transform:translate(-50%,-50%) scale(1);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1);pointer-events:none;z-index:9997;`;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(-50%,-50%) scale(${s})`;
+        });
+        setTimeout(() => {
+          el.remove();
+          cb();
+        }, 670);
+      }
+
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          playNavClick();
+          const rx = e.clientX || window.innerWidth / 2;
+          const ry = e.clientY || window.innerHeight / 2;
+
+          if (link.classList.contains("start-button")) {
+            disintegrateTitle();
+          }
+
+          playExitRipple(rx, ry, () => {
+            document.body.classList.remove("loaded");
+            setTimeout(() => {
+              window.location.href = link.getAttribute("href");
+            }, 60);
+          });
+        });
+      });
+
+      // ─── localStorage PROGRESS ─────────────────────────────
+      (function () {
+        try {
+          const saved = localStorage.getItem("oavesso_progress");
+          if (!saved) return;
+          const p = JSON.parse(saved);
+          if (!p || !p.title || !p.href) return;
+          const prompt = document.createElement("div");
+          prompt.id = "continue-prompt";
+          prompt.style.cssText =
+            "position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(10px);z-index:200;opacity:0;transition:opacity 0.8s ease,transform 0.8s ease;pointer-events:auto;";
+          prompt.innerHTML = `<div style="display:flex;align-items:center;gap:1rem;padding:0.6rem 1.2rem;background:rgba(0,0,0,0.82);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.08);border-radius:100px;white-space:nowrap;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:0.35em;color:rgba(161,161,170,0.6);">você parou em</span>
+            <a href="${p.href}" class="nav-link" style="font-family:'JetBrains Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:0.35em;color:#e2583e;text-decoration:none;">${p.title}</a>
+            <button onclick="this.closest('#continue-prompt').remove();localStorage.removeItem('oavesso_progress');" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(113,113,122,0.6);background:none;border:none;cursor:pointer;padding:0 0 0 0.25rem;line-height:1;">&times;</button>
+          </div>`;
+          document.body.appendChild(prompt);
+          setTimeout(() => {
+            prompt.style.opacity = "1";
+            prompt.style.transform = "translateX(-50%) translateY(0)";
+          }, 2500);
+        } catch (_) {}
+      })();
+
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("mouseenter", () => {
+          try {
+            const c = new (window.AudioContext || window.webkitAudioContext)();
+            const o = c.createOscillator();
+            const g = c.createGain();
+            o.type = "sine";
+            o.frequency.value = 800;
+            g.gain.setValueAtTime(0.018, c.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+            o.connect(g);
+            g.connect(c.destination);
+            o.start();
+            o.stop(c.currentTime + 0.12);
+            setTimeout(() => c.close(), 400);
+          } catch (e) {}
+        });
+      });
+    </script>
+    <!-- ══ COLETOR DE FRAGMENTOS ═══════════════════════════════════════════ -->
+    <style>
+      @keyframes oLetterFlash {
+        0% {
+          opacity: 0;
+          transform: translateY(14px) scale(0.65);
+        }
+        18% {
+          opacity: 1;
+          transform: translateY(0) scale(1.1);
+        }
+        62% {
+          opacity: 0.9;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-12px) scale(1.05);
+        }
+      }
+      #oa-glyph {
+        position: fixed;
+        bottom: 3rem;
+        right: 1.6rem;
+        z-index: 500;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: rgba(200, 169, 84, 0.42);
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 2s ease;
+        letter-spacing: 0.2em;
+        user-select: none;
+        text-shadow: 0 0 9px rgba(200, 169, 84, 0.18);
+        padding: 6px;
+      }
+      #oa-map-btn {
+        position: fixed;
+        bottom: 3rem;
+        left: 1.6rem;
+        z-index: 500;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+        color: rgba(200, 169, 84, 0.32);
+        text-decoration: none;
+        opacity: 0;
+        transition:
+          opacity 3s ease,
+          color 0.4s ease;
+        letter-spacing: 0.28em;
+        user-select: none;
+        text-shadow: 0 0 8px rgba(200, 169, 84, 0.12);
+        padding: 6px;
+        text-transform: uppercase;
+        pointer-events: none;
+      }
+      #oa-map-btn.on {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #oa-map-btn:hover {
+        color: rgba(200, 169, 84, 0.72);
+      }
+      #oa-glyph.on {
+        opacity: 1;
+      }
+      #oa-overlay {
+        position: fixed;
+        bottom: 4.5rem;
+        right: 1.2rem;
+        z-index: 499;
+        background: rgba(4, 4, 4, 0.97);
+        border: 1px solid rgba(200, 169, 84, 0.08);
+        padding: 1.3rem 1.7rem 1.1rem;
+        backdrop-filter: blur(18px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.42s ease;
+        min-width: 200px;
+      }
+      #oa-overlay.on {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .oa-lbl {
+        display: block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 7px;
+        letter-spacing: 0.44em;
+        color: rgba(200, 169, 84, 0.28);
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+      }
+      .oa-slots {
+        display: flex;
+        gap: 0.78rem;
+        justify-content: center;
+        align-items: baseline;
+      }
+      .oa-slot {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 1.65rem;
+        line-height: 1;
+        min-width: 1rem;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.07);
+        transition:
+          color 1s ease,
+          text-shadow 1s ease;
+      }
+      .oa-slot.found {
+        color: rgba(200, 169, 84, 0.88);
+        text-shadow: 0 0 14px rgba(200, 169, 84, 0.26);
+      }
+      #oa-done {
+        display: none;
+        margin-top: 1.1rem;
+        text-align: center;
+        border-top: 1px solid rgba(200, 169, 84, 0.07);
+        padding-top: 0.9rem;
+      }
+      #oa-done a {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+        letter-spacing: 0.4em;
+        color: rgba(200, 169, 84, 0.55);
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.4s ease;
+      }
+      #oa-done a:hover {
+        color: rgba(200, 169, 84, 1);
+      }
+      .oa-flash {
+        position: fixed;
+        bottom: 7rem;
+        right: 4rem;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 6rem;
+        font-weight: 300;
+        line-height: 1;
+        color: rgba(200, 169, 84, 0.88);
+        pointer-events: none;
+        z-index: 600;
+        animation: oLetterFlash 3s ease forwards;
+      }
+    </style>
+    <div id="oa-glyph" onclick="oaToggle()">◈</div>
+    <a id="oa-map-btn" href="mapa-do-tesouro.html" class="nav-link">✦ mapa</a>
+    <div id="oa-overlay">
+      <span class="oa-lbl">fragmentos encontrados</span>
+      <div class="oa-slots" id="oa-slots"></div>
+      <div id="oa-done"><a href="chave.html">entrar →</a></div>
+    </div>
+    <script>
+      (function () {
+        var K = "oavesso_letters",
+          O = ["A", "B", "E", "I", "R", "T", "Z"];
+        function gF() {
+          try {
+            return JSON.parse(localStorage.getItem(K) || "[]");
+          } catch (e) {
+            return [];
+          }
+        }
+        function sF(a) {
+          localStorage.setItem(K, JSON.stringify(a));
+        }
+        function render() {
+          var f = gF(),
+            s = document.getElementById("oa-slots");
+          if (!s) return;
+          s.innerHTML = "";
+          O.forEach(function (l) {
+            var el = document.createElement("span");
+            el.className = "oa-slot" + (f.indexOf(l) > -1 ? " found" : "");
+            el.textContent = f.indexOf(l) > -1 ? l : "·";
+            s.appendChild(el);
+          });
+          var d = document.getElementById("oa-done");
+          if (d) d.style.display = f.length === 7 ? "block" : "none";
+        }
+        function showG() {
+          var g = document.getElementById("oa-glyph");
+          if (g)
+            setTimeout(function () {
+              g.classList.add("on");
+            }, 400);
+        }
+        window.oaFoundLetter = function (l) {
+          var f = gF();
+          if (f.indexOf(l) > -1) return;
+          f.push(l);
+          sF(f);
+          showG();
+          render();
+          var fl = document.createElement("div");
+          fl.className = "oa-flash";
+          fl.textContent = l;
+          document.body.appendChild(fl);
+          setTimeout(function () {
+            fl.remove();
+          }, 3200);
+        };
+        window.oaToggle = function () {
+          var o = document.getElementById("oa-overlay");
+          if (o) o.classList.toggle("on");
+          render();
+        };
+        window.oaRevealMap = function () {
+          var b = document.getElementById("oa-map-btn");
+          if (b)
+            setTimeout(function () {
+              b.classList.add("on");
+            }, 600);
+        };
+        document.addEventListener("DOMContentLoaded", function () {
+          render();
+          if (gF().length > 0) showG();
+          if (localStorage.getItem("oavesso_map_unlocked"))
+            window.oaRevealMap();
+        });
+      })();
+    </script>
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+  </body>
+</html>

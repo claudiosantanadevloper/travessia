@@ -1,0 +1,1470 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VIII · O Risco do Depois — O Avesso do Chão</title>
+    <script>
+      localStorage.setItem(
+        "oavesso_progress",
+        '{"chapter":8,"title":"VIII · O Risco do Depois","href":"capitulo-8-o-risco-do-depois.html"}',
+      );
+    </script>
+    <script>
+      (function () {
+        var k = "avesso_jornada_cap-8";
+        if (!localStorage.getItem(k)) localStorage.setItem(k, Date.now());
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Inter+Tight:wght@100;200;300;400;500&family=JetBrains+Mono:wght@100;200;300&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans: ['"Inter Tight"', "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              shift: {
+                950: "#08080C",
+                gold: "#C8A96E",
+                blue: "#9FB8D8",
+                mist: "#8A96A8",
+                risk: "#B34A3E",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* ─── BASE ─────────────────────────────────────── */
+      body {
+        background-color: #08080c;
+        color: #dddde8;
+        opacity: 0;
+        transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        overflow-x: hidden;
+        hyphens: none;
+      }
+      body.loaded {
+        opacity: 1;
+      }
+
+      #tension-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.8;
+      }
+
+      ::selection {
+        background: rgba(179, 74, 62, 0.15);
+        color: #ffffff;
+      }
+      ::-webkit-scrollbar {
+        width: 3px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(200, 169, 110, 0.15);
+        border-radius: 99px;
+      }
+
+      /* ─── REVEAL ────────────────────────────────────── */
+      .poetic-paragraph {
+        opacity: 0;
+        transform: translateY(25px);
+        filter: blur(8px);
+        transition:
+          opacity 2.5s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 2.5s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 2.5s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        z-index: 10;
+      }
+      .poetic-paragraph.reveal {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+      body .poetic-paragraph p,
+      body .poetic-paragraph {
+        line-height: 1.88;
+      }
+
+      /* ─── SECTION LABELS ────────────────────────────── */
+      .section-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 0.48em;
+        text-transform: uppercase;
+        color: rgba(200, 169, 110, 0.35);
+        display: inline-block;
+        margin-bottom: 2rem;
+        transition:
+          color 0.8s,
+          transform 0.3s ease;
+        cursor: default;
+        user-select: none;
+      }
+      .section-label:hover {
+        color: rgba(179, 74, 62, 0.8);
+        transform: translateX(5px);
+      }
+
+      .section-rule {
+        width: 1px;
+        height: 60px;
+        background: linear-gradient(
+          to bottom,
+          rgba(200, 169, 110, 0.15),
+          transparent
+        );
+        margin: 0 auto;
+        position: relative;
+        z-index: 10;
+      }
+
+      /* ─── COLOR UTILITIES ───────────────────────────── */
+      .interruption {
+        color: #9fb8d8;
+        font-style: italic;
+        font-family: "Cormorant Garamond", serif;
+      }
+      .revelation {
+        color: #c8a96e;
+        font-style: italic;
+        font-family: "Cormorant Garamond", serif;
+      }
+      .risk-word {
+        color: #b34a3e;
+        font-style: italic;
+        font-family: "Cormorant Garamond", serif;
+        text-shadow: 0 0 15px rgba(179, 74, 62, 0.4);
+        transition:
+          text-shadow 0.3s,
+          color 0.3s;
+      }
+      .risk-word:hover {
+        color: #d15a4c;
+        text-shadow: 0 0 25px rgba(179, 74, 62, 0.8);
+        cursor: crosshair;
+      }
+
+      /* ─── CURSOR FANTASMA (TENSÃO) ──────────────────── */
+      #ghost-cursor {
+        position: fixed;
+        width: 12px;
+        height: 12px;
+        background: rgba(200, 169, 110, 0.8);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        will-change: left, top;
+        transition:
+          width 0.3s,
+          height 0.3s,
+          background 0.3s,
+          box-shadow 0.3s;
+        box-shadow: 0 0 10px rgba(200, 169, 110, 0.5);
+      }
+      #ghost-cursor.on-risk {
+        width: 30px;
+        height: 30px;
+        background: transparent;
+        border: 1px solid rgba(179, 74, 62, 0.8);
+        box-shadow:
+          inset 0 0 10px rgba(179, 74, 62, 0.3),
+          0 0 15px rgba(179, 74, 62, 0.4);
+      }
+
+      /* ─── DRAW STRIKETHROUGH (Agressivo) ────────────── */
+      .draw-strike {
+        position: relative;
+        display: inline;
+        color: rgba(255, 255, 255, 0.4);
+        transition: color 1s ease 0.5s;
+      }
+      .draw-strike::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 0;
+        height: 2px;
+        background: rgba(179, 74, 62, 0.8);
+        transition: width 0.8s cubic-bezier(0.7, 0, 0.3, 1) 0.5s;
+      }
+      .draw-strike.active {
+        color: rgba(255, 255, 255, 0.15);
+      }
+      .draw-strike.active::after {
+        width: 100%;
+      }
+
+      /* ─── BREATH GLOW ───────────────────────────────── */
+      .bell-glow {
+        animation: bellGlow 4s ease-in-out infinite;
+      }
+      @keyframes bellGlow {
+        0%,
+        100% {
+          text-shadow: 0 0 0px rgba(200, 169, 110, 0);
+        }
+        50% {
+          text-shadow: 0 0 20px rgba(200, 169, 110, 0.3);
+        }
+      }
+
+      .text-glow {
+        text-shadow: 0 0 25px rgba(200, 169, 110, 0.4);
+      }
+
+      /* ─── STAGGER CHILDREN ──────────────────────────── */
+      .stagger-children > * {
+        opacity: 0;
+        transform: translateY(15px);
+        transition:
+          opacity 1s ease,
+          transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .stagger-children.active > *:nth-child(1) {
+        transition-delay: 0.1s;
+      }
+      .stagger-children.active > *:nth-child(2) {
+        transition-delay: 0.4s;
+      }
+      .stagger-children.active > *:nth-child(3) {
+        transition-delay: 0.7s;
+      }
+      .stagger-children.active > *:nth-child(4) {
+        transition-delay: 1s;
+      }
+      .stagger-children.active > * {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ─── BOSSA BARS (Áudio) ────────────────────────── */
+      .bossa-bar {
+        display: inline-block;
+        width: 2px;
+        height: 7px;
+        background: linear-gradient(to top, #b34a3e, #c8a96e);
+        margin: 0 1px;
+        animation: none;
+        transform-origin: bottom center;
+        border-radius: 1px;
+      }
+      .is-playing .bossa-bar {
+        animation: bounceBossa 1.4s ease-in-out infinite alternate;
+        animation-delay: calc((var(--i, 1) - 1) * 0.28s);
+      }
+      @keyframes bounceBossa {
+        from {
+          transform: scaleY(0.2);
+          opacity: 0.4;
+        }
+        to {
+          transform: scaleY(1.7);
+          opacity: 1;
+        }
+      }
+
+      @media (hover: none), (pointer: coarse) {
+        body {
+          cursor: auto !important;
+        }
+        .nav-link {
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        canvas {
+          display: none !important;
+        }
+        .bossa-bar {
+          animation: none !important;
+        }
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0.028;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.4s steps(1) infinite;
+      }
+      @keyframes grain {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-3%, 2%);
+        }
+        40% {
+          transform: translate(2%, -3%);
+        }
+        60% {
+          transform: translate(-2%, 3%);
+        }
+        80% {
+          transform: translate(3%, -1%);
+        }
+        100% {
+          transform: translate(1%, 2%);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="font-sans antialiased relative">
+    <!-- Cursor de Tensão -->
+    <div id="ghost-cursor" aria-hidden="true"></div>
+
+    <!-- Canvas fundo: Terreno Instável -->
+    <canvas id="tension-canvas"></canvas>
+
+    <!-- ← Índice -->
+    <a
+      href="sumario.html"
+      class="nav-link fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 uppercase"
+      >← Sumário</a
+    >
+
+    <!-- Barra de progresso -->
+    <div class="fixed top-0 left-0 w-full h-[2px] z-[100] opacity-60">
+      <div
+        id="global-progress"
+        class="h-full bg-gradient-to-r from-shift-gold via-shift-risk to-shift-gold transition-all duration-150 ease-out"
+        style="width: 0%"
+      ></div>
+    </div>
+
+    <!-- Audio toggle -->
+    <div
+      id="soundtrack-toggle"
+      class="fixed top-6 right-6 z-[100] flex items-center space-x-3 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/[0.05] text-[11px] font-mono text-zinc-400 hover:border-shift-risk/50 transition-all cursor-pointer group"
+    >
+      <div class="flex items-center h-4 mr-1">
+        <span class="bossa-bar" style="--i: 1"></span>
+        <span class="bossa-bar" style="--i: 2"></span>
+        <span class="bossa-bar" style="--i: 3"></span>
+        <span class="bossa-bar" style="--i: 4"></span>
+      </div>
+      <span class="tracking-wider group-hover:text-shift-risk transition-colors"
+        >O Som do Risco</span
+      >
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         MAIN
+    ═══════════════════════════════════════════════ -->
+    <main
+      class="min-h-screen flex flex-col justify-center px-6 md:px-20 max-w-3xl mx-auto py-20 md:py-28 relative z-10"
+    >
+      <div class="space-y-16 md:space-y-24 flex flex-col">
+        <!-- HEADER ─────────────────────────────── -->
+        <div
+          class="poetic-paragraph flex flex-col items-center justify-center space-y-5 text-center pt-10"
+        >
+          <span class="section-label">capítulo VIII · O Risco do Depois</span>
+          <h1
+            class="font-serif italic text-5xl md:text-7xl text-zinc-100 font-extralight tracking-wide leading-none"
+          >
+            O Risco do Depois
+          </h1>
+          <div
+            class="w-16 h-[1px] bg-gradient-to-r from-transparent via-shift-risk/50 to-transparent mt-8"
+          ></div>
+        </div>
+
+        <!-- I. O SILÊNCIO ───────────────────────── -->
+        <div class="poetic-paragraph text-center space-y-7">
+          <span class="section-label">I.</span>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300"
+          >
+            Tem um momento em que a gente para de mentir sobre o que está
+            fazendo.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Quando percebe que ficar quieto não é neutralidade — é decisão.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500 max-w-xl mx-auto"
+          >
+            Que cada vez que não falei foi uma escolha que eu fiz por você, por
+            mim, pelo conforto de não ter que encarar o depois.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300"
+          >
+            E que o depois chegou de qualquer jeito.
+          </p>
+          <p
+            class="text-zinc-600 font-sans font-light text-base leading-relaxed"
+          >
+            Sem aviso. Sem pedir licença.
+          </p>
+          <p class="text-zinc-500 font-sans font-light text-base">
+            O depois sempre chega.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- II. O CAMPO SEM MAPA ──────────────────── -->
+        <div
+          class="poetic-paragraph text-left space-y-7 pl-4 md:pl-0 border-l border-shift-risk/10 md:border-none"
+        >
+          <span class="section-label">II.</span>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300"
+          >
+            O campo à frente não tem mapa.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            E eu olhei pra ele tempo suficiente pra entender que não é a
+            ausência de mapa que assusta.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300"
+          >
+            É o fato de que vou ter que atravessá-lo de qualquer forma.
+          </p>
+          <div
+            class="pt-2 space-y-3 text-zinc-500 font-sans font-light text-base stagger-children"
+          >
+            <p>Fico aqui ou atravesso — as duas coisas têm preço.</p>
+            <p class="text-shift-gold font-serif italic">
+              E eu já paguei demais pra ficar.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- III. A ARMADURA (O Tropeço) ─────────── -->
+        <div
+          class="poetic-paragraph text-right space-y-7 pr-4 md:pl-0 border-r border-shift-risk/10 md:border-none"
+        >
+          <span class="section-label text-right block">III.</span>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Eu, que sempre busquei a precisão absoluta para me proteger,<br
+              class="hidden md:block"
+            />
+            percebo agora que a "forma certa" de falar não existe. Ela é só uma
+            defesa.
+          </p>
+          <div
+            class="pt-4 space-y-3 text-zinc-500 font-sans font-light text-base stagger-children"
+          >
+            <p>Uma armadura bonita construída para não perder a pose.</p>
+            <p>Uma tentativa inútil de manter o controle sobre o que sinto.</p>
+          </div>
+          <p
+            class="text-shift-gold font-serif italic text-2xl md:text-3xl pt-6"
+          >
+            A voz que falha, o gesto desajeitado, a falta de ensaio.<br />
+            E se for para cair, que eu caia por inteiro.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- IV. A PALAVRA NA BORDA ──────────────── -->
+        <div class="poetic-paragraph text-center space-y-7">
+          <span class="section-label">IV.</span>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400 max-w-xl mx-auto"
+          >
+            Teve um momento — eu estava perto de você, a conversa estava
+            acontecendo normalmente, e a palavra estava aqui, na borda da boca.
+          </p>
+          <div
+            class="pt-2 space-y-3 text-zinc-500 font-sans font-light text-base stagger-children"
+          >
+            <p>Não o texto todo.</p>
+            <p>Uma palavra só.</p>
+            <p>Aquela específica.</p>
+          </div>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300 pt-4"
+          >
+            Eu senti o peso dela antes de soltar. E não soltei.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500"
+          >
+            Engoli de volta com uma frase qualquer e continuei.
+          </p>
+          <p
+            class="text-2xl md:text-3xl font-serif italic font-light leading-relaxed text-shift-risk pt-2 bell-glow"
+          >
+            Mas o peso não foi embora.<br />
+            O peso nunca vai embora.<br />
+            Ele só espera.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- V. SEM MAPA ─────────────────────────── -->
+        <div
+          class="poetic-paragraph text-left space-y-7 pl-4 md:pl-0 border-l border-shift-risk/10 md:border-none"
+        >
+          <span class="section-label">V.</span>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            O que eu fiz aqui não se mede com promessas.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400 pt-4"
+          >
+            E eu prefiro caminhar nele sem mapa<br />
+            a recuar para o vazio de onde vim.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- VI. O TURNING POINT (A ESCOLHA) ─────── -->
+        <div class="poetic-paragraph text-center space-y-12 py-10 relative">
+          <div
+            class="absolute inset-0 bg-shift-risk/5 rounded-full blur-[100px] -z-10 pointer-events-none"
+          ></div>
+
+          <p
+            class="text-2xl md:text-3xl font-sans font-light leading-relaxed text-zinc-100"
+          >
+            Então eu escolho.
+          </p>
+
+          <div class="flex flex-col items-center space-y-6 stagger-children">
+            <span
+              class="draw-strike text-xl font-mono uppercase tracking-widest"
+              >Não a certeza.</span
+            >
+            <span
+              class="draw-strike text-xl font-mono uppercase tracking-widest"
+              style="transition-delay: 0.8s"
+              >Não a garantia.</span
+            >
+
+            <span
+              data-risk
+              class="risk-word text-6xl md:text-8xl mt-8 block cursor-none"
+            >
+              O risco.
+            </span>
+          </div>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- VII. O RISCO RISCADO ────────────────────────── -->
+        <div
+          class="poetic-paragraph text-right space-y-7 pr-4 md:pl-0 border-r border-shift-risk/10 md:border-none"
+        >
+          <span class="section-label text-right block">VII.</span>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Risco é arranhão. É linha de lápis. É o limite entre o que foi e o
+            que vai ser — e quem atravessa não pode fingir que não atravessou.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300 pt-4"
+          >
+            Sei o que está do outro lado com a clareza das coisas que o corpo
+            entende antes da mente.
+          </p>
+          <div
+            class="pt-4 space-y-2 text-zinc-400 font-sans font-light text-base"
+          >
+            <p>Do outro lado está o irrevogável.</p>
+            <p>
+              Está o nome dito em voz alta que não volta pra dentro da boca.
+            </p>
+          </div>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-500 pt-6"
+          >
+            Tenho medo da forma como se tem medo de uma coisa que já aconteceu.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-shift-gold pt-4 bell-glow"
+          >
+            O risco já foi riscado.<br />
+            Só estou esperando você olhar pra ele também.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- VIII. A DETONAÇÃO ───────────────────── -->
+        <div
+          id="section-detonate"
+          class="poetic-paragraph text-center space-y-7"
+          data-detonate
+        >
+          <span class="section-label">VIII.</span>
+          <p
+            class="text-xl md:text-2xl font-sans font-light leading-relaxed text-zinc-300"
+          >
+            Porque andar num campo minado não é sobre flutuar ileso por cima das
+            falhas.
+          </p>
+          <p
+            class="text-2xl md:text-3xl font-serif italic font-light leading-relaxed text-shift-risk bell-glow"
+          >
+            É pisar onde dói, sabendo que a bomba vai detonar sob os meus pés.
+          </p>
+          <div
+            class="pt-6 space-y-4 text-zinc-400 font-sans font-light text-lg stagger-children"
+          >
+            <p>E quando ela explode, o que voa pelos ares não sou eu.</p>
+            <p>O que desmorona é o meu ensaio.</p>
+            <p>O meu controle.</p>
+            <p>As minhas defesas.</p>
+          </div>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- IX. O REAL (GRAND FINALE) ───────────── -->
+        <div class="poetic-paragraph text-center space-y-10 pb-20 relative">
+          <div
+            class="absolute inset-0 bg-shift-gold/5 rounded-full blur-[120px] -z-10 pointer-events-none transition-opacity duration-1000"
+          ></div>
+
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500"
+          >
+            O que sobra, no centro absoluto do impacto...
+          </p>
+
+          <div class="py-8">
+            <span
+              class="text-4xl md:text-6xl font-serif italic text-zinc-100 tracking-wide bell-glow block"
+            >
+              É o privilégio aterrador de ser
+              <span class="text-shift-gold font-normal">real</span>.
+            </span>
+            <p
+              class="text-xl md:text-2xl font-sans font-extralight text-zinc-300 mt-6 uppercase tracking-widest text-glow"
+            >
+              Na minha forma mais crua. Mais autêntica. Mais inegociável.
+            </p>
+          </div>
+
+          <div
+            class="space-y-4 text-zinc-500 font-sans font-light text-lg stagger-children pt-10 border-t border-white/5 inline-block px-12"
+          >
+            <p>Mesmo sem saber se você fica.</p>
+            <p>Mesmo sem saber se vai durar.</p>
+          </div>
+
+          <div class="pt-14 space-y-3 text-center">
+            <p class="text-xl font-serif italic text-shift-gold">
+              O depois é a minha aposta.
+            </p>
+            <p class="text-xl font-serif italic text-zinc-500">
+              E esta obra inteira — é a aposta feita.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- FOOTER DE NAVEGAÇÃO ─────────────────────── -->
+    <footer
+      id="final-nav"
+      class="mt-20 mb-20 flex flex-col items-center space-y-12 w-full opacity-0 translate-y-8 transition-all duration-[1400ms] ease-out relative z-10"
+    >
+      <div
+        class="w-[1px] h-20 bg-gradient-to-b from-shift-risk/40 to-transparent"
+      ></div>
+      <div
+        class="flex justify-between w-full max-w-md px-6 font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500"
+      >
+        <a
+          href="capitulo-7-o-deslocamento.html"
+          class="nav-link hover:text-shift-gold transition-colors duration-300"
+        >
+          ← VII · O Deslocamento
+        </a>
+        <a
+          href="capitulo-9-a-entrega.html"
+          class="nav-link group flex items-center space-x-3 hover:text-shift-risk transition-colors duration-300"
+        >
+          <span>IX · A Entrega</span>
+          <svg
+            class="w-3 h-3 transition-transform duration-300 group-hover:translate-x-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════
+         JAVASCRIPT
+    ═══════════════════════════════════════════════ -->
+    <script>
+      const canvas = document.getElementById("tension-canvas");
+      const ctx = canvas.getContext("2d");
+      let width, height;
+      const isTouch = window.matchMedia(
+        "(hover: none), (pointer: coarse)",
+      ).matches;
+      let points = [];
+      const spacing = isTouch ? 90 : 70;
+      const tensionDistance = 150;
+
+      let shockwaveRadius = 0;
+      let shockwaveActive = false;
+      let hasDetonated = false;
+      const mouse = { x: -1000, y: -1000 };
+
+      if (!isTouch) {
+        document.addEventListener("mousemove", (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+        });
+      }
+
+      function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+        initGrid();
+      }
+
+      function initGrid() {
+        points = [];
+        const cols = Math.floor(width / spacing) + 2;
+        const rows = Math.floor(height / spacing) + 2;
+
+        for (let i = 0; i < cols; i++) {
+          for (let j = 0; j < rows; j++) {
+            points.push({
+              ox: i * spacing - spacing / 2,
+              oy: j * spacing - spacing / 2,
+              x: i * spacing - spacing / 2,
+              y: j * spacing - spacing / 2,
+              vx: 0,
+              vy: 0,
+              springStrength: 0.05,
+            });
+          }
+        }
+      }
+
+      function drawNetwork() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < points.length; i++) {
+          const p = points[i];
+
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < tensionDistance) {
+            const force = (tensionDistance - dist) / tensionDistance;
+            p.vx -= (dx / dist) * force * 1.5;
+            p.vy -= (dy / dist) * force * 1.5;
+          }
+
+          const spring = p.springStrength;
+          p.vx += (p.ox - p.x) * spring;
+          p.vy += (p.oy - p.y) * spring;
+
+          p.vx *= 0.8;
+          p.vy *= 0.8;
+
+          p.x += p.vx;
+          p.y += p.vy;
+        }
+
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i < points.length; i++) {
+          for (let j = i + 1; j < points.length; j++) {
+            const p1 = points[i];
+            const p2 = points[j];
+
+            const odx = p1.ox - p2.ox;
+            const ody = p1.oy - p2.oy;
+            const odist = Math.sqrt(odx * odx + ody * ody);
+
+            if (odist < spacing * 1.5) {
+              const cdx = p1.x - p2.x;
+              const cdy = p1.y - p2.y;
+              const cdist = Math.sqrt(cdx * cdx + cdy * cdy);
+
+              const stretch = Math.max(0, cdist - odist);
+
+              if (stretch > 5) {
+                const intensity = Math.min(1, stretch / 30);
+                ctx.strokeStyle = `rgba(179, 74, 62, ${intensity * 0.5})`;
+              } else {
+                ctx.strokeStyle = `rgba(200, 169, 110, 0.08)`;
+              }
+
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        if (shockwaveActive) {
+          ctx.beginPath();
+          ctx.arc(width / 2, height / 2, shockwaveRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(179, 74, 62, ${Math.max(0, 1 - shockwaveRadius / 800)})`;
+          ctx.lineWidth = 4;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(width / 2, height / 2, shockwaveRadius * 0.8, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(200, 169, 110, ${Math.max(0, 0.8 - shockwaveRadius / 1000)})`;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          shockwaveRadius += 20;
+          if (shockwaveRadius > window.innerWidth + 200)
+            shockwaveActive = false;
+        }
+
+        requestAnimationFrame(drawNetwork);
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+
+      // ─── CURSOR FANTASMA (Tensão) ───────────────────
+      const ghostEl = document.getElementById("ghost-cursor");
+      const ghostPos = { x: -200, y: -200 };
+
+      document.querySelectorAll("[data-risk]").forEach((el) => {
+        el.addEventListener("mouseenter", () =>
+          ghostEl.classList.add("on-risk"),
+        );
+        el.addEventListener("mouseleave", () =>
+          ghostEl.classList.remove("on-risk"),
+        );
+      });
+
+      function trackGhostCursor() {
+        ghostPos.x += (mouse.x - ghostPos.x) * 0.2;
+        ghostPos.y += (mouse.y - ghostPos.y) * 0.2;
+        ghostEl.style.left = ghostPos.x + "px";
+        ghostEl.style.top = ghostPos.y + "px";
+        requestAnimationFrame(trackGhostCursor);
+      }
+      trackGhostCursor();
+
+      // ─── SECTION-SPECIFIC EFFECTS ─────────────────
+      function activateSectionEffects(sectionEl) {
+        sectionEl.querySelectorAll(".draw-strike").forEach((el, index) => {
+          setTimeout(() => el.classList.add("active"), 300 + index * 500);
+        });
+
+        sectionEl.querySelectorAll(".stagger-children").forEach((el) => {
+          setTimeout(() => el.classList.add("active"), 500);
+        });
+      }
+
+      // ─── AUDIO: O SOM DO RISCO ─────────────────────
+      let audioCtx = null;
+      let isPlaying = false;
+      let droneOsc, droneGain, pulseOsc, pulseGain, lfo;
+
+      function startAudio() {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+
+        droneOsc = audioCtx.createOscillator();
+        droneGain = audioCtx.createGain();
+        droneOsc.type = "sawtooth";
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.value = 75;
+
+        droneOsc.frequency.value = 58; // Frequência de Adrenalina conforme auditoria
+        droneGain.gain.setValueAtTime(0, now);
+        // Ganho direcional: risco que aumenta enquanto se lê
+        droneGain.gain.linearRampToValueAtTime(0.03, now + 10);
+        droneGain.gain.linearRampToValueAtTime(0.06, now + 45);
+
+        droneOsc.connect(filter);
+        filter.connect(droneGain);
+        droneGain.connect(audioCtx.destination);
+        droneOsc.start();
+
+        pulseOsc = audioCtx.createOscillator();
+        pulseGain = audioCtx.createGain();
+        pulseOsc.type = "sine";
+        pulseOsc.frequency.value = 55;
+
+        lfo = audioCtx.createOscillator();
+        lfo.type = "sine";
+        lfo.frequency.value = 1.2;
+
+        const lfoGain = audioCtx.createGain();
+        lfoGain.gain.value = 0.02;
+
+        lfo.connect(lfoGain);
+        lfoGain.connect(pulseGain.gain);
+
+        pulseGain.gain.setValueAtTime(0, now);
+        pulseGain.gain.linearRampToValueAtTime(0.02, now + 8);
+
+        pulseOsc.connect(pulseGain);
+        pulseGain.connect(audioCtx.destination);
+
+        pulseOsc.start();
+        lfo.start();
+
+        isPlaying = true;
+        document
+          .getElementById("soundtrack-toggle")
+          .classList.add("is-playing");
+        sessionStorage.setItem("audioState", "playing");
+      }
+
+      function stopAudio() {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        if (droneGain) droneGain.gain.linearRampToValueAtTime(0, now + 2);
+        if (pulseGain) pulseGain.gain.linearRampToValueAtTime(0, now + 2);
+        if (droneOsc) droneOsc.stop(now + 2.1);
+        if (pulseOsc) pulseOsc.stop(now + 2.1);
+        if (lfo) lfo.stop(now + 2.1);
+        isPlaying = false;
+        document
+          .getElementById("soundtrack-toggle")
+          .classList.remove("is-playing");
+        sessionStorage.setItem("audioState", "paused");
+      }
+
+      document
+        .getElementById("soundtrack-toggle")
+        .addEventListener("click", () => {
+          if (!isPlaying) startAudio();
+          else stopAudio();
+        });
+
+      // ─── PROGRESSO GLOBAL & OBSERVERS ───────────────
+      window.addEventListener("scroll", () => {
+        const scrolled = document.documentElement.scrollTop;
+        const h =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        const page = scrolled / h;
+        const global = (7 / 9) * 100 + page * (100 / 9);
+        document.getElementById("global-progress").style.width = global + "%";
+      });
+
+      const poeticObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            el.classList.add("reveal");
+            activateSectionEffects(el);
+            poeticObserver.unobserve(el);
+          });
+        },
+        { threshold: 0.2, rootMargin: "0px 0px -5% 0px" },
+      );
+
+      // Observer específico para a detonação
+      const detonateObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !hasDetonated) {
+              hasDetonated = true;
+              triggerDetonation();
+              if (window._fnCap7Reveal) window._fnCap7Reveal();
+            }
+          });
+        },
+        { threshold: 0.4 },
+      );
+
+      document.querySelectorAll(".poetic-paragraph").forEach((el) => {
+        poeticObserver.observe(el);
+        if (el.hasAttribute("data-detonate")) {
+          detonateObserver.observe(el);
+        }
+      });
+
+      function triggerDetonation() {
+        const cx = width / 2;
+        const cy = height / 2;
+        const reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        points.forEach((p) => {
+          const dx = p.x - cx;
+          const dy = p.y - cy;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          const force =
+            (Math.max(0, 1000 - dist) / 1000) * (reducedMotion ? 20 : 85);
+
+          p.vx += (dx / dist) * force;
+          p.vy += (dy / dist) * force;
+          p.springStrength = 0.0005;
+        });
+
+        shockwaveActive = true;
+        shockwaveRadius = 10;
+
+        if (!reducedMotion) {
+          document.body.style.transform = "translate(6px, 6px)";
+          setTimeout(
+            () => (document.body.style.transform = "translate(-4px, -4px)"),
+            40,
+          );
+          setTimeout(
+            () => (document.body.style.transform = "translate(3px, -2px)"),
+            80,
+          );
+          setTimeout(
+            () => (document.body.style.transform = "translate(0px, 0px)"),
+            120,
+          );
+        } else {
+          document.body.style.backgroundColor = "#1a0000";
+          setTimeout(() => (document.body.style.backgroundColor = ""), 300);
+        }
+
+        setTimeout(() => {
+          points.forEach((p) => (p.springStrength = 0.05));
+        }, 3500);
+
+        if (audioCtx && isPlaying) {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(90, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(
+            10,
+            audioCtx.currentTime + 2,
+          );
+
+          gain.gain.setValueAtTime(0, audioCtx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.04, audioCtx.currentTime + 0.1);
+          gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            audioCtx.currentTime + 3,
+          );
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 3.1);
+        }
+      }
+
+      const footerObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            document
+              .getElementById("final-nav")
+              .classList.add("opacity-100", "translate-y-0");
+            footerObserver.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.1 },
+      );
+      footerObserver.observe(document.getElementById("final-nav"));
+
+      function playNavClick() {
+        try {
+          const c = new (window.AudioContext || window.webkitAudioContext)();
+          const now = c.currentTime;
+          const bufLen = Math.floor(c.sampleRate * 0.14);
+          const buf = c.createBuffer(1, bufLen, c.sampleRate);
+          const d = buf.getChannelData(0);
+          for (let i = 0; i < bufLen; i++) d[i] = Math.random() * 2 - 1;
+          const noise = c.createBufferSource();
+          noise.buffer = buf;
+          const filter = c.createBiquadFilter();
+          filter.type = "bandpass";
+          filter.frequency.value = 2000;
+          filter.Q.value = 0.7;
+          const g = c.createGain();
+          g.gain.setValueAtTime(0, now);
+          g.gain.linearRampToValueAtTime(0.13, now + 0.008);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+          noise.connect(filter);
+          filter.connect(g);
+          g.connect(c.destination);
+          noise.start(now);
+          noise.stop(now + 0.14);
+          const thump = c.createOscillator();
+          const tg = c.createGain();
+          thump.type = "sine";
+          thump.frequency.setValueAtTime(110, now + 0.07);
+          thump.frequency.exponentialRampToValueAtTime(55, now + 0.16);
+          tg.gain.setValueAtTime(0.055, now + 0.07);
+          tg.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+          thump.connect(tg);
+          tg.connect(c.destination);
+          thump.start(now + 0.07);
+          thump.stop(now + 0.16);
+          setTimeout(() => c.close(), 600);
+        } catch (e) {}
+      }
+
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("mouseenter", () => {
+          const href = link.getAttribute("href");
+          if (
+            href &&
+            href !== "#" &&
+            !document.querySelector(`link[rel='prefetch'][href='${href}']`)
+          ) {
+            const pf = document.createElement("link");
+            pf.rel = "prefetch";
+            pf.href = href;
+            document.head.appendChild(pf);
+          }
+        });
+        link.addEventListener("click", (e) => {
+          const href = link.getAttribute("href");
+          if (href && href !== "#") {
+            e.preventDefault();
+            if (audioCtx && audioCtx.state === "running") {
+              try {
+                const _ft = audioCtx.currentTime;
+                [droneGain, pulseGain].forEach((g) => {
+                  if (g) {
+                    g.gain.cancelScheduledValues(_ft);
+                    g.gain.linearRampToValueAtTime(0, _ft + 0.5);
+                  }
+                });
+              } catch (_) {}
+            }
+            playNavClick();
+            const rx = e.clientX || window.innerWidth / 2;
+            const ry = e.clientY || window.innerHeight / 2;
+            playExitRipple(rx, ry, () => {
+              document.body.classList.remove("loaded");
+              setTimeout(() => {
+                window.location.href = href;
+              }, 60);
+            });
+          }
+        });
+      });
+
+      function playExitRipple(x, y, cb) {
+        const el = document.createElement("div");
+        const s = Math.hypot(window.innerWidth, window.innerHeight) * 2.4;
+        el.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(239,176,87,0.18) 0%,rgba(1,7,9,0.97) 65%);transform:translate(-50%,-50%) scale(1);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1);pointer-events:none;z-index:9997;`;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(-50%,-50%) scale(${s})`;
+        });
+        setTimeout(() => {
+          el.remove();
+          cb();
+        }, 670);
+      }
+
+      if (!isTouch) {
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("mouseenter", () => {
+            try {
+              const c = new (
+                window.AudioContext || window.webkitAudioContext
+              )();
+              const o = c.createOscillator();
+              const g = c.createGain();
+              o.type = "sine";
+              o.frequency.value = 800;
+              g.gain.setValueAtTime(0.018, c.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+              o.connect(g);
+              g.connect(c.destination);
+              o.start();
+              o.stop(c.currentTime + 0.12);
+              setTimeout(() => c.close(), 400);
+            } catch (e) {}
+          });
+        });
+      }
+
+      // ─── INIT ───────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("loaded");
+        resizeCanvas();
+        drawNetwork();
+        if (sessionStorage.getItem("audioState") === "playing") {
+          startAudio();
+          const btnPlay = document.getElementById("icon-play");
+          const btnPause = document.getElementById("icon-pause");
+          if (btnPlay) btnPlay.classList.add("hidden");
+          if (btnPause) btnPause.classList.remove("hidden");
+        }
+      });
+    </script>
+
+    <!-- ◈ MATÉRIA ESCURA — campo gravitacional invisível -->
+    <canvas id="dm-canvas" aria-hidden="true"></canvas>
+    <script>
+      (function () {
+        var cvs = document.getElementById("dm-canvas"),
+          ctx = cvs.getContext("2d"),
+          W,
+          H,
+          att = [],
+          tick = 0,
+          scrolled = false;
+        cvs.style.cssText =
+          "position:fixed;inset:0;pointer-events:none;z-index:2;";
+        function resize() {
+          W = cvs.width = innerWidth;
+          H = cvs.height = innerHeight;
+        }
+        addEventListener("resize", resize);
+        resize();
+        var SEL =
+          "p,blockquote,h2,h3,.poetic-paragraph,.reveal-text,.reveal-item,.risk-word,.bell-glow";
+        function refreshAtt() {
+          att = [];
+          document.querySelectorAll(SEL).forEach(function (el) {
+            var r = el.getBoundingClientRect();
+            if (r.height < 24) return;
+            var cy = r.top + r.height * 0.5;
+            if (cy < -H * 0.6 || cy > H * 1.6) return;
+            var w = Math.max(0.08, 1 - Math.abs(cy - H * 0.5) / (H * 0.85));
+            att.push({
+              x: r.left + r.width * (0.3 + Math.random() * 0.4),
+              y: cy,
+              w: w,
+            });
+          });
+        }
+        function Pt() {
+          this.x = Math.random() * W;
+          this.y = Math.random() * H;
+          this.vx = (Math.random() - 0.5) * 0.22;
+          this.vy = (Math.random() - 0.5) * 0.22;
+          this.r = Math.random() * 1.0 + 0.2;
+          this.op = Math.random() * 0.05 + 0.015;
+          this.t = Math.random() * 800;
+        }
+        Pt.prototype.step = function () {
+          this.t++;
+          this.vx += Math.sin(this.t * 0.009) * 0.005;
+          this.vy += Math.cos(this.t * 0.011) * 0.004;
+          if (att.length) {
+            var bx = 0,
+              by = 0,
+              bd = Infinity,
+              bw = 1;
+            for (var i = 0; i < att.length; i++) {
+              var dx = att[i].x - this.x,
+                dy = att[i].y - this.y,
+                d = Math.sqrt(dx * dx + dy * dy);
+              if (d < bd) {
+                bd = d;
+                bx = dx;
+                by = dy;
+                bw = att[i].w;
+              }
+            }
+            if (bd < 350 && bd > 0) {
+              var f = (1 - bd / 350) * 0.008 * bw;
+              this.vx += (bx / bd) * f;
+              this.vy += (by / bd) * f;
+            }
+          }
+          this.vx *= 0.95;
+          this.vy *= 0.95;
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < -6) this.x = W + 6;
+          if (this.x > W + 6) this.x = -6;
+          if (this.y < -6) this.y = H + 6;
+          if (this.y > H + 6) this.y = -6;
+        };
+        Pt.prototype.draw = function () {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(200,169,110," + this.op + ")";
+          ctx.fill();
+        };
+        var pts = [];
+        for (var i = 0; i < 10; i++) pts.push(new Pt());
+        addEventListener("scroll", function () {
+          scrolled = true;
+        });
+        (function loop() {
+          ctx.clearRect(0, 0, W, H);
+          tick++;
+          if (tick % 40 === 0 || scrolled) {
+            refreshAtt();
+            scrolled = false;
+          }
+          pts.forEach(function (p) {
+            p.step();
+            p.draw();
+          });
+          requestAnimationFrame(loop);
+        })();
+        document.addEventListener("DOMContentLoaded", refreshAtt);
+      })();
+    </script>
+
+    <!-- ── NOTA DE RODAPÉ ──────────────────────────────────────────────── -->
+    <aside
+      id="fn-cap-7"
+      style="
+        font-family: &quot;JetBrains Mono&quot;, monospace;
+        font-size: 0.595rem;
+        line-height: 1.95;
+        color: rgba(255, 255, 255, 0.22);
+        border-left: 1px solid rgba(192, 78, 58, 0.16);
+        padding: 1.1rem 1.6rem;
+        max-width: 38rem;
+        margin: 4.5rem auto 0;
+        opacity: 0;
+        transform: translateY(10px);
+        transition:
+          opacity 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 2.4s cubic-bezier(0.16, 1, 0.3, 1);
+        letter-spacing: 0.025em;
+        display: block;
+      "
+    >
+      <span
+        style="
+          display: block;
+          width: 1.8rem;
+          height: 1px;
+          background: rgba(192, 78, 58, 0.22);
+          margin-bottom: 0.8rem;
+        "
+      ></span
+      >Risco é arranhão. É linha de lápis. É o limite entre o que foi e o que
+      vai ser — e quem atravessa não pode fingir que não atravessou. Sei o que
+      está do outro lado com a clareza das coisas que o corpo entende antes da
+      mente. Do outro lado está o irrevogável. Está o nome dito em voz alta que
+      não volta pra dentro da boca. Tenho medo da forma como se tem medo de uma
+      coisa que já aconteceu. O risco já foi riscado. Só estou esperando você
+      olhar pra ele também.
+    </aside>
+    <script>
+      (function () {
+        var fn = document.getElementById("fn-cap-7"),
+          fired = false;
+        if (!fn) return;
+        window._fnCap7Reveal = function () {
+          if (fired) return;
+          fired = true;
+          setTimeout(function () {
+            fn.style.opacity = "1";
+            fn.style.transform = "translateY(0)";
+          }, 3200);
+        };
+        window.addEventListener("scroll", function () {
+          if (fired) return;
+          var t = document.documentElement.scrollHeight - window.innerHeight;
+          if (t > 0 && window.scrollY / t > 0.85) {
+            fired = true;
+            fn.style.opacity = "1";
+            fn.style.transform = "translateY(0)";
+          }
+        });
+      })();
+    </script>
+    <script src="oa-fragmentos.js"></script>
+    <script src="constelacao-header.js"></script>
+    <script>
+      /* Autoplay: inicia o audio no primeiro gesto do usuario em cada capitulo */
+      (function () {
+        window.addEventListener("load", function () {
+          var btn =
+            document.getElementById("btn-audio") ||
+            document.getElementById("soundtrack-toggle");
+          if (!btn) return;
+          function _playing() {
+            if (btn.id === "btn-audio") {
+              var ip = document.getElementById("icon-play");
+              return ip && ip.classList.contains("hidden");
+            }
+            return btn.classList.contains("is-playing");
+          }
+          if (_playing()) return;
+          document.addEventListener(
+            "pointerdown",
+            function oa_auto() {
+              document.removeEventListener("pointerdown", oa_auto, true);
+              if (!_playing()) btn.click();
+            },
+            { capture: true },
+          );
+        });
+      })();
+    </script>
+  </body>
+</html>

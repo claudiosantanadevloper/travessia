@@ -1,0 +1,2192 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>X · A Crueza do Presente — O Avesso do Chão</title>
+    <script>
+      // TEMP-PUBLIC: remover este bloco antes de enviar para a destinatária
+      window.location.replace('sumario.html');
+      // FIM TEMP-PUBLIC
+      if (!localStorage.getItem('oavesso_key_unlocked')) {
+        window.location.replace('chave.html');
+      }
+      localStorage.setItem(
+        "oavesso_progress",
+        '{"chapter":10,"title":"X · A Crueza do Presente","href":"capitulo-10-a-crueza-do-presente.html"}',
+      );
+    </script>
+    <script>
+      (function () {
+        var k = "avesso_jornada_cap-10a";
+        if (!localStorage.getItem(k)) localStorage.setItem(k, Date.now());
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Inter+Tight:wght@100;200;300;400;500;600;700;800&family=JetBrains+Mono:wght@100;200;300&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans: ['"Inter Tight"', "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              paranapanema: {
+                950: "#010709", // Fundo profundo das águas
+                900: "#031114", // Margem sombria do rio
+                clay: "#cf5c36", // Barro vermelho
+                gold: "#efb057", // Brilho dourado do pôr do sol
+                moss: "#0a261f", // Verde-mata das encostas
+                flora: "#165649", // Folhas úmidas
+                sunset: "#df8a8a", // Rosa-suave
+                crimson: "#dc2626", // Vermelho carnal
+                soft: "#f4f9f7",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #010709;
+        color: #f4f9f7;
+        opacity: 0;
+        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        overflow-x: hidden;
+        hyphens: none;
+      }
+      body.loaded {
+        opacity: 1;
+      }
+
+      /* Canvas para Ondas e Correnteza Orgânica */
+      #universe-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Transições poéticas fluidas */
+      .poetic-paragraph {
+        opacity: 0;
+        transform: translateY(50px) rotate(-0.05deg);
+        filter: blur(6px);
+        transition: opacity 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 2.2s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        z-index: 10;
+      }
+      .poetic-paragraph.reveal {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+        filter: blur(0);
+      }
+      /* Cadência assíncrona — fluxo de rio, não lista */
+      .poetic-paragraph:nth-child(2n)  { transition-delay: 0.14s; }
+      .poetic-paragraph:nth-child(3n)  { transition-delay: 0.28s; }
+      .poetic-paragraph:nth-child(4n)  { transition-delay: 0.07s; }
+      .poetic-paragraph:nth-child(5n)  { transition-delay: 0.21s; }
+      .poetic-paragraph:nth-child(7n)  { transition-delay: 0.35s; }
+
+      /* Glass card pulsa suavemente ao entrar no viewport */
+      @keyframes glassPulse {
+        0%,100% { border-color: rgba(239,176,87,0.12); }
+        50%      { border-color: rgba(239,176,87,0.24);
+                   box-shadow: 0 60px 120px rgba(0,0,0,0.95),
+                               inset 0 0 28px rgba(239,176,87,0.05); }
+      }
+      .glass-card.reveal { animation: glassPulse 4.5s ease-in-out 1s infinite; }
+      body .poetic-paragraph p,
+      body .poetic-paragraph {
+        line-height: 1.88;
+      }
+
+      /* Layout assimétrico (Balanço de leitura fluvial) */
+      .ginga-left {
+        align-self: flex-start;
+        text-align: left;
+        max-width: 43rem;
+      }
+      .ginga-right {
+        align-self: flex-end;
+        text-align: right;
+        margin-left: auto;
+        max-width: 43rem;
+      }
+      .ginga-center {
+        align-self: center;
+        text-align: center;
+        max-width: 48rem;
+        margin: 0 auto;
+      }
+
+      /* Card de Vidro Crepúsculo Premium */
+      .glass-card {
+        background: rgba(3, 17, 20, 0.45);
+        backdrop-filter: blur(40px);
+        -webkit-backdrop-filter: blur(40px);
+        border: 1px solid rgba(239, 176, 87, 0.12);
+        box-shadow:
+          0 60px 120px rgba(0, 0, 0, 0.95),
+          inset 0 1px 2px rgba(255, 255, 255, 0.03);
+        transition:
+          transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+          border-color 0.8s ease;
+      }
+      .glass-card:hover {
+        transform: translateY(-4px) scale(1.01);
+        border-color: rgba(239, 176, 87, 0.25);
+      }
+
+      /* MEMÓRIA — passado afetivo, gradiente dourado */
+      .glass-card-memoria {
+        background: linear-gradient(135deg, rgba(239,176,87,0.06) 0%, transparent 65%);
+      }
+
+      /* CONFISSÃO — declaração direta, fundo neutro levemente iluminado */
+      .glass-card-confissao {
+        background: rgba(244,249,247,0.025);
+        border-color: rgba(255,255,255,0.08);
+      }
+      .glass-card-confissao:hover {
+        border-color: rgba(255,255,255,0.15);
+      }
+
+      /* REVELAÇÃO — visceral, gradiente crimson */
+      .glass-card-revelacao {
+        background: linear-gradient(135deg, rgba(220,38,38,0.07) 0%, transparent 55%);
+      }
+
+      /* PALAVRAS INTERATIVAS (G-2): Ondulações e Brilhos */
+      .interactive-word {
+        position: relative;
+        color: #f4f9f7;
+        font-weight: 600;
+        display: inline-block;
+        padding: 0 4px;
+        z-index: 12;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .interactive-word::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: currentColor;
+        transform: scaleX(0.7);
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity: 0.5;
+      }
+      .interactive-word:hover::after {
+        transform: scaleX(1);
+        opacity: 1;
+      }
+
+      /* Efeitos de cores ao pairar */
+      .interactive-word[data-effect="sereia"] {
+        color: #a3e2d7;
+        text-shadow: 0 0 10px rgba(163, 226, 215, 0.3);
+      }
+      .interactive-word[data-effect="sereia"]:hover {
+        color: #7ceada;
+        text-shadow: 0 0 25px rgba(124, 234, 218, 0.8);
+      }
+
+      .interactive-word[data-effect="carne"] {
+        color: #cf5c36;
+      }
+      .interactive-word[data-effect="carne"]:hover {
+        color: #f17850;
+        text-shadow: 0 0 20px rgba(207, 92, 54, 0.8);
+        transform: scale(1.04) rotate(-0.5deg);
+      }
+
+      .interactive-word[data-effect="tesao"] {
+        color: #efb057;
+      }
+      .interactive-word[data-effect="tesao"]:hover {
+        color: #ffd294;
+        text-shadow: 0 0 30px rgba(239, 176, 87, 0.9);
+        transform: scale(1.06) rotate(0.5deg);
+      }
+
+      .interactive-word[data-effect="complexidade"] {
+        color: #b0e0e6;
+      }
+      .interactive-word[data-effect="complexidade"]:hover {
+        color: #e0ffff;
+        text-shadow: 0 0 15px rgba(176, 224, 230, 0.6);
+      }
+
+      .interactive-word[data-effect="sentimento"] {
+        color: #df8a8a;
+      }
+      .interactive-word[data-effect="sentimento"]:hover {
+        color: #ffb5b5;
+        text-shadow: 0 0 22px rgba(223, 138, 138, 0.9);
+        transform: scale(1.03);
+      }
+
+      .interactive-word[data-effect="linda"] {
+        color: #efb057;
+      }
+      .interactive-word[data-effect="linda"]:hover {
+        color: #ffe4bc;
+        text-shadow: 0 0 25px rgba(239, 176, 87, 0.9);
+        transform: scale(1.04) rotate(0.3deg);
+      }
+
+      .crimson-burn {
+        color: #dc2626;
+        font-weight: 700;
+        text-shadow: 0 0 12px rgba(220, 38, 38, 0.15);
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: pointer;
+        display: inline-block;
+      }
+      .crimson-burn:hover {
+        color: #ff4d4d;
+        text-shadow: 0 0 30px rgba(220, 38, 38, 0.8);
+        transform: scale(1.03) translateY(-1px);
+      }
+
+      .cheeky-rs {
+        color: #efb057;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-weight: 500;
+        display: inline-block;
+        cursor: pointer;
+        transition:
+          transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+          color 0.3s ease;
+      }
+      .cheeky-rs:hover {
+        transform: rotate(10deg) scale(1.2);
+        color: #df8a8a;
+      }
+
+      .sereia-letter {
+        display: inline-block;
+        transition:
+          transform 0.3s ease,
+          color 0.3s ease;
+      }
+      .sereia-word:hover .sereia-letter {
+        animation: bobLetter 1.2s ease-in-out infinite;
+        color: #7ceada;
+      }
+      .sereia-word:hover .sereia-letter:nth-child(2n) {
+        animation-delay: 0.15s;
+      }
+      .sereia-word:hover .sereia-letter:nth-child(3n) {
+        animation-delay: 0.3s;
+      }
+      .sereia-word:hover .sereia-letter:nth-child(4n) {
+        animation-delay: 0.45s;
+      }
+
+      @keyframes bobLetter {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px) rotate(4deg);
+        }
+      }
+
+      .farm-leaf {
+        position: absolute;
+        pointer-events: none;
+        opacity: 0;
+        transition:
+          opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1;
+      }
+      .sereia-section:hover .farm-leaf {
+        opacity: 0.12;
+        transform: scale(1) translateY(0) rotate(10deg);
+      }
+
+      .typing-cursor::after {
+        content: "";
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background-color: #efb057;
+        margin-left: 4px;
+        vertical-align: middle;
+        animation: blink 1s infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .eco-dots {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 0;
+      }
+      .eco-dots span {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(239, 176, 87, 0.5);
+        animation: ecoDot 1.3s ease-in-out infinite;
+      }
+      .eco-dots span:nth-child(2) {
+        animation-delay: 0.22s;
+      }
+      .eco-dots span:nth-child(3) {
+        animation-delay: 0.44s;
+      }
+      @keyframes ecoDot {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.25;
+        }
+        30% {
+          transform: translateY(-5px);
+          opacity: 1;
+        }
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(239, 176, 87, 0.25);
+        border-radius: 99px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(239, 176, 87, 0.55);
+      }
+
+      .liquid-btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes auraBeat {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(239, 176, 87, 0);
+        }
+        50% {
+          box-shadow: 0 0 18px 4px rgba(239, 176, 87, 0.22);
+        }
+      }
+      #choice-presente {
+        animation: auraBeat 2.8s ease-in-out infinite;
+      }
+      #choice-presente.chosen,
+      #choice-recuar.chosen {
+        animation: none;
+      }
+      .choice-cta-reveal {
+        animation: fadeSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      @keyframes fadeSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .liquid-btn::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300%;
+        height: 300%;
+        background: radial-gradient(
+          circle,
+          rgba(239, 176, 87, 0.18) 0%,
+          transparent 60%
+        );
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.8s ease;
+        pointer-events: none;
+      }
+      .liquid-btn:hover::before {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .bossa-bar {
+        display: inline-block;
+        width: 2px;
+        height: 8px;
+        background-color: #efb057;
+        margin: 0 1px;
+        animation: bounceBossa 0.8s ease-in-out infinite alternate;
+      }
+      .bossa-bar:nth-child(2) {
+        animation-delay: 0.15s;
+        height: 12px;
+      }
+      .bossa-bar:nth-child(3) {
+        animation-delay: 0.3s;
+        height: 16px;
+      }
+      .bossa-bar:nth-child(4) {
+        animation-delay: 0.45s;
+        height: 10px;
+      }
+
+      @keyframes bounceBossa {
+        100% {
+          transform: scaleY(1.8);
+          opacity: 0.6;
+        }
+      }
+
+      #global-progress {
+        box-shadow: 0 0 10px rgba(239, 176, 87, 0.4);
+        background: linear-gradient(90deg, #0a261f, #efb057);
+      }
+
+      #btn-audio-fixed {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 100;
+        background: rgba(1, 7, 9, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(239, 176, 87, 0.2);
+        padding: 8px 16px;
+        border-radius: 99px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      #btn-audio-fixed:hover {
+        border-color: rgba(239, 176, 87, 0.5);
+        transform: translateY(-2px);
+      }
+      .audio-icon {
+        width: 14px;
+        height: 14px;
+        fill: #efb057;
+      }
+
+      @media (hover: none), (pointer: coarse) {
+        body {
+          cursor: auto !important;
+        }
+        .interactive-word {
+          border-bottom: 1px solid rgba(239, 176, 87, 0.4);
+        }
+        .nav-link {
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      @media (max-width: 600px) {
+        .ginga-left,
+        .ginga-right,
+        .ginga-center {
+          padding-left: 1rem !important;
+          padding-right: 1rem !important;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        canvas {
+          display: none !important;
+        }
+        .poetic-paragraph {
+          transition: none !important;
+          opacity: 1 !important;
+        }
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0.028;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.4s steps(1) infinite;
+      }
+      @keyframes grain {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-3%, 2%);
+        }
+        40% {
+          transform: translate(2%, -3%);
+        }
+        60% {
+          transform: translate(-2%, 3%);
+        }
+        80% {
+          transform: translate(3%, -1%);
+        }
+        100% {
+          transform: translate(1%, 2%);
+        }
+      }
+
+      @keyframes glowCarne {
+        0%,
+        100% {
+          text-shadow: 0 0 8px rgba(220, 38, 38, 0.06);
+        }
+        50% {
+          text-shadow: 0 0 22px rgba(220, 38, 38, 0.32);
+        }
+      }
+      @keyframes glowGold {
+        0%,
+        100% {
+          text-shadow: 0 0 8px rgba(239, 176, 87, 0.06);
+        }
+        50% {
+          text-shadow: 0 0 22px rgba(239, 176, 87, 0.38);
+        }
+      }
+      @keyframes glowSereia {
+        0%,
+        100% {
+          text-shadow: 0 0 8px rgba(124, 234, 218, 0.06);
+        }
+        50% {
+          text-shadow: 0 0 18px rgba(124, 234, 218, 0.32);
+        }
+      }
+      @keyframes glowSentimento {
+        0%,
+        100% {
+          text-shadow: 0 0 8px rgba(223, 138, 138, 0.06);
+        }
+        50% {
+          text-shadow: 0 0 18px rgba(223, 138, 138, 0.32);
+        }
+      }
+      .interactive-word[data-effect="carne"] {
+        animation: glowCarne 3.5s ease-in-out infinite;
+      }
+      .interactive-word[data-effect="tesao"] {
+        animation: glowGold 4s ease-in-out infinite;
+      }
+      .interactive-word[data-effect="linda"] {
+        animation: glowGold 5s ease-in-out infinite;
+      }
+      .interactive-word[data-effect="sereia"] {
+        animation: glowSereia 4.5s ease-in-out infinite;
+      }
+      .interactive-word[data-effect="sentimento"] {
+        animation: glowSentimento 4s ease-in-out infinite;
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased relative">
+    <canvas id="universe-canvas"></canvas>
+
+    <a
+      href="o-bau.html"
+      class="nav-link fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 uppercase"
+    >
+      ← Baú
+    </a>
+
+    <div class="fixed top-0 left-0 w-full h-[2px] z-[100] opacity-60">
+      <div
+        id="global-progress"
+        class="h-full transition-all duration-300 ease-out"
+        style="width: 83.3%"
+      ></div>
+    </div>
+
+    <div
+      id="soundtrack-toggle"
+      class="fixed top-6 right-6 z-40 flex items-center space-x-3 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/[0.05] text-[11px] font-mono text-zinc-400 hover:border-paranapanema-gold/45 transition-all cursor-pointer"
+    >
+      <div class="flex items-center h-4 mr-1">
+        <span class="bossa-bar"></span>
+        <span class="bossa-bar"></span>
+        <span class="bossa-bar"></span>
+        <span class="bossa-bar"></span>
+      </div>
+      <span class="tracking-wider">Correnteza</span>
+    </div>
+
+    <main
+      class="min-h-screen flex flex-col justify-center px-6 md:px-20 max-w-4xl mx-auto py-20 md:py-28 relative z-10"
+    >
+      <div class="space-y-16 md:space-y-20 flex flex-col">
+        <!-- ABERTURA: TÍTULO -->
+        <div class="poetic-paragraph flex flex-col items-center justify-center space-y-4 text-center">
+          <span class="text-[10px] font-mono text-paranapanema-gold/90 tracking-[0.55em] uppercase">x · a crueza do presente</span>
+          <h1 class="font-serif italic text-6xl md:text-8xl text-zinc-100 font-extralight tracking-wide leading-none">A Crueza do Presente</h1>
+          <p class="text-zinc-500 font-sans font-light text-xs tracking-widest uppercase mt-3">o que não coube na suavidade</p>
+          <div class="w-20 h-[1.5px] bg-gradient-to-r from-transparent via-paranapanema-gold/40 to-transparent mt-8"></div>
+        </div>
+
+        <!-- VOCÊ ESTÁ AQUI -->
+        <div class="poetic-paragraph ginga-center text-center space-y-5">
+          <p class="text-3xl md:text-4xl font-serif italic text-zinc-200 font-light leading-relaxed max-w-xl mx-auto">
+            Você está aqui.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed max-w-2xl mx-auto">
+            Depois de tudo isso, é a única frase que importa.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light text-zinc-500 leading-relaxed max-w-2xl mx-auto">
+            Você leu cada página, cada capítulo, cada desvio que eu inventei
+            para falar de coisas que eu não conseguia dizer diretamente.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-400 font-light leading-relaxed max-w-xl mx-auto">
+            Agora eu não quero mais me esconder atrás da escrita.<br/>
+            Quero falar com você.<br/>
+            Só com você.
+          </p>
+        </div>
+
+        <!-- POR QUE ESCREVI -->
+        <div class="poetic-paragraph ginga-left space-y-6">
+          <div class="w-8 h-[1px] bg-paranapanema-gold/15"></div>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            Eu não escrevi isso para publicar.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            Não escrevi para impressionar ninguém.<br/>
+            Não escrevi porque queria fazer arte.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-300 font-light leading-relaxed">
+            Escrevi porque precisava encontrar uma forma de te contar uma coisa
+            que já estava grande demais para continuar guardada.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            Durante muito tempo achei que conseguiria deixar isso quieto.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-300 font-light">
+            Não consegui.<br/>Então escrevi.
+          </p>
+        </div>
+
+        <!-- AS FOTOS -->
+        <div class="poetic-paragraph ginga-right text-right space-y-6">
+          <div class="w-8 h-[1px] bg-paranapanema-gold/15 ml-auto"></div>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400">
+            Tem uma coisa engraçada sobre as fotos que a gente tira.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            Você sempre pede para ver.<br/>
+            Escolhe as melhores.<br/>
+            Decide quais gosta. Quais salva. Quais posta.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-300 font-light leading-relaxed">
+            Mas as fotos que eu mais gosto nunca foram tiradas.
+          </p>
+          <div class="p-8 md:p-10 rounded-[2rem] glass-card glass-card-memoria border-r-2 border-paranapanema-gold/25 my-4">
+            <p class="font-sans font-light text-lg text-zinc-400 leading-loose text-right">
+              Você prestando atenção em alguma coisa
+              e esquecendo completamente que estava sendo observada.<br/><br/>
+              Você começando a rir antes da risada sair de verdade.<br/><br/>
+              Você enrolada na canga depois do rio.<br/><br/>
+              Você tocando pandeiro.
+              <span class="text-paranapanema-gold/50 font-mono text-sm not-italic">&nbsp;(traumatizante)</span><br/><br/>
+              Você simplesmente existindo sem tentar parecer nada.
+            </p>
+          </div>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-400 font-light leading-relaxed">
+            Essas são as imagens que ficaram.
+          </p>
+        </div>
+
+        <!-- ADMIRAÇÃO -->
+        <div class="poetic-paragraph ginga-left space-y-6">
+          <div class="w-8 h-[1px] bg-paranapanema-gold/15"></div>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400">
+            O que mais me pegou foi conhecer você.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400">
+            Foi perceber a forma como você cuida das pessoas.
+            A forma como escuta. A forma como continua seguindo em frente
+            mesmo quando está cansada.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400">
+            Foi perceber que existe muito mais acontecendo dentro de você
+            do que você costuma mostrar. E quanto mais eu conhecia, mais difícil
+            ficava fingir que isso era uma coisa pequena.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-200 font-light leading-relaxed pt-2">
+            Eu admiro você.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            Talvez essa seja a parte mais difícil de explicar.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-300 font-light leading-relaxed">
+            Porque admiração não acontece por decisão.<br/>Ela acontece.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            E quando percebi, eu já estava torcendo pela sua felicidade.
+            Já estava preocupado quando você não estava bem.
+            Já estava carregando você comigo para lugares onde ninguém tinha te convidado.
+          </p>
+        </div>
+
+        <!-- DESEJO -->
+        <div class="poetic-paragraph ginga-center text-center space-y-8 py-6 relative">
+          <div class="absolute inset-0 bg-paranapanema-crimson/[0.02] blur-[100px] rounded-full pointer-events-none"></div>
+          <div class="w-8 h-[1px] bg-paranapanema-gold/15 mx-auto"></div>
+          <p class="text-2xl md:text-3xl font-sans font-light text-zinc-300 leading-relaxed max-w-xl mx-auto">
+            Eu sinto desejo por você.<br/>
+            Não vou fingir que não sinto.<br/>
+            Não vou chamar de outra coisa.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light text-zinc-500 leading-relaxed max-w-2xl mx-auto">
+            Mas também preciso dizer que, se fosse só isso, nada disso existiria.
+            Eu não teria escrito todas essas páginas.
+            Não teria chegado até aqui.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-400 font-light leading-relaxed max-w-xl mx-auto">
+            O desejo faz parte.<br/>Mas não explica tudo.
+          </p>
+        </div>
+
+        <!-- A VERDADE -->
+        <div class="poetic-paragraph ginga-center text-center space-y-6">
+          <div class="w-8 h-[1px] bg-paranapanema-gold/15 mx-auto"></div>
+          <div class="p-8 md:p-10 rounded-[2rem] glass-card glass-card-confissao text-center">
+            <p class="font-sans font-light text-lg text-zinc-400 leading-loose">
+              A verdade é que eu gosto de você. Muito.<br/><br/>
+              A verdade é que eu sinto a sua falta.<br/><br/>
+              A verdade é que eu penso em você mais do que deveria.<br/><br/>
+              A verdade é que eu queria descobrir o que existe entre a gente<br/>
+              quando ninguém está fingindo que não existe nada.
+            </p>
+          </div>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-400 font-light leading-relaxed max-w-xl mx-auto">
+            E a verdade é que eu cansei de fingir que isso era só amizade da minha parte.
+          </p>
+        </div>
+
+        <!-- O QUE OFEREÇO -->
+        <div class="poetic-paragraph ginga-right text-right space-y-4">
+          <div class="w-8 h-[1px] bg-paranapanema-gold/15 ml-auto"></div>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            Não estou te oferecendo promessas.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            Não estou te oferecendo um roteiro.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            Não estou te oferecendo um futuro desenhado.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-200 font-light leading-relaxed">
+            Estou te oferecendo honestidade.<br/>Só isso.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            A mesma honestidade que eu gostaria de receber.
+          </p>
+        </div>
+
+        <!-- ASSIMETRIA -->
+        <div class="poetic-paragraph ginga-left space-y-6">
+          <div class="w-8 h-[1px] bg-paranapanema-gold/15"></div>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            Se você não estiver no mesmo lugar que eu, tudo bem. De verdade.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500">
+            Vai doer um pouco. Mas eu sobrevivo.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-300 font-light leading-relaxed">
+            Prefiro uma verdade difícil do que continuar<br/>vivendo dentro de uma dúvida confortável.
+          </p>
+        </div>
+
+        <!-- SE AINDA HÁ OUTRA HISTÓRIA -->
+        <div class="poetic-paragraph ginga-center text-center space-y-6">
+          <div class="w-8 h-[1px] bg-paranapanema-gold/15 mx-auto"></div>
+          <p class="text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed max-w-2xl mx-auto">
+            Se você me disser que ainda está apaixonada.
+            Que ainda pensa em voltar.
+            Que o teu coração ainda tem endereço em outro lugar.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-300 font-light leading-relaxed max-w-xl mx-auto">
+            Minha postura muda completamente.<br/>
+            Sem discussão. Sem insistência. Sem drama.
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light text-zinc-500 leading-relaxed">
+            Eu respeito isso.
+          </p>
+        </div>
+
+        <!-- O ANZOL -->
+        <div class="poetic-paragraph ginga-left space-y-8">
+          <div class="w-8 h-[1px] bg-paranapanema-gold/15"></div>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400">
+            Mas se você estiver no presente...
+          </p>
+          <p class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400">
+            Então eu também preciso ser honesto sobre outra coisa.
+            Eu tentei me convencer durante muito tempo de que estava tudo sob controle.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-200 font-light">
+            Não estava.
+          </p>
+          <div class="p-10 md:p-14 rounded-[2.5rem] glass-card glass-card-revelacao border-l-2 border-paranapanema-crimson/40 my-6 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-paranapanema-crimson/[0.04] to-transparent pointer-events-none"></div>
+            <p class="font-sans font-light text-lg md:text-xl text-zinc-300 leading-loose">
+              Porque se um dia você resolver atravessar essa distância
+              que existe entre nós, vai descobrir que o anzol já estava
+              lá faz tempo. Só esperando.
+            </p>
+            <p class="font-serif italic text-2xl text-zinc-400 font-light mt-6">
+              Não por maldade.<br/>Por fome.
+            </p>
+          </div>
+        </div>
+
+        <!-- FECHAMENTO -->
+        <div class="poetic-paragraph ginga-center text-center space-y-6 py-10">
+          <div class="w-20 h-[1.5px] bg-gradient-to-r from-transparent via-paranapanema-gold/25 to-transparent mx-auto"></div>
+          <p class="text-3xl md:text-4xl font-serif italic text-zinc-200 font-light leading-relaxed max-w-xl mx-auto">
+            Você está aqui.<br/>E agora eu também estou.
+          </p>
+          <p class="text-xl md:text-2xl font-serif italic text-zinc-500 font-light">
+            De verdade.
+          </p>
+          <p class="text-base font-sans font-light text-zinc-600 leading-relaxed mt-4">
+            Obrigado por ler até aqui.
+          </p>
+        </div>
+
+        <!-- ESCOLHA -->
+        <div class="poetic-paragraph ginga-center text-center space-y-12 py-36 relative">
+          <div class="absolute inset-0 bg-paranapanema-gold/5 blur-[120px] rounded-full pointer-events-none"></div>
+          <p class="text-lg md:text-xl font-sans font-light text-zinc-500 leading-relaxed max-w-xl mx-auto">
+            Então a pergunta é simples.<br/>
+            Não é uma frase de encerramento.<br/>
+            É uma pergunta real.
+          </p>
+          <p class="text-4xl md:text-6xl font-serif italic text-paranapanema-gold font-extralight py-6 tracking-widest select-none">
+            O que a gente faz com isso agora?
+          </p>
+          <h3 class="text-4xl md:text-7xl font-sans font-black tracking-tight text-white pt-4 leading-none">
+            A escolha é sua.
+          </h3>
+
+          <div class="flex flex-col sm:flex-row justify-center items-center gap-6 pt-12">
+            <button
+              id="choice-recuar"
+              class="choice-btn liquid-btn px-10 py-5 rounded-full border border-zinc-700 bg-transparent text-zinc-400 font-sans tracking-widest uppercase text-xs font-bold hover:border-zinc-400 hover:text-white"
+            >O Silêncio (Seis meses)</button>
+            <button
+              id="choice-presente"
+              class="choice-btn liquid-btn px-10 py-5 rounded-full border border-paranapanema-gold bg-paranapanema-gold/10 text-paranapanema-gold font-sans tracking-widest uppercase text-xs font-bold hover:bg-paranapanema-gold/25 hover:text-white"
+            >A Aurora (O presente)</button>
+          </div>
+
+          <!-- CTA: ela escolheu o presente -->
+          <div id="choice-cta-aurora" class="hidden mt-10 max-w-md mx-auto">
+            <div class="p-8 rounded-[2.5rem] glass-card border border-paranapanema-gold/30 text-center space-y-5">
+              <p class="font-sans font-light text-base text-zinc-400 leading-relaxed mb-2">
+                Talvez a gente possa parar de andar em volta do assunto.
+                Talvez a gente possa descobrir o que existe quando duas pessoas
+                resolvem falar a verdade. Sem personagem. Sem defesa. Sem armadura.
+              </p>
+              <p class="font-serif italic text-xl text-zinc-300 leading-relaxed font-light">
+                A voz real está esperando.
+              </p>
+              <p class="text-2xl md:text-3xl font-serif italic text-paranapanema-gold font-light mt-2">
+                Te amo.
+              </p>
+              <a
+                href="https://wa.me/5514996373527?text=Oi.%20Li%20tudo."
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center gap-3 mt-2 px-8 py-4 rounded-full bg-paranapanema-gold/10 border border-paranapanema-gold/60 text-paranapanema-gold font-sans font-bold tracking-widest text-xs uppercase hover:bg-paranapanema-gold/25 hover:border-paranapanema-gold transition-all duration-300"
+              >
+                <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                Chama eu
+              </a>
+            </div>
+          </div>
+
+          <!-- CTA: ela escolheu o silêncio -->
+          <div id="choice-cta-recuar" class="hidden mt-8 text-center">
+            <p class="font-sans font-light text-base text-zinc-500 leading-relaxed mb-4 max-w-sm mx-auto">
+              Seis meses é um tempo honesto. É o tempo de deixar o barulho baixar
+              até que o que for real ainda esteja lá quando voltar.
+              Não é abandono — é respeito pelo peso do que existe.
+            </p>
+            <p class="font-serif italic text-zinc-600 text-lg leading-loose font-light">
+              Respeito isso.<br/>
+              Seis meses passam.<br/>
+              Você sabe me achar.
+            </p>
+          </div>
+        </div>
+        <!-- PRESENTE SECRETO — o verdadeiro encerramento -->
+        <div
+          id="secret-present-section"
+          class="poetic-paragraph ginga-center text-center py-20 relative z-30"
+        >
+          <div
+            class="absolute inset-0 bg-paranapanema-gold/[0.02] blur-[150px] rounded-full pointer-events-none"
+          ></div>
+
+          <div
+            id="gift-wrapper"
+            class="inline-block transition-all duration-[1000ms] ease-out"
+          >
+            <div
+              id="gift-box"
+              class="cursor-pointer group flex flex-col items-center space-y-5 p-10 md:p-14 rounded-[3rem] bg-white/[0.01] border border-paranapanema-gold/15 hover:border-paranapanema-gold/45 transition-all duration-500 hover:scale-105 shadow-2xl relative overflow-hidden"
+            >
+              <div
+                class="absolute inset-0 bg-gradient-to-tr from-paranapanema-gold/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+              ></div>
+              <div class="relative w-24 h-24 flex items-center justify-center">
+                <div
+                  class="absolute inset-0 bg-paranapanema-gold/15 rounded-full filter blur-xl group-hover:bg-paranapanema-gold/30 transition-all duration-500 animate-pulse"
+                ></div>
+                <svg
+                  class="w-14 h-14 text-paranapanema-gold group-hover:rotate-6 transition-transform duration-500 relative z-10"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1"
+                    d="M3 19v-8.93a2 2 0 01.89-1.664l8-5.333a2 2 0 012.22 0l8 5.333A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-2.25-1.5a2 2 0 00-2.22 0l-2.25 1.5"
+                  ></path>
+                </svg>
+              </div>
+              <span
+                class="text-[9px] font-mono text-paranapanema-gold/70 tracking-[0.55em] uppercase block"
+                >Um último gesto íntimo</span
+              >
+              <h4
+                class="font-serif italic text-3xl text-zinc-100 font-extralight"
+              >
+                Deixei um presente para você aqui.
+              </h4>
+              <p
+                class="text-xs text-zinc-500 max-w-xs mx-auto font-sans font-light"
+              >
+                Clique para quebrar o lacre e abrir a carta final.
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="secret-letter-card"
+            class="hidden opacity-0 translate-y-12 max-w-2xl mx-auto rounded-[2.5rem] glass-card border-2 border-paranapanema-gold/25 p-8 md:p-14 text-left space-y-8 transition-all duration-1000 ease-out relative"
+          >
+            <div
+              class="absolute top-0 right-12 w-32 h-32 bg-paranapanema-crimson/[0.04] blur-3xl rounded-full pointer-events-none"
+            ></div>
+
+            <div
+              class="flex items-center justify-between border-b border-white/[0.05] pb-5"
+            >
+              <span
+                class="font-mono text-[9px] tracking-[0.35em] text-paranapanema-gold uppercase"
+                >Para: Sereia do Panema</span
+              >
+              <span class="text-[10px] font-mono text-zinc-500"
+                >Piraju, SP</span
+              >
+            </div>
+
+            <div
+              id="letter-content"
+              class="font-serif italic text-2xl md:text-3xl text-zinc-200 leading-relaxed font-light space-y-8"
+            ></div>
+          </div>
+        </div>
+
+        <!-- FOOTER — depois da carta, o silêncio final -->
+        <footer
+          id="final-footer"
+          class="poetic-paragraph pt-32 pb-20 flex flex-col items-center"
+        >
+          <div
+            class="w-px h-24 bg-gradient-to-b from-paranapanema-gold/40 to-transparent mb-12"
+          ></div>
+          <div class="text-center space-y-4 mb-20">
+            <p class="font-serif italic text-2xl text-zinc-300 mb-6">
+              Obrigado por ler até aqui.<br />Beijo, te amo.
+            </p>
+            <p class="font-serif italic text-3xl text-zinc-400">
+              Aqui termina o que foi dito.
+            </p>
+            <p
+              class="font-sans font-extralight text-zinc-500 tracking-widest uppercase text-[10px]"
+            >
+              O resto, Sereia, a gente cria no agora.
+            </p>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-2xl border-t border-white/5 pt-12"
+          >
+            <div class="text-center md:text-left">
+              <span
+                class="block font-mono text-[9px] text-zinc-600 uppercase mb-2"
+                >Voltar</span
+              >
+              <a
+                href="o-bau.html"
+                class="nav-link font-serif italic text-zinc-300 hover:text-paranapanema-gold transition-colors text-lg"
+                >← O Baú</a
+              >
+            </div>
+            <div class="flex justify-center items-center">
+              <div
+                class="w-10 h-10 rounded-full border border-paranapanema-gold/20 flex items-center justify-center"
+              >
+                <span class="text-paranapanema-gold font-serif text-lg">X</span>
+              </div>
+            </div>
+            <div class="text-center md:text-right">
+              <span
+                class="block font-mono text-[9px] text-zinc-600 uppercase mb-2"
+                >Próximo</span
+              >
+              <a
+                href="capitulo-10-a-sereia-e-o-ouro.html"
+                class="nav-link font-serif italic text-zinc-300 hover:text-paranapanema-gold transition-colors text-lg"
+                >IX · A Sereia e o Ouro</a
+              >
+            </div>
+          </div>
+
+          <div
+            class="mt-24 opacity-20 hover:opacity-100 transition-opacity duration-1000"
+          >
+            <p
+              class="font-mono text-[8px] tracking-[0.8em] uppercase text-zinc-500"
+            >
+              Piraju • 2024
+            </p>
+          </div>
+        </footer>
+      </div>
+    </main>
+
+    <script>
+      // ==========================================
+      // CANVAS: CORRENTEZA DO PARANAPANEMA
+      // ==========================================
+      const canvas = document.getElementById("universe-canvas");
+      const ctx = canvas.getContext("2d");
+      let width, height;
+
+      let maxScroll = 1000;
+      const isTouch = window.matchMedia(
+        "(hover: none), (pointer: coarse)",
+      ).matches;
+      let lastScrollY = window.scrollY;
+      let scrollSpeed = 0;
+
+      let currentChoice = "none";
+      let auroraBoost = 0;
+
+      const mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
+
+      if (!isTouch) {
+        window.addEventListener("mousemove", (e) => {
+          mouse.targetX = e.clientX;
+          mouse.targetY = e.clientY;
+        });
+
+        window.addEventListener("mouseout", () => {
+          mouse.targetX = -1000;
+          mouse.targetY = -1000;
+        });
+      }
+
+      window.addEventListener("touchmove", (e) => {
+        if (e.touches.length > 0) {
+          mouse.targetX = e.touches[0].clientX;
+          mouse.targetY = e.touches[0].clientY;
+        }
+      });
+
+      window.addEventListener("touchend", () => {
+        mouse.targetX = -1000;
+        mouse.targetY = -1000;
+      });
+
+      let stars = [];
+      let seaWaves = [];
+      let heatSparks = [];
+      let customRipples = [];
+
+      function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+
+        maxScroll =
+          document.documentElement.scrollHeight - window.innerHeight || 1000;
+        initParticles();
+      }
+
+      function initParticles() {
+        stars = [];
+        for (let i = 0; i < (isTouch ? 35 : 70); i++) {
+          stars.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: Math.random() * 0.9 + 0.15,
+            alpha: Math.random() * 0.45 + 0.1,
+          });
+        }
+
+        seaWaves = [];
+        for (let i = 0; i < 5; i++) {
+          seaWaves.push({
+            y: height * 0.25 + i * (height * 0.18),
+            amplitude: 18 + i * 14,
+            length: 0.0015 + (5 - i) * 0.0005,
+            speed: 0.006 + i * 0.0025,
+            phase: Math.random() * Math.PI * 2,
+            depthIndex: i,
+          });
+        }
+
+        heatSparks = [];
+        for (let i = 0; i < (isTouch ? 45 : 110); i++) {
+          heatSparks.push({
+            x: Math.random() * width,
+            y: Math.random() * height + height,
+            size: Math.random() * 2.4 + 0.3,
+            speedY: Math.random() * 0.8 + 0.2,
+            wobble: Math.random() * 0.025 + 0.01,
+            wobblePhase: Math.random() * Math.PI * 2,
+            wobbleRadius: Math.random() * 3.2 + 0.6,
+            alpha: Math.random() * 0.8 + 0.2,
+            temp: Math.random(),
+          });
+        }
+      }
+
+      function triggerWordRipple(x, y, type) {
+        let maxRVal = 110;
+        let speedVal = 2.8;
+
+        if (type === "tesao") {
+          maxRVal = 190;
+          speedVal = 4.2;
+        } else if (type === "sereia") {
+          maxRVal = 165;
+          speedVal = 3.2;
+        } else if (type === "sentimento") {
+          maxRVal = 140;
+          speedVal = 2.2;
+        } else if (type === "linda") {
+          maxRVal = 170;
+          speedVal = 3.4;
+        } else if (type === "carne") {
+          maxRVal = 200;
+          speedVal = 4.5;
+        } else if (type === "complexidade") {
+          maxRVal = 150;
+          speedVal = 3.0;
+        }
+
+        customRipples.push({
+          x: x,
+          y: y,
+          r: 5,
+          maxR: maxRVal,
+          alpha: 0.95,
+          type: type,
+          speed: speedVal,
+        });
+      }
+
+      function renderUniverse() {
+        if (currentChoice === "recuar") ctx.fillStyle = "#010408";
+        else if (currentChoice === "presente") ctx.fillStyle = "#100406";
+        else ctx.fillStyle = "#01080a";
+
+        ctx.fillRect(0, 0, width, height);
+
+        let currentScrollY = window.scrollY;
+        let scrollDiff = Math.abs(currentScrollY - lastScrollY);
+        scrollSpeed += (scrollDiff - scrollSpeed) * 0.1;
+        lastScrollY = currentScrollY;
+        scrollSpeed *= 0.92;
+
+        mouse.x += (mouse.targetX - mouse.x) * 0.08;
+        mouse.y += (mouse.targetY - mouse.y) * 0.08;
+
+        if (auroraBoost > 0) auroraBoost = Math.max(0, auroraBoost - 0.018);
+        let sparkSpeedMultiplier = 1.0 + Math.min(scrollSpeed * 0.22, 3.0) + auroraBoost;
+        let time = Date.now() * 0.001;
+
+        // Aura
+        let auraSize = Math.min(width, height) * 0.8;
+        let auraX = width / 2 + Math.sin(time * 0.5) * 50;
+        let auraY = height / 2 + Math.cos(time * 0.4) * 40;
+
+        let radialGradAura = ctx.createRadialGradient(
+          auraX,
+          auraY,
+          10,
+          auraX,
+          auraY,
+          auraSize,
+        );
+        if (currentChoice === "recuar") {
+          radialGradAura.addColorStop(0, "rgba(10, 35, 55, 0.18)");
+          radialGradAura.addColorStop(0.5, "rgba(5, 15, 30, 0.05)");
+          radialGradAura.addColorStop(1, "rgba(0,0,0,0)");
+        } else if (currentChoice === "presente") {
+          radialGradAura.addColorStop(0, "rgba(220, 38, 38, 0.2)");
+          radialGradAura.addColorStop(0.4, "rgba(207, 92, 54, 0.12)");
+          radialGradAura.addColorStop(0.7, "rgba(34, 124, 105, 0.05)");
+          radialGradAura.addColorStop(1, "rgba(0,0,0,0)");
+        } else {
+          radialGradAura.addColorStop(0, "rgba(239, 176, 87, 0.15)");
+          radialGradAura.addColorStop(0.4, "rgba(207, 92, 54, 0.08)");
+          radialGradAura.addColorStop(0.7, "rgba(15, 50, 41, 0.06)");
+          radialGradAura.addColorStop(1, "rgba(0,0,0,0)");
+        }
+        ctx.fillStyle = radialGradAura;
+        ctx.beginPath();
+        ctx.arc(auraX, auraY, auraSize, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Estrelas
+        for (let i = 0; i < stars.length; i++) {
+          let s = stars[i];
+          let py = s.y - currentScrollY * 0.08;
+          py = ((py % height) + height) % height;
+          ctx.fillStyle = `rgba(245, 239, 242, ${s.alpha})`;
+          ctx.beginPath();
+          ctx.arc(s.x, py, s.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Ondas Paranapanema
+        for (let i = 0; i < seaWaves.length; i++) {
+          let wave = seaWaves[i];
+          wave.phase += wave.speed;
+
+          ctx.beginPath();
+          ctx.moveTo(0, height);
+
+          for (let x = 0; x <= width; x += 20) {
+            let dy = Math.sin(x * wave.length + wave.phase) * wave.amplitude;
+            let scrollOffset =
+              Math.sin(currentScrollY * 0.002 + wave.phase) *
+              (15 + wave.depthIndex * 3);
+            ctx.lineTo(x, wave.y + dy + scrollOffset);
+          }
+          ctx.lineTo(width, height);
+          ctx.lineTo(0, height);
+
+          let r, g, b, a;
+          if (currentChoice === "recuar") {
+            r = 10;
+            g = 35;
+            b = 55;
+            a = 0.04 - wave.depthIndex * 0.008;
+          } else if (currentChoice === "presente") {
+            r = 207;
+            g = 60;
+            b = 54;
+            a = 0.075 - wave.depthIndex * 0.012;
+          } else {
+            r = 15;
+            g = 50;
+            b = 41;
+            a = 0.065 - wave.depthIndex * 0.01;
+          }
+
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
+          ctx.fill();
+
+          if (wave.depthIndex >= 2) {
+            ctx.lineWidth = 0.8;
+            if (currentChoice === "recuar")
+              ctx.strokeStyle = `rgba(130, 185, 235, ${0.14 * (5 - wave.depthIndex)})`;
+            else if (currentChoice === "presente")
+              ctx.strokeStyle = `rgba(220, 38, 38, ${0.22 * (5 - wave.depthIndex)})`;
+            else
+              ctx.strokeStyle = `rgba(163, 226, 215, ${0.18 * (5 - wave.depthIndex)})`;
+            ctx.stroke();
+          }
+        }
+
+        // G-2 Ripples
+        for (let i = customRipples.length - 1; i >= 0; i--) {
+          let rp = customRipples[i];
+          rp.r += rp.speed;
+          rp.alpha -= 0.018;
+
+          if (rp.alpha <= 0) {
+            customRipples.splice(i, 1);
+            continue;
+          }
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+
+          let rCol, gCol, bCol;
+          if (rp.type === "sereia") {
+            rCol = 124;
+            gCol = 234;
+            bCol = 218;
+          } else if (rp.type === "carne") {
+            rCol = 220;
+            gCol = 38;
+            bCol = 38;
+          } else if (rp.type === "tesao") {
+            rCol = 239;
+            gCol = 176;
+            bCol = 87;
+          } else if (rp.type === "complexidade") {
+            rCol = 176;
+            gCol = 224;
+            bCol = 230;
+          } else if (rp.type === "sentimento") {
+            rCol = 223;
+            gCol = 138;
+            bCol = 138;
+          } else if (rp.type === "linda") {
+            rCol = 239;
+            gCol = 176;
+            bCol = 87;
+          } else {
+            rCol = 255;
+            gCol = 255;
+            bCol = 255;
+          }
+
+          ctx.strokeStyle = `rgba(${rCol}, ${gCol}, ${bCol}, ${rp.alpha})`;
+          ctx.lineWidth = 1.6 * rp.alpha;
+
+          ctx.shadowBlur =
+            rp.type === "tesao" ||
+            rp.type === "linda" ||
+            rp.type === "carne" ||
+            rp.type === "sereia"
+              ? 25
+              : 10;
+          ctx.shadowColor = `rgb(${rCol}, ${gCol}, ${bCol})`;
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Mouse Bioluminescence
+        if (mouse.x !== -1000) {
+          let radialGrad = ctx.createRadialGradient(
+            mouse.x,
+            mouse.y,
+            0,
+            mouse.x,
+            mouse.y,
+            240,
+          );
+
+          if (currentChoice === "recuar") {
+            radialGrad.addColorStop(0, "rgba(45, 95, 145, 0.15)");
+            radialGrad.addColorStop(1, "rgba(0,0,0,0)");
+          } else if (currentChoice === "presente") {
+            radialGrad.addColorStop(0, "rgba(220, 38, 38, 0.18)");
+            radialGrad.addColorStop(0.4, "rgba(207, 92, 54, 0.08)");
+            radialGrad.addColorStop(1, "rgba(0,0,0,0)");
+          } else {
+            radialGrad.addColorStop(0, "rgba(163, 226, 215, 0.12)");
+            radialGrad.addColorStop(1, "rgba(0,0,0,0)");
+          }
+
+          ctx.fillStyle = radialGrad;
+          ctx.beginPath();
+          ctx.arc(mouse.x, mouse.y, 240, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Sparks & Fireflies
+        for (let i = 0; i < heatSparks.length; i++) {
+          let sp = heatSparks[i];
+          sp.y -= sp.speedY * sparkSpeedMultiplier;
+          sp.wobblePhase += sp.wobble;
+          let currentX = sp.x + Math.sin(sp.wobblePhase) * sp.wobbleRadius;
+
+          if (sp.y < -20) {
+            sp.y = height + Math.random() * 30 + 10;
+            sp.x = Math.random() * width;
+            sp.alpha = Math.random() * 0.8 + 0.2;
+          }
+
+          let pulseAlpha = sp.alpha * (0.8 + Math.sin(time * 6 + i) * 0.2);
+          let colorString;
+
+          if (currentChoice === "recuar") {
+            colorString = `rgba(155, 185, 215, ${pulseAlpha * 0.7})`;
+          } else if (currentChoice === "presente") {
+            let r = Math.floor(220 + sp.temp * 35);
+            let g = Math.floor(38 + sp.temp * 40);
+            let b = Math.floor(38 + sp.temp * 10);
+            colorString = `rgba(${r}, ${g}, ${b}, ${pulseAlpha})`;
+          } else {
+            if (sp.temp > 0.5) colorString = `rgba(207, 92, 54, ${pulseAlpha})`;
+            else colorString = `rgba(239, 176, 87, ${pulseAlpha})`;
+          }
+
+          ctx.fillStyle = colorString;
+          ctx.beginPath();
+          ctx.arc(currentX, sp.y, sp.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        requestAnimationFrame(renderUniverse);
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+      renderUniverse();
+
+      // ==========================================
+      // ESCUTA PALAVRAS INTERATIVAS (G-2)
+      // ==========================================
+      document.querySelectorAll(".interactive-word").forEach((word) => {
+        const handler = (e) => {
+          const rect = word.getBoundingClientRect();
+          const x = rect.left + rect.width / 2;
+          const y = rect.top + rect.height / 2;
+          const effectType = word.getAttribute("data-effect");
+
+          triggerWordRipple(x, y, effectType);
+          if (Math.random() > 0.5) {
+            setTimeout(() => triggerWordRipple(x, y, effectType), 150);
+          }
+        };
+
+        word.addEventListener("mouseenter", handler);
+        word.addEventListener("touchstart", (e) => {
+          handler(e);
+          e.stopPropagation();
+        });
+      });
+
+      // ==========================================
+      // PROGRESSO E TRANSIÇÕES DE PÁGINA
+      // ==========================================
+      document.body.classList.add("loaded");
+
+      if (sessionStorage.getItem("audioState") === "playing") {
+        startAudio();
+        const btnPlay = document.getElementById("icon-play");
+        const btnPause = document.getElementById("icon-pause");
+        if (btnPlay) btnPlay.classList.add("hidden");
+        if (btnPause) btnPause.classList.remove("hidden");
+      }
+
+      window.addEventListener("scroll", () => {
+        const chapterIndex = 6;
+        const totalChapters = 6;
+        const winScroll = document.documentElement.scrollTop;
+        const height =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        const pageScrolled = winScroll / height;
+        const currentChapterNumber = 8;
+        const totalContentChapters = 8;
+        const globalPercent =
+          (currentChapterNumber / (totalContentChapters + 1)) * 100 +
+          pageScrolled * (100 / (totalContentChapters + 1));
+        document.getElementById("global-progress").style.width =
+          globalPercent + "%";
+      });
+
+      function playNavClick() {
+        try {
+          const c = new (window.AudioContext || window.webkitAudioContext)();
+          const now = c.currentTime;
+          const bufLen = Math.floor(c.sampleRate * 0.14);
+          const buf = c.createBuffer(1, bufLen, c.sampleRate);
+          const d = buf.getChannelData(0);
+          for (let i = 0; i < bufLen; i++) d[i] = Math.random() * 2 - 1;
+          const noise = c.createBufferSource();
+          noise.buffer = buf;
+          const filter = c.createBiquadFilter();
+          filter.type = "bandpass";
+          filter.frequency.value = 2000;
+          filter.Q.value = 0.7;
+          const g = c.createGain();
+          g.gain.setValueAtTime(0, now);
+          g.gain.linearRampToValueAtTime(0.13, now + 0.008);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+          noise.connect(filter);
+          filter.connect(g);
+          g.connect(c.destination);
+          noise.start(now);
+          noise.stop(now + 0.14);
+          const thump = c.createOscillator();
+          const tg = c.createGain();
+          thump.type = "sine";
+          thump.frequency.setValueAtTime(110, now + 0.07);
+          thump.frequency.exponentialRampToValueAtTime(55, now + 0.16);
+          tg.gain.setValueAtTime(0.055, now + 0.07);
+          tg.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+          thump.connect(tg);
+          tg.connect(c.destination);
+          thump.start(now + 0.07);
+          thump.stop(now + 0.16);
+          setTimeout(() => c.close(), 600);
+        } catch (e) {}
+      }
+
+      function playExitRipple(x, y, cb) {
+        const el = document.createElement("div");
+        const s = Math.hypot(window.innerWidth, window.innerHeight) * 2.4;
+        el.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(239,176,87,0.18) 0%,rgba(1,7,9,0.97) 65%);transform:translate(-50%,-50%) scale(1);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1);pointer-events:none;z-index:9997;`;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(-50%,-50%) scale(${s})`;
+        });
+        setTimeout(() => {
+          el.remove();
+          cb();
+        }, 670);
+      }
+
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          playNavClick();
+          const rx = e.clientX || window.innerWidth / 2;
+          const ry = e.clientY || window.innerHeight / 2;
+          playExitRipple(rx, ry, () => {
+            document.body.classList.remove("loaded");
+            setTimeout(() => {
+              window.location.href = link.getAttribute("href");
+            }, 60);
+          });
+        });
+      });
+
+      if (!isTouch) {
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("mouseenter", () => {
+            try {
+              const c = new (
+                window.AudioContext || window.webkitAudioContext
+              )();
+              const o = c.createOscillator();
+              const g = c.createGain();
+              o.type = "sine";
+              o.frequency.value = 800;
+              g.gain.setValueAtTime(0.018, c.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+              o.connect(g);
+              g.connect(c.destination);
+              o.start();
+              o.stop(c.currentTime + 0.12);
+              setTimeout(() => c.close(), 400);
+            } catch (e) {}
+          });
+        });
+      }
+
+      // MUDANÇA DE TOM MUSICAL NO ENCERRAMENTO
+      const footerObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              localStorage.removeItem("oavesso_progress");
+              if (isPlaying && audioCtx) {
+                const now = audioCtx.currentTime;
+                if (droneOsc)
+                  droneOsc.frequency.exponentialRampToValueAtTime(
+                    32.7,
+                    now + 4,
+                  );
+              }
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      const finalFooter = document.getElementById("final-footer");
+      if (finalFooter) footerObserver.observe(finalFooter);
+
+      const observerOptions = {
+        threshold: 0.12,
+        rootMargin: "0px 0px -8% 0px",
+      };
+
+      const poeticObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("reveal");
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll(".poetic-paragraph").forEach((el) => {
+        poeticObserver.observe(el);
+      });
+
+      // Glass cards ganham classe .reveal ao entrar no viewport (ativa glassPulse)
+      const glassObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add("reveal");
+        });
+      }, { threshold: 0.15, rootMargin: "0px 0px -5% 0px" });
+      document.querySelectorAll(".glass-card").forEach((el) => {
+        glassObserver.observe(el);
+      });
+
+      const shieldObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("reveal-shield");
+            }
+          });
+        },
+        { threshold: 0.25 },
+      );
+
+      document.querySelectorAll(".glass-card").forEach((shield) => {
+        shieldObserver.observe(shield);
+      });
+
+      // ==========================================
+      // ESCOLHA DE CAMINHOS
+      // ==========================================
+      const btnRecuar = document.getElementById("choice-recuar");
+      const btnPresente = document.getElementById("choice-presente");
+
+      btnRecuar.addEventListener("click", () => {
+        currentChoice = "recuar";
+        btnRecuar.classList.add(
+          "chosen",
+          "bg-white/[0.08]",
+          "border-white",
+          "text-white",
+        );
+        btnRecuar.classList.remove("text-zinc-400");
+        btnPresente.classList.add("chosen");
+        btnPresente.classList.remove("bg-paranapanema-gold/25", "text-white");
+        btnPresente.classList.add(
+          "text-paranapanema-gold",
+          "bg-paranapanema-gold/10",
+        );
+
+        document.getElementById("choice-cta-aurora").classList.add("hidden");
+        const ctaR = document.getElementById("choice-cta-recuar");
+        ctaR.classList.remove("hidden");
+        ctaR.classList.add("choice-cta-reveal");
+        setAudioMood("recuar");
+        setTimeout(() => {
+          ctaR.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 400);
+      });
+
+      btnPresente.addEventListener("click", () => {
+        currentChoice = "presente";
+        btnPresente.classList.add(
+          "chosen",
+          "bg-paranapanema-gold/25",
+          "text-white",
+        );
+        btnRecuar.classList.add("chosen");
+        btnRecuar.classList.remove(
+          "bg-white/[0.08]",
+          "border-white",
+          "text-white",
+        );
+        btnRecuar.classList.add("text-zinc-400");
+        document.getElementById("choice-cta-recuar").classList.add("hidden");
+        const ctaA = document.getElementById("choice-cta-aurora");
+        ctaA.classList.remove("hidden");
+        ctaA.classList.add("choice-cta-reveal");
+        setAudioMood("presente");
+        auroraBoost = 2.8; // ondas aceleram por ~8s ao escolher Aurora
+        setTimeout(() => {
+          ctaA.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 400);
+      });
+
+      // ==========================================
+      // LOGICA DO PRESENTE SECRETO
+      // ==========================================
+      const giftBox = document.getElementById("gift-box");
+      const giftWrapper = document.getElementById("gift-wrapper");
+      const secretLetterCard = document.getElementById("secret-letter-card");
+      const letterContent = document.getElementById("letter-content");
+
+      // ENGINE SONORA — Capítulo 9: Confissão / Carne / Paranapanema
+      let audioCtx = null;
+      let isPlaying = false;
+      let droneOsc = null;
+      let droneGain = null;
+      let harmOsc = null;
+      let harmGain = null;
+      let pulseOsc = null;
+      let pulseGain = null;
+      let masterGain = null;
+
+      function startAudio() {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+        masterGain = audioCtx.createGain();
+        masterGain.gain.setValueAtTime(0, now);
+        masterGain.gain.linearRampToValueAtTime(1, now + 4);
+        masterGain.connect(audioCtx.destination);
+
+        // Drone base — barro, rio, corpo (48Hz)
+        droneOsc = audioCtx.createOscillator();
+        droneGain = audioCtx.createGain();
+        droneOsc.type = "sine";
+        droneOsc.frequency.value = 48;
+        droneGain.gain.value = 0.022;
+        droneOsc.connect(droneGain);
+        droneGain.connect(masterGain);
+        droneOsc.start();
+
+        // Harmônico quente — quinta justa (72Hz)
+        harmOsc = audioCtx.createOscillator();
+        harmGain = audioCtx.createGain();
+        harmOsc.type = "sine";
+        harmOsc.frequency.value = 72;
+        harmGain.gain.value = 0.01;
+        harmOsc.connect(harmGain);
+        harmGain.connect(masterGain);
+        harmOsc.start();
+
+        // Pulso lento — batida de pandeiro distante (LFO sobre o harmônico)
+        pulseOsc = audioCtx.createOscillator();
+        pulseGain = audioCtx.createGain();
+        pulseOsc.type = "sine";
+        pulseOsc.frequency.value = 1.15; // ~69 BPM, samba tranquilo
+        pulseGain.gain.value = 0.007;
+        pulseOsc.connect(pulseGain);
+        pulseGain.connect(harmGain.gain); // modula o volume do harmônico
+        pulseOsc.start();
+
+        isPlaying = true;
+        sessionStorage.setItem("audioState", "playing");
+      }
+
+      function stopAudio() {
+        if (masterGain) {
+          masterGain.gain.linearRampToValueAtTime(
+            0,
+            audioCtx.currentTime + 1.5,
+          );
+        }
+        isPlaying = false;
+        sessionStorage.setItem("audioState", "paused");
+      }
+
+      function setAudioMood(mood) {
+        if (!audioCtx || !isPlaying) return;
+        const now = audioCtx.currentTime;
+        if (mood === "presente") {
+          droneOsc.frequency.exponentialRampToValueAtTime(55, now + 3);
+          harmOsc.frequency.exponentialRampToValueAtTime(82.5, now + 3);
+          droneGain.gain.linearRampToValueAtTime(0.028, now + 3);
+          pulseOsc.frequency.linearRampToValueAtTime(1.4, now + 3);
+        } else if (mood === "recuar") {
+          droneOsc.frequency.exponentialRampToValueAtTime(40, now + 4);
+          harmOsc.frequency.exponentialRampToValueAtTime(60, now + 4);
+          droneGain.gain.linearRampToValueAtTime(0.012, now + 4);
+          pulseOsc.frequency.linearRampToValueAtTime(0.7, now + 4);
+        }
+      }
+
+      document
+        .getElementById("soundtrack-toggle")
+        ?.addEventListener("click", () => {
+          if (!isPlaying) startAudio();
+          else stopAudio();
+        });
+
+      const _letterTrunk = `Tem algo em você que é difícil de nomear sem empobrecer.
+
+Uma beleza que não tenta convencer ninguém de nada.
+Que não se justifica, não se anuncia.
+Que só existe — e por existir, desmonta o mundo ao redor.
+
+Você carrega isso com uma leveza que me parece quase inconsciente.
+Como quem não sabe exatamente o que tem,
+mas move tudo ao redor só de passar.
+
+Eu que fico aqui observando.
+Sabendo.
+
+—
+
+Às vezes as coisas ficam nubladas.
+
+Sei que nem tudo está acontecendo como você queria.
+Sei que tem coisas que resistem — que o tempo não obedece,
+que o rumo ainda não se clareia,
+que tem peso pessoal, tem melancolia,
+tem dias em que a vida parece suspensa
+esperando uma virada que demora.
+
+Eu sei disso.
+E não vou fingir que não sei.
+
+Não estou aqui para te dizer que está tudo bem.
+Estou aqui para te dizer que você não está sozinha nessa névoa.
+E que a névoa não é o destino.`;
+
+      const secretLetterAurora =
+        _letterTrunk +
+        `
+
+—
+
+Mas existe algo que preciso te dizer.
+
+Tem muita coisa boa acontecendo.
+
+A chuva que a gente atravessou juntos — ela teve um porquê.
+O fogo que apareceu quando não tinha como conter — ele limpou alguma coisa.
+A bolha que a gente inventou, aquele espaço que só existe entre nós — ela ainda existe.
+Mesmo quando a gente não está dentro.
+
+Mesmo agora. Mesmo no meio do que pesa.
+
+E tem muito mais coisa boa por vir — não no relógio que você queria, não no formato que o mundo prometeu, mas acontecendo do jeito que as coisas reais acontecem: devagar, pelo avesso, sem pedir licença.
+
+—
+
+Faça isso por você: afaste-se das formas prontas.
+
+Às vezes o chão desaba só para a gente aprender que a terra firme sempre foi ilusão.
+O que importa é o fluxo.
+
+É tempo de aurora.
+
+Amadurecer é descobrir que a fidelidade à própria natureza é o único porto que não some na maré.
+
+—
+
+Eu estou aqui, na margem do rio, vivendo o agora.
+
+Sem pressa de te convencer de nada.
+Sem fórmula de herói.
+
+Só sabendo que você é uma das coisas boas que estão acontecendo — e que tem muita coisa boa que a gente ainda pode fazer juntos.
+
+Se você está aqui, no agora, a praia está pronta.
+
+O Eco é só um ensaio. A voz real está esperando.
+
+Obrigado por ler até aqui.
+
+Beijo. Te amo.`;
+
+      const secretLetterSilencio =
+        _letterTrunk +
+        `
+
+—
+
+Eu sei que isso não é o que você consegue agora.
+
+Eu respeito.
+Sem mágoa. Sem cobrança.
+
+Não é fim — é pausa honesta. O tipo de pausa que só quem se importa de verdade consegue dar.
+
+Vou precisar de seis meses para que as minhas águas fiquem limpas. Para que eu consiga te olhar de novo sem querer desabar em você.
+
+Você nunca vai me perder. Mas eu também não sou de pedra — e fingir que sou seria desonesto com os dois.
+
+—
+
+Quando o rio voltar a correr limpo, você sabe me achar.
+
+Até lá, cuide-se.
+
+Obrigado por ler até aqui.`;
+
+      function playTypewriterSound() {
+        if (!audioCtx || audioCtx.state === "suspended") return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "square";
+        osc.frequency.setValueAtTime(150 + Math.random() * 50, now);
+        gain.gain.setValueAtTime(0.015, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(now + 0.04);
+      }
+
+      function appendChatCTA() {
+        const wrapper = document.createElement("div");
+        wrapper.className = "flex justify-center my-6";
+        wrapper.innerHTML = `
+          <div class="text-center space-y-4 p-6 rounded-2xl border border-paranapanema-gold/15 bg-white/[0.01]">
+            <p class="font-serif italic text-zinc-400 text-sm leading-relaxed">
+              Essa conversa merece<br/>continuar fora daqui.
+            </p>
+            <a href="https://wa.me/5514996373527?text=Oi.%20Precisamos%20conversar."
+               target="_blank"
+               rel="noopener"
+               class="inline-flex items-center gap-2 mt-2 px-5 py-2.5 rounded-full bg-paranapanema-gold/10 border border-paranapanema-gold/40 text-paranapanema-gold text-[10px] font-mono tracking-widest uppercase hover:bg-paranapanema-gold/20 transition-all">
+              Chama eu →
+            </a>
+          </div>
+        `;
+        chatHistory.appendChild(wrapper);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }
+
+      document
+        .getElementById("quick-replies")
+        .addEventListener("click", (e) => {
+          const btn = e.target.closest(".quick-reply-btn");
+          if (!btn) return;
+          userInput.value = btn.textContent.trim();
+          chatForm.dispatchEvent(new Event("submit", { cancelable: true }));
+        });
+
+      // ── QUICK REPLIES DINÂMICAS ──────────────────
+      const _qrEl = document.getElementById("quick-replies");
+      const _qrBtnClass =
+        "quick-reply-btn text-[10px] px-3 py-1.5 rounded-full border border-white/[0.08] text-zinc-500 hover:border-paranapanema-gold/40 hover:text-zinc-300 transition-all font-sans";
+
+      function updateQuickReplies(pool) {
+        const replies = poolReplies[pool] || poolReplies.default;
+        _qrEl.innerHTML = "";
+        replies.forEach((label) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = _qrBtnClass;
+          btn.textContent = label;
+          _qrEl.appendChild(btn);
+        });
+        _qrEl.classList.remove("hidden");
+      }
+
+      // ── PULSO DE ÁUDIO NO ECO ────────────────────
+      function ecoAudioPulse(pool) {
+        if (!audioCtx || !isPlaying || !droneGain || !harmGain) return;
+        if (!["desejo", "corpo", "presente_pool", "intimo"].includes(pool))
+          return;
+        const now = audioCtx.currentTime;
+        droneGain.gain.setValueAtTime(droneGain.gain.value, now);
+        droneGain.gain.linearRampToValueAtTime(0.055, now + 0.9);
+        droneGain.gain.linearRampToValueAtTime(0.022, now + 2.8);
+        harmGain.gain.linearRampToValueAtTime(0.026, now + 0.9);
+        harmGain.gain.linearRampToValueAtTime(0.01, now + 2.8);
+      }
+
+      // ── SALVAR / RESTAURAR CONVERSA ──────────────
+      function saveConversation() {
+        try {
+          localStorage.setItem(
+            "eco_conversa",
+            JSON.stringify({
+              log: _conversationLog,
+              count: messageCount,
+              choice: currentChoice,
+            }),
+          );
+        } catch (e) {}
+      }
+
+      function restoreConversation() {
+        try {
+          const raw = localStorage.getItem("eco_conversa");
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (!data.log || data.log.length === 0) return;
+          _isRestoring = true;
+          data.log.forEach((m) =>
+            appendMessage(m.text, m.sender, false, false),
+          );
+          _conversationLog = data.log;
+          messageCount = data.count || 0;
+          currentChoice = data.choice || null;
+          _isRestoring = false;
+        } catch (e) {
+          _isRestoring = false;
+        }
+      }
+
+      restoreConversation();
+
+      giftBox.addEventListener("click", () => {
+        const rect = giftBox.getBoundingClientRect();
+        triggerWordRipple(
+          rect.left + rect.width / 2,
+          rect.top + rect.height / 2,
+          "tesao",
+        );
+        setTimeout(
+          () =>
+            triggerWordRipple(
+              rect.left + rect.width / 2,
+              rect.top + rect.height / 2,
+              "carne",
+            ),
+          200,
+        );
+
+        giftWrapper.classList.add("opacity-0", "scale-90", "-translate-y-4");
+
+        setTimeout(() => {
+          giftWrapper.classList.add("hidden");
+
+          secretLetterCard.classList.remove("hidden");
+          secretLetterCard.offsetHeight; // Força re-render
+          secretLetterCard.classList.remove("opacity-0", "translate-y-12");
+          secretLetterCard.classList.add("opacity-100", "translate-y-0");
+
+          secretLetterCard.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+
+          let idx = 0;
+          letterContent.innerHTML = "";
+          const _letter =
+            currentChoice === "recuar"
+              ? secretLetterSilencio
+              : secretLetterAurora;
+          const formattedText = _letter.replace(/\n/g, "<br>");
+
+          function typeLetter() {
+            if (idx < formattedText.length) {
+              if (formattedText.substring(idx, idx + 4) === "<br>") {
+                letterContent.innerHTML += "<br>";
+                idx += 4;
+              } else {
+                letterContent.innerHTML += formattedText.charAt(idx);
+                if (formattedText.charAt(idx) !== " ") playTypewriterSound();
+                idx++;
+              }
+              let speed = 45 + Math.random() * 30;
+              setTimeout(typeLetter, speed);
+            } else {
+              const cardRect = secretLetterCard.getBoundingClientRect();
+              triggerWordRipple(
+                cardRect.left + cardRect.width / 2,
+                cardRect.top + cardRect.height / 2,
+                "sentimento",
+              );
+            }
+          }
+          setTimeout(typeLetter, 400);
+        }, 800);
+      });
+
+      // Magnetic pull — só desktop
+      if (typeof isTouch === "undefined" || !isTouch) {
+        document.querySelectorAll(".liquid-btn, #gift-box").forEach((el) => {
+          el.addEventListener("mousemove", (ev) => {
+            const r = el.getBoundingClientRect();
+            const dx = (ev.clientX - r.left - r.width / 2) * 0.13;
+            const dy = (ev.clientY - r.top - r.height / 2) * 0.13;
+            el.style.transition = "transform 0.08s linear";
+            el.style.transform = `translate(${dx}px,${dy}px)`;
+          });
+          el.addEventListener("mouseleave", () => {
+            el.style.transition = "transform 0.45s cubic-bezier(0.16,1,0.3,1)";
+            el.style.transform = "";
+          });
+        });
+      }
+    </script>
+    <script src="oa-fragmentos.js"></script>
+  <script src="constelacao-header.js"></script>
+    <script>
+      /* Autoplay: inicia o audio no primeiro gesto do usuario em cada capitulo */
+      (function () {
+        window.addEventListener("load", function () {
+          var btn =
+            document.getElementById("btn-audio") ||
+            document.getElementById("soundtrack-toggle");
+          if (!btn) return;
+          function _playing() {
+            if (btn.id === "btn-audio") {
+              var ip = document.getElementById("icon-play");
+              return ip && ip.classList.contains("hidden");
+            }
+            return btn.classList.contains("is-playing");
+          }
+          if (_playing()) return;
+          document.addEventListener(
+            "pointerdown",
+            function oa_auto() {
+              document.removeEventListener("pointerdown", oa_auto, true);
+              if (!_playing()) btn.click();
+            },
+            { capture: true },
+          );
+        });
+      })();
+    </script>
+  </body>
+</html>

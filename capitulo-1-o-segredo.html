@@ -1,0 +1,887 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I · O Segredo — O Avesso do Chão</title>
+
+  <script>localStorage.setItem('oavesso_progress','{"chapter":1,"title":"I · O Segredo","href":"capitulo-1-o-segredo.html"}');</script>
+  <script>(function(){var k='avesso_jornada_cap-1';if(!localStorage.getItem(k))localStorage.setItem(k,Date.now());})();</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter+Tight:wght@100;200;300;400&family=JetBrains+Mono:wght@100;200;300&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans:  ['"Inter Tight"', 'sans-serif'],
+            mono:  ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            copper: {
+              300: '#f08a75', 400: '#e96c54', 500: '#e2583e',
+              600: '#cc462d', 700: '#a63a26', 800: '#852e1e', 900: '#692418',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #050505;
+      background-image: radial-gradient(
+        ellipse 55% 70% at 50% 42%,
+        #100908 0%,
+        #070504 40%,
+        #010101 100%
+      );
+      background-attachment: fixed;
+      color: #d4d4d8;
+      opacity: 0;
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.loaded { opacity: 1; }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(138,152,168,0.15); border-radius: 99px; }
+
+    .hairline {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, rgba(105,36,24,0.45), transparent);
+      margin: 0 auto;
+    }
+
+    .poetic-paragraph {
+      opacity: 0;
+      transform: translateY(22px);
+      filter: blur(7px);
+      transition:
+        opacity   2.4s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+        filter    2.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .poetic-paragraph.reveal {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+
+    .visceral-red { color: #b52a2a; }
+
+    /* word-febre: seletor JS para o timer — visual vem do .note-trigger */
+    .word-febre { }
+    .word-febre.dwelling { text-shadow: 0 0 8px rgba(232,138,58,0.12); }
+
+    /* Cursor magnético — segue o mouse */
+    :root { --mouse-x: 50%; --mouse-y: 50%; }
+    .interactive-glow {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(
+        circle 700px at var(--mouse-x) var(--mouse-y),
+        rgba(163,119,102,0.06), transparent 60%
+      );
+      z-index: 1; pointer-events: none;
+      transition: background 0.3s ease-out;
+    }
+
+    /* Calor ambiente — pulsa devagar no fundo */
+    .heat-layer {
+      position: fixed; inset: 0;
+      background: radial-gradient(
+        ellipse 70% 50% at 50% 62%,
+        rgba(232,138,58,0.05) 0%, transparent 70%
+      );
+      pointer-events: none; z-index: 1;
+      animation: heatBreathe 16s ease-in-out infinite;
+      filter: blur(60px);
+    }
+    @keyframes heatBreathe {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50%       { opacity: 1.0; transform: scale(1.12); }
+    }
+
+    /* Alt-text swap */
+    .alt-text-swap {
+      display: inline-flex; flex-direction: column;
+      height: 1.2em; overflow: hidden;
+      vertical-align: text-bottom; cursor: pointer;
+    }
+    .alt-text-swap > span {
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      line-height: 1.2em;
+    }
+    .alt-text-swap:hover > span,
+    .alt-text-swap.ghost-hover > span { transform: translateY(-100%); }
+    .alt-text-original { color: inherit; }
+    .alt-text-hidden {
+      font-family: "Cormorant Garamond", serif;
+      font-style: italic; font-size: 1.05em;
+      color: rgba(232,138,58,0.6);
+      white-space: nowrap;
+    }
+
+    /* Note trigger / tooltip */
+    .note-trigger {
+      position: relative; cursor: help;
+      border-bottom: 1px dotted rgba(105,36,24,0.45);
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .note-trigger:hover { border-color: rgba(232,138,58,0.35); }
+    .note-tooltip {
+      position: absolute; bottom: 100%; left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      width: 220px; pointer-events: none;
+      padding: 1.1rem 1.3rem;
+      background: rgba(5,5,5,0.97);
+      border: 1px solid rgba(232,138,58,0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.85);
+      color: rgba(255,255,255,0.3);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.68rem; line-height: 1.75;
+      text-align: left; letter-spacing: 0.02em;
+      opacity: 0; visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 200;
+    }
+    .note-trigger:hover .note-tooltip {
+      opacity: 1; visibility: visible;
+      transform: translateX(-50%) translateY(-10px);
+      transition-delay: 0.18s;
+    }
+
+    /* Avesso flip */
+    .avesso-flip {
+      transition: transform 0.9s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: default; display: inline-block;
+    }
+    .avesso-flip:hover { transform: rotate(180deg); }
+    .avesso-flip.flipped { transform: rotate(180deg); }
+
+    /* Breathing animation */
+    @keyframes breathe {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.72; text-shadow: 0 0 14px rgba(211,186,176,0.18); }
+    }
+    .anim-breathe { display: inline-block; animation: breathe 7s infinite ease-in-out; }
+
+    /* Ghost cursor (onboarding) */
+    .ghost-cursor {
+      position: fixed; width: 16px; height: 16px;
+      border-radius: 50% 50% 50% 0;
+      background: rgba(232,138,58,0.38);
+      transform: rotate(-45deg) scale(0);
+      transition: transform 0.3s ease, opacity 0.5s ease;
+      pointer-events: none; z-index: 9999;
+    }
+
+    .vignette-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(
+        ellipse 52% 65% at 50% 42%,
+        transparent 0%,
+        transparent 28%,
+        rgba(1,1,1,0.55) 62%,
+        rgba(1,1,1,0.92) 100%
+      );
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .bossa-bar {
+      display: inline-block;
+      width: 2px;
+      background-color: #e2583e;
+      margin: 0 1px;
+      animation: none;
+    }
+    .is-playing .bossa-bar {
+      animation: bounceBossa 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes bounceBossa {
+      100% { transform: scaleY(1.8); opacity: 0.6; }
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9998;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: grain 0.4s steps(1) infinite;
+    }
+    @keyframes grain {
+      0%   { transform: translate(0, 0); }
+      20%  { transform: translate(-3%, 2%); }
+      40%  { transform: translate(2%, -3%); }
+      60%  { transform: translate(-2%, 3%); }
+      80%  { transform: translate(3%, -1%); }
+      100% { transform: translate(1%, 2%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    @media (hover: none), (pointer: coarse) {
+      body { cursor: auto !important; }
+      a, button { cursor: pointer !important; }
+    }
+  </style>
+</head>
+
+<body class="antialiased min-h-screen selection:bg-copper-900/50 selection:text-copper-100">
+
+  <!-- Canvas brasas ambiente -->
+  <canvas id="brasa-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+
+  <!-- Botão ← Sumário -->
+  <a href="sumario.html" class="nav-link fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 uppercase">
+    ← Sumário
+  </a>
+
+  <!-- Controle de som -->
+  <div class="fixed bottom-6 right-6 z-50 flex items-center space-x-3 bg-neutral-900/40 backdrop-blur-md border border-white/5 py-2 px-4 rounded-full transition-all hover:bg-neutral-900/80">
+    <span class="text-[9px] font-mono tracking-[0.2em] text-copper-500/60 uppercase">Aura do Segredo</span>
+    <div class="flex items-end space-x-px h-4">
+      <span class="bossa-bar" style="height:5px"></span>
+      <span class="bossa-bar" style="height:8px"></span>
+      <span class="bossa-bar" style="height:4px"></span>
+    </div>
+    <button id="btn-audio" class="w-8 h-8 rounded-full border border-white/10 hover:border-copper-500/50 flex items-center justify-center transition-all duration-300 focus:outline-none">
+      <svg id="icon-play"  class="w-3.5 h-3.5 text-zinc-400 fill-current"          viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="icon-pause" class="w-3.5 h-3.5 text-copper-500 fill-current hidden" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+  </div>
+
+  <div class="heat-layer"></div>
+  <div class="interactive-glow"></div>
+  <div class="vignette-overlay"></div>
+  <!-- texto fantasma de fundo — aparece e some durante a leitura -->
+  <div id="ghost-bg-text" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:min(9vw,5.5rem);color:rgba(232,138,58,0);pointer-events:none;z-index:2;user-select:none;white-space:nowrap;letter-spacing:0.12em;transition:color 2s ease;"></div>
+
+  <main class="relative z-10 w-full max-w-lg px-6 py-24 md:py-32 mx-auto flex flex-col items-center text-center">
+
+    <!-- CABEÇALHO -->
+    <header class="poetic-paragraph w-full mb-24 flex flex-col items-center">
+      <div class="hairline mb-8 opacity-40"></div>
+      <p class="font-mono text-[9px] uppercase tracking-[0.22em] text-copper-500/50 mb-5">capítulo I · o segredo</p>
+      <h1 class="font-serif italic text-5xl md:text-6xl text-white font-light tracking-wide mb-6">O Segredo</h1>
+      <p class="font-serif italic text-sm text-zinc-600 mb-6">(A Brasa Latente)</p>
+      <div class="hairline mt-2 opacity-40"></div>
+    </header>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-xl md:text-2xl leading-[2.0] text-zinc-300">A gente construiu uma <span class="alt-text-swap"><span class="alt-text-original">intimidade silenciosa</span><span class="alt-text-hidden">o que ainda não tinha nome</span></span>.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-xl md:text-2xl leading-[2.0] text-zinc-400">Foi acontecendo devagar.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Nas tardes que se distraíam até virar noite,</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-500">enquanto eu descobria suas manias,<br>suas implicâncias,<br>as coisas que faziam seus olhos acenderem.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Nos intervalos da conversa,<br>quando o silêncio chegava<br>e ninguém precisava carregá-lo.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-500">Em algum momento difícil de localizar,</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-300">você deixou de ser alguém que eu estava conhecendo</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">e passou a ser uma dessas presenças<br>que <span class="note-trigger">alteram a temperatura de um lugar<span class="note-tooltip">§ não é metáfora. é o que o corpo registra antes de a mente traduzir.</span></span><br>sem mover um único objeto.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">E talvez tenha sido aí que tudo saiu do lugar.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Porque existe um momento estranho em certas conexões<br>onde a amizade deixa de ser apenas amizade,<br>mas ainda não virou nenhuma outra coisa nomeável.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-500">Ela entra num <span class="note-trigger">território suspenso<span class="note-tooltip">§ suspensus. entre duas margens sem barco. sem mapa. sem permissão pra ficar ou pra ir.</span></span>.</p>
+    </div>
+
+    <div class="hairline my-16 opacity-30"></div>
+
+    <!-- PEAK 1: UM AVESSO -->
+    <div class="poetic-paragraph my-20 w-full flex flex-col items-center">
+      <div class="hairline mb-14 opacity-15"></div>
+      <p class="font-serif italic text-4xl md:text-5xl text-zinc-200 tracking-wide"><span class="anim-breathe">Um avesso.</span></p>
+      <div class="hairline mt-14 opacity-15"></div>
+    </div>
+
+    <div class="poetic-paragraph w-full my-12">
+      <p class="font-serif italic text-xl md:text-2xl font-light leading-[1.9] text-zinc-400">Como se o chão conhecido desaparecesse<br>alguns centímetros abaixo dos pés.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Eu me perguntei, nesse espaço suspenso, o que eu era.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-500">Se era luz nessa história ou sombra.<br>Se era o que ficava ou o que perturbava.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-600">A resposta não chegou.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Porque eu vivo num lugar específico<br>que não tem nome nem endereço:<br>entre a mente e o coração.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-500">Já escolheu.<br>Não informou ninguém.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">E eu moro nessa fronteira —<br>sem passaporte para nenhum dos dois lados,<br>tentando escrever a partir de um lugar<br>que ainda não existe no mapa.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">De você baixar a guarda perto de mim<br>e me deixar enxergar o que está aí dentro.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">O que existe entre nós nasceu da intimidade mais perigosa<br>que duas pessoas podem dividir:<br>a de se mostrar completamente.</p>
+    </div>
+
+    <div class="hairline my-16 opacity-30"></div>
+
+    <!-- CHARNEIRA -->
+    <div class="poetic-paragraph w-full my-14">
+      <p class="font-sans font-extralight text-xl md:text-2xl text-zinc-600 tracking-wide">eu estava prestando atenção demais.</p>
+    </div>
+
+    <div class="hairline my-16 opacity-30"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Tem um jeito que você faz<br>quando algo te machuca mas você decide não dizer —<br>uma pequena <span class="note-trigger">arrumação no rosto<span class="note-tooltip">§ o gesto mais honesto de quem aprendeu a ser forte antes de precisar ser.</span></span>,<br>como se estivesse organizando as peças<br>antes de devolver o sorriso.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-12">
+      <p class="font-serif italic text-xl md:text-2xl text-zinc-300">Eu vi isso.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-12">
+      <p class="font-serif italic text-xl md:text-2xl text-zinc-500">Não fingi que não vi.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-12">
+      <p class="font-serif italic text-xl md:text-2xl font-light leading-[1.9] text-zinc-400">Você já estava lá, do outro lado, lendo —<br>antes de eu terminar de escrever o que queria dizer.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Foi aí que o desejo começou a crescer de um jeito silencioso.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Não como um incêndio repentino —<br>como uma <span class="alt-text-swap"><span class="alt-text-original">voltagem invisível</span><span class="alt-text-hidden">corrente que você não via</span></span> correndo por baixo da pele,<br>percorrendo tudo por dentro sem fazer barulho.</p>
+    </div>
+
+    <div class="hairline my-16 opacity-30"></div>
+
+    <!-- PEAK 2: FEBRE REAL -->
+    <div class="poetic-paragraph my-20 w-full flex flex-col items-center space-y-8">
+      <div class="hairline mb-2 opacity-15"></div>
+      <p class="font-mono text-[10px] tracking-[0.18em] text-zinc-600">Eu não estou te vendendo um amor épico.</p>
+      <p class="font-serif italic text-3xl md:text-4xl leading-tight visceral-red">
+        Estou te mostrando uma <span class="note-trigger word-febre">febre<span class="note-tooltip">§ febris. não vem de vírus. não baixa com antitérmico. você carrega como se fosse normal até o momento em que o corpo recusa a mentira.</span></span> real.
+      </p>
+      <div class="hairline mt-2 opacity-15"></div>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">O mais difícil de admitir<br>é que essa febre não veio sozinha.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Ela trouxe junto o teu riso, a tua calma,<br>o jeito como o mundo parece desacelerar<br>quando estamos próximos.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full flex flex-col items-center py-8 space-y-10">
+      <div class="hairline opacity-12"></div>
+      <p class="font-serif italic text-xl md:text-2xl text-zinc-400 leading-[1.9]">E então o que ficou não foi a febre.<br>Foi a memória do que a febre tocou.</p>
+      <div class="hairline opacity-12"></div>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-500">Sentimentos não consultam o calendário.<br>Eles só acontecem.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Eu prefiro a crueza da sinceridade.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">O meu segredo tem endereço e nome.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-serif italic text-xl md:text-2xl text-zinc-300">Fica prensado entre a quarta e a quinta costela,<br>do lado esquerdo.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Todo mundo aprende que o coração fica do lado esquerdo.<br>Os médicos sabem que fica mais ao centro.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">E eu aprendi isso na prática:<br>o que saiu do eixo quando você apareceu<br>não foi o músculo.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-14">
+      <p class="font-serif italic text-2xl md:text-3xl text-zinc-200">Fui eu.</p>
+    </div>
+
+    <div class="hairline my-14 opacity-22"></div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">O que vibra nesse vazio sem nome entre os ossos<br>é outra coisa.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Um segredo guardado na própria carne não fica estático.<br>Ele cria gravidade.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-500">De dia, veste a minha normalidade com precisão.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Mas no escuro ele tenciona.</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-400">Ele vira a ponta ancorada de uma <span class="alt-text-swap"><span class="alt-text-original">linha invisível</span><span class="alt-text-hidden">você não sabe que existe</span></span><br>que me puxa o tempo todo na sua direção —</p>
+    </div>
+
+    <div class="poetic-paragraph w-full my-10">
+      <p class="font-sans font-light text-lg md:text-xl leading-[2.1] text-zinc-300">provando que o meu corpo<br>já parou de me obedecer.</p>
+    </div>
+
+    <div class="hairline my-16 opacity-30"></div>
+
+    <!-- FECHAMENTO: SÓ REAL -->
+    <div class="poetic-paragraph my-20 w-full flex flex-col items-center">
+      <p class="font-serif italic text-2xl md:text-3xl visceral-red">Só real.</p>
+    </div>
+
+    <!-- EASTER EGG: — B. -->
+    <div style="height:1.2rem;position:relative;overflow:visible;text-align:right;width:100%;margin-bottom:2rem;">
+      <span style="position:absolute;right:0;font-size:9px;letter-spacing:0.55em;font-family:'JetBrains Mono',monospace;font-weight:100;color:rgba(200,169,84,0);transition:color 0.35s ease;padding:0.4rem 0.8rem;cursor:default;user-select:none;"
+        onmouseenter="this.style.transition='color 0.35s ease';this.style.color='rgba(200,169,84,0.48)';"
+        onmouseleave="this.style.transition='color 2s ease';this.style.color='rgba(200,169,84,0)';"
+      >— B.</span>
+    </div>
+
+    <!-- FOOTER NAV -->
+    <footer class="poetic-paragraph mt-12 mb-10 w-full flex flex-col items-center space-y-10">
+      <div class="hairline opacity-20"></div>
+      <div class="flex justify-between w-full max-w-sm font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+        <a href="capitulo-0-prologo.html" class="nav-link group flex items-center space-x-2 hover:text-white transition-colors">
+          <svg class="w-3 h-3 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M11 17l-5-5m0 0l5-5m-5 5h12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>0 · Prólogo</span>
+        </a>
+        <a href="capitulo-2-a-linha.html" class="nav-link group flex items-center space-x-2 hover:text-copper-400 transition-colors">
+          <span>II · A Linha</span>
+          <svg class="w-3 h-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- NOTA DE RODAPÉ -->
+  <aside id="fn-cap-1" style="font-family:'JetBrains Mono',monospace;font-size:0.595rem;line-height:1.95;color:rgba(255,255,255,0.22);border-left:1px solid rgba(232,138,58,0.14);padding:1.1rem 1.6rem;max-width:38rem;margin:4.5rem auto 0;opacity:0;transform:translateY(10px);transition:opacity 2.4s cubic-bezier(0.16,1,0.3,1),transform 2.4s cubic-bezier(0.16,1,0.3,1);letter-spacing:0.025em;display:block;">
+    <span style="display:block;width:1.8rem;height:1px;background:rgba(232,138,58,0.2);margin-bottom:0.8rem;"></span>
+    O segredo tem endereço. Fica entre a quarta e a quinta costela, do lado esquerdo, no lugar onde as pessoas costumam dizer que o coração está mas o coração não está. O coração está mais ao centro — os médicos sabem disso, e eu soube também, quando você apareceu e o que eu senti não foi no coração mas nesse lugar sem nome entre os ossos. Segredo que você alimenta cresce. Fica mais pesado toda semana. Aprende a imitar a normalidade de dia e de noite deita do seu lado na cama e não dorme.
+  </aside>
+
+  <script>
+  // ── CANVAS BRASAS ────────────────────────────────────────────────────────
+  (function () {
+    var canvas = document.getElementById('brasa-canvas');
+    var ctx = canvas.getContext('2d');
+    var W, H;
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    var particles = [];
+    for (var i = 0; i < 60; i++) {
+      particles.push({
+        x:     Math.random() * window.innerWidth,
+        y:     Math.random() * window.innerHeight,
+        r:     0.8 + Math.random() * 1.6,
+        a:     0.04 + Math.random() * 0.08,
+        vx:    (Math.random() - 0.5) * 0.35,
+        vy:    (Math.random() - 0.5) * 0.35,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+
+    canvas.addEventListener('click', function (e) {
+      for (var k = 0; k < 7; k++) {
+        var angle = (k / 7) * Math.PI * 2;
+        var speed = 2 + Math.random() * 2;
+        particles.push({
+          x: e.clientX, y: e.clientY,
+          r: 0.8 + Math.random() * 1.4,
+          a: 0.12,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          phase: Math.random() * Math.PI * 2,
+          life: 1.0,
+          decay: 0.012 + Math.random() * 0.01,
+        });
+      }
+    });
+
+    var rafId;
+    function animate(ts) {
+      rafId = requestAnimationFrame(animate);
+      ctx.clearRect(0, 0, W, H);
+      for (var i = particles.length - 1; i >= 0; i--) {
+        var p = particles[i];
+        if (p.life !== undefined) {
+          p.life -= p.decay;
+          if (p.life <= 0) { particles.splice(i, 1); continue; }
+          p.a = p.life * 0.14;
+        }
+        p.x += p.vx + Math.sin(ts * 0.0004 + p.phase) * 0.18;
+        p.y += p.vy + Math.cos(ts * 0.0003 + p.phase) * 0.12;
+        if (p.x < 0) p.x = W;
+        if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H;
+        if (p.y > H) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(232,138,58,' + p.a + ')';
+        ctx.fill();
+      }
+    }
+    requestAnimationFrame(animate);
+    window.addEventListener('pagehide', function () { cancelAnimationFrame(rafId); });
+  })();
+
+  // ── FRAGMENTO E — hover longo 620ms em .word-febre ───────────────────────
+  (function () {
+    var hoverTimer = null;
+    var wordFebre = document.querySelector('.word-febre');
+    if (!wordFebre) return;
+
+    function startDwell() {
+      wordFebre.classList.add('dwelling');
+      hoverTimer = setTimeout(function () {
+        if (window.oaFoundLetter) window.oaFoundLetter('E');
+      }, 620);
+    }
+    function cancelDwell() {
+      wordFebre.classList.remove('dwelling');
+      clearTimeout(hoverTimer);
+      hoverTimer = null;
+    }
+
+    wordFebre.addEventListener('mouseenter', startDwell);
+    wordFebre.addEventListener('mouseleave', cancelDwell);
+    wordFebre.addEventListener('touchstart', startDwell, { passive: true });
+    wordFebre.addEventListener('touchend', cancelDwell);
+    wordFebre.addEventListener('touchcancel', cancelDwell);
+  })();
+
+  // ── ÁUDIO ────────────────────────────────────────────────────────────────
+  var audioCtx, droneOsc, droneGain, pianoTimeout, isPlaying = false;
+
+  function startAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (isPlaying) return;
+
+    droneOsc  = audioCtx.createOscillator();
+    droneGain = audioCtx.createGain();
+    droneOsc.type = 'sine';
+    droneOsc.frequency.value = 55;
+    droneGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    droneGain.gain.linearRampToValueAtTime(0.02, audioCtx.currentTime + 3);
+    droneOsc.connect(droneGain);
+    droneGain.connect(audioCtx.destination);
+    droneOsc.start();
+
+    isPlaying = true;
+    sessionStorage.setItem('audioState', 'playing');
+    document.getElementById('btn-audio').parentElement.classList.add('is-playing');
+    document.getElementById('icon-play').classList.add('hidden');
+    document.getElementById('icon-pause').classList.remove('hidden');
+    playPoeticNote();
+  }
+
+  function playPoeticNote() {
+    if (!isPlaying) return;
+    var now   = audioCtx.currentTime;
+    var osc   = audioCtx.createOscillator();
+    var gain  = audioCtx.createGain();
+    var notes = [146.83, 164.81, 196.0, 220.0];
+    osc.frequency.value = notes[Math.floor(Math.random() * notes.length)];
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.015, now + 1.5);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 7);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 8);
+    pianoTimeout = setTimeout(playPoeticNote, 4000 + Math.random() * 4000);
+  }
+
+  function stopAudio() {
+    if (droneGain) {
+      var t = audioCtx.currentTime;
+      droneGain.gain.cancelScheduledValues(t);
+      droneGain.gain.linearRampToValueAtTime(0, t + 1.5);
+    }
+    clearTimeout(pianoTimeout);
+    isPlaying = false;
+    sessionStorage.setItem('audioState', 'paused');
+    document.getElementById('btn-audio').parentElement.classList.remove('is-playing');
+    document.getElementById('icon-play').classList.remove('hidden');
+    document.getElementById('icon-pause').classList.add('hidden');
+  }
+
+  // ── INIT ─────────────────────────────────────────────────────────────────
+  window.addEventListener('load', function () { document.body.classList.add('loaded'); });
+
+  document.addEventListener('DOMContentLoaded', function () {
+
+    // Mouse tracking para interactive-glow
+    var isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if (!isTouch) {
+      document.addEventListener('mousemove', function (e) {
+        document.documentElement.style.setProperty('--mouse-x', (e.clientX / window.innerWidth * 100) + '%');
+        document.documentElement.style.setProperty('--mouse-y', (e.clientY / window.innerHeight * 100) + '%');
+      });
+    }
+
+    // Ghost cursor onboarding — demonstra alt-text-swap na primeira visita
+    if (!localStorage.getItem('oavesso_onboarded') && !isTouch) {
+      var onboardTargets = document.querySelectorAll('.alt-text-swap');
+      var onboardObs = new IntersectionObserver(function (entries) {
+        var visible = null;
+        entries.forEach(function (e) { if (e.isIntersecting) visible = e.target; });
+        if (!visible) return;
+        onboardObs.disconnect();
+        var target = visible;
+        setTimeout(function () {
+          var tr = target.getBoundingClientRect();
+          var ghost = document.createElement('div');
+          ghost.className = 'ghost-cursor';
+          ghost.style.left = (tr.left + tr.width * 2) + 'px';
+          ghost.style.top  = (tr.top + tr.height / 2 - 8) + 'px';
+          document.body.appendChild(ghost);
+          requestAnimationFrame(function () {
+            ghost.style.transform = 'rotate(-45deg) scale(1)';
+            setTimeout(function () {
+              ghost.style.transition = 'left 0.9s cubic-bezier(0.25,1,0.5,1),top 0.9s cubic-bezier(0.25,1,0.5,1),transform 0.3s ease,opacity 0.5s ease';
+              var tr2 = target.getBoundingClientRect();
+              ghost.style.left = (tr2.left + tr2.width / 2 - 8) + 'px';
+              ghost.style.top  = (tr2.top  + tr2.height / 2 - 8) + 'px';
+              setTimeout(function () {
+                target.classList.add('ghost-hover');
+                setTimeout(function () {
+                  target.classList.remove('ghost-hover');
+                  ghost.style.opacity = '0';
+                  ghost.style.transform = 'rotate(-45deg) scale(0)';
+                  setTimeout(function () { ghost.remove(); }, 500);
+                  localStorage.setItem('oavesso_onboarded', '1');
+                }, 1800);
+              }, 950);
+            }, 400);
+          });
+        }, 1200);
+      }, { threshold: 0.7 });
+      onboardTargets.forEach(function (t) { onboardObs.observe(t); });
+    }
+
+    // Texto fantasma de fundo — aparece e some em três momentos da leitura
+    (function () {
+      var el = document.getElementById('ghost-bg-text');
+      if (!el) return;
+      var msgs    = ['um avesso', 'a brasa latente', 'só real'];
+      var threshs = [0.32, 0.58, 0.88];
+      var last    = -1;
+      window.addEventListener('scroll', function () {
+        var pct = window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        threshs.forEach(function (t, i) {
+          if (pct > t && pct < t + 0.09 && last !== i) {
+            last = i;
+            el.textContent = msgs[i];
+            el.style.color = 'rgba(232,138,58,0.04)';
+            clearTimeout(el._t);
+            el._t = setTimeout(function () {
+              el.style.color = 'rgba(232,138,58,0)';
+              setTimeout(function () { if (last === i) last = -1; }, 2000);
+            }, 3500);
+          }
+        });
+      });
+    })();
+
+    // Autoplay se estava tocando
+    if (sessionStorage.getItem('audioState') === 'playing') {
+      document.addEventListener('pointerdown', function _first() {
+        document.removeEventListener('pointerdown', _first);
+        startAudio();
+      }, { once: true });
+    }
+
+    // Botão de áudio
+    document.getElementById('btn-audio').addEventListener('click', function () {
+      if (!isPlaying) { startAudio(); } else { stopAudio(); }
+    });
+
+    // IntersectionObserver — reveals
+    var revObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('reveal');
+          revObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+    document.querySelectorAll('.poetic-paragraph').forEach(function (el) { revObs.observe(el); });
+
+    // Nota de rodapé
+    (function () {
+      var fn = document.getElementById('fn-cap-1'), fired = false;
+      if (!fn) return;
+      window.addEventListener('scroll', function () {
+        if (fired) return;
+        var t = document.documentElement.scrollHeight - window.innerHeight;
+        if (t > 0 && window.scrollY / t > 0.85) {
+          fired = true;
+          fn.style.opacity = '1';
+          fn.style.transform = 'translateY(0)';
+        }
+      });
+    })();
+
+    // Page turn sound
+    function playPageTurn() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        var now = audioCtx.currentTime;
+        var buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+        var src  = audioCtx.createBufferSource();
+        src.buffer = buf;
+        var filt = audioCtx.createBiquadFilter();
+        filt.type = 'highpass';
+        filt.frequency.setValueAtTime(2000, now);
+        filt.frequency.exponentialRampToValueAtTime(4000, now + 0.1);
+        var g = audioCtx.createGain();
+        g.gain.setValueAtTime(0, now);
+        g.gain.linearRampToValueAtTime(0.06, now + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        src.connect(filt); filt.connect(g); g.connect(audioCtx.destination);
+        src.start();
+      } catch (_) {}
+    }
+
+    // Exit ripple
+    function playExitRipple(x, y, cb) {
+      var el = document.createElement('div');
+      var s  = Math.hypot(window.innerWidth, window.innerHeight) * 2.4;
+      el.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(239,176,87,0.18) 0%,rgba(1,7,9,0.97) 65%);transform:translate(-50%,-50%) scale(1);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1);pointer-events:none;z-index:9997;';
+      document.body.appendChild(el);
+      requestAnimationFrame(function () { el.style.transform = 'translate(-50%,-50%) scale(' + s + ')'; });
+      setTimeout(function () { el.remove(); cb(); }, 670);
+    }
+
+    document.querySelectorAll('.nav-link').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (audioCtx && audioCtx.state === 'running' && droneGain) {
+          try {
+            var ft = audioCtx.currentTime;
+            droneGain.gain.cancelScheduledValues(ft);
+            droneGain.gain.linearRampToValueAtTime(0, ft + 0.5);
+          } catch (_) {}
+        }
+        playPageTurn();
+        var rx = e.clientX || window.innerWidth / 2;
+        var ry = e.clientY || window.innerHeight / 2;
+        playExitRipple(rx, ry, function () {
+          document.body.classList.remove('loaded');
+          setTimeout(function () { window.location.href = link.getAttribute('href'); }, 60);
+        });
+      });
+    });
+
+  });
+  </script>
+
+  <!-- Sistemas compartilhados — sempre ao final, nesta ordem -->
+  <script src="oa-fragmentos.js"></script>
+  <script src="constelacao-header.js"></script>
+</body>
+</html>

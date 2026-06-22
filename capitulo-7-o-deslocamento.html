@@ -1,0 +1,1854 @@
+﻿﻿﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VII · O Deslocamento — O Avesso do Chão</title>
+    <script>
+      localStorage.setItem(
+        "oavesso_progress",
+        '{"chapter":7,"title":"VII · O Deslocamento","href":"capitulo-7-o-deslocamento.html"}',
+      );
+    </script>
+    <script>
+      (function () {
+        var k = "avesso_jornada_cap-7";
+        if (!localStorage.getItem(k)) localStorage.setItem(k, Date.now());
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Inter+Tight:wght@100;200;300;400;500&family=JetBrains+Mono:wght@100;200;300&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans: ['"Inter Tight"', "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              shift: {
+                950: "#080810",
+                gold: "#C8A96E",
+                blue: "#9FB8D8",
+                mist: "#8A96A8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* ─── BASE ─────────────────────────────────────── */
+      body {
+        background-color: #080810;
+        color: #dddde8;
+        opacity: 0;
+        transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        overflow-x: hidden;
+        hyphens: none;
+      }
+      body.loaded {
+        opacity: 1;
+      }
+
+      #shift-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Novo: Spotlight que segue o mouse */
+      #ambient-spotlight {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        background: radial-gradient(
+          circle at var(--x, 50%) var(--y, 50%),
+          rgba(159, 184, 216, 0.04) 0%,
+          transparent 50%
+        );
+        transition: opacity 2s ease;
+      }
+
+      ::selection {
+        background: rgba(200, 169, 110, 0.12);
+        color: #ffffff;
+      }
+      ::-webkit-scrollbar {
+        width: 3px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(200, 169, 110, 0.15);
+        border-radius: 99px;
+      }
+
+      /* ─── REVEAL ────────────────────────────────────── */
+      .poetic-paragraph {
+        opacity: 0;
+        transform: translateY(30px);
+        filter: blur(10px);
+        transition:
+          opacity 2.8s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 2.8s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 2.8s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        z-index: 10;
+      }
+      .poetic-paragraph.reveal {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+      body .poetic-paragraph p,
+      body .poetic-paragraph {
+        line-height: 1.88;
+      }
+
+      /* ─── SECTION LABELS (MAGNETIC) ─────────────────── */
+      .section-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 0.48em;
+        text-transform: uppercase;
+        color: rgba(200, 169, 110, 0.45);
+        display: inline-block;
+        margin-bottom: 2rem;
+        transition:
+          color 0.8s,
+          transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+        cursor: default;
+        user-select: none;
+        will-change: transform;
+      }
+      .section-label:hover {
+        color: rgba(200, 169, 110, 0.95);
+      }
+
+      .section-rule {
+        width: 1px;
+        height: 52px;
+        background: linear-gradient(
+          to bottom,
+          rgba(200, 169, 110, 0.12),
+          transparent
+        );
+        margin: 0 auto;
+        position: relative;
+        z-index: 10;
+      }
+
+      /* ─── COLOR UTILITIES & HOVER GLITCH ────────────── */
+      .interruption {
+        color: #9fb8d8;
+        font-style: italic;
+        font-family: "Cormorant Garamond", serif;
+        transition:
+          color 0.4s ease,
+          text-shadow 0.4s ease;
+      }
+      .interruption:hover {
+        color: #fff;
+        text-shadow: 0 0 15px rgba(159, 184, 216, 0.7);
+      }
+      .revelation {
+        color: #c8a96e;
+        font-style: italic;
+        font-family: "Cormorant Garamond", serif;
+        transition:
+          color 0.4s ease,
+          text-shadow 0.4s ease;
+      }
+      .revelation:hover {
+        color: #fff;
+        text-shadow: 0 0 15px rgba(200, 169, 110, 0.7);
+      }
+
+      .hover-glitch {
+        position: relative;
+        display: inline-block;
+        transition: color 0.3s;
+      }
+      .hover-glitch:hover {
+        animation: textGlitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
+          infinite;
+        color: #fff;
+        cursor: crosshair;
+      }
+      @keyframes textGlitch {
+        0% {
+          text-shadow:
+            2px 0px rgba(200, 169, 110, 0.8),
+            -2px 0px rgba(159, 184, 216, 0.8);
+        }
+        20% {
+          text-shadow:
+            -2px 1px rgba(200, 169, 110, 0.8),
+            2px -1px rgba(159, 184, 216, 0.8);
+        }
+        40% {
+          text-shadow:
+            1px -1px rgba(200, 169, 110, 0.8),
+            -1px 2px rgba(159, 184, 216, 0.8);
+        }
+        60% {
+          text-shadow:
+            -1px 2px rgba(200, 169, 110, 0.8),
+            1px -2px rgba(159, 184, 216, 0.8);
+        }
+        80% {
+          text-shadow:
+            2px -2px rgba(200, 169, 110, 0.8),
+            -2px 1px rgba(159, 184, 216, 0.8);
+        }
+        100% {
+          text-shadow:
+            -2px 0px rgba(200, 169, 110, 0.8),
+            2px 0px rgba(159, 184, 216, 0.8);
+        }
+      }
+
+      /* ─── CURSOR FANTASMA & RASTRO ──────────────────── */
+      #ghost-cursor,
+      #ghost-trail {
+        position: fixed;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        will-change: left, top;
+      }
+      #ghost-cursor {
+        width: 28px;
+        height: 28px;
+        border: 1px solid rgba(200, 169, 110, 0.15);
+        transition:
+          border-color 0.6s,
+          width 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+          height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #ghost-trail {
+        width: 4px;
+        height: 4px;
+        background-color: rgba(159, 184, 216, 0.6);
+        transition: background-color 0.6s;
+      }
+      #ghost-cursor.on-key-phrase {
+        border-color: rgba(200, 169, 110, 0.6);
+        width: 48px;
+        height: 48px;
+        background: rgba(200, 169, 110, 0.05);
+      }
+
+      /* ─── CHAR ANIMATION & DESLOCAMENTO ─────────────── */
+      .char {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(10px) rotate(2deg);
+        filter: blur(5px);
+        will-change: transform, opacity;
+      }
+      .char.visible {
+        animation: charReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation-delay: calc(var(--ci) * 0.035s);
+      }
+      .char.visible.slow {
+        animation-duration: 0.8s;
+        animation-delay: calc(var(--ci) * 0.08s);
+      }
+      @keyframes charReveal {
+        to {
+          opacity: 1;
+          transform: translateY(0) rotate(0deg);
+          filter: blur(0);
+        }
+      }
+
+      /* Efeito específico para a palavra Deslocamento */
+      .displace-char-container {
+        display: inline-block;
+        position: relative;
+      }
+      .displace-main {
+        display: inline-block;
+        position: relative;
+        z-index: 2;
+        transition: color 0.3s ease;
+      }
+      .displace-shadow {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        transition:
+          transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.8s ease;
+        will-change: transform;
+      }
+
+      /* ─── TRANSIT FLOAT ─────────────────────────────── */
+      .transit-float {
+        animation: transitFloat 6s ease-in-out infinite;
+      }
+      @keyframes transitFloat {
+        0%,
+        100% {
+          transform: translateX(0px) translateY(0px);
+        }
+        33% {
+          transform: translateX(4px) translateY(-2px);
+        }
+        66% {
+          transform: translateX(-3px) translateY(1px);
+        }
+      }
+
+      /* ─── BREATH GLOW ───────────────────────────────── */
+      .breath-glow {
+        animation: breathGlow 4s ease-in-out infinite;
+      }
+      @keyframes breathGlow {
+        0%,
+        100% {
+          text-shadow: 0 0 0px rgba(200, 169, 110, 0);
+        }
+        50% {
+          text-shadow: 0 0 25px rgba(200, 169, 110, 0.4);
+        }
+      }
+
+      /* ─── DRAW LINES ────────────────────────────────── */
+      .draw-underline {
+        position: relative;
+        display: inline;
+      }
+      .draw-underline::after {
+        content: "";
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          rgba(200, 169, 110, 0.7),
+          rgba(159, 184, 216, 0.4)
+        );
+        transition: width 2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s;
+      }
+      .draw-underline.active::after {
+        width: 100%;
+      }
+
+      .draw-strike {
+        position: relative;
+        display: inline;
+      }
+      .draw-strike::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 52%;
+        width: 0;
+        height: 1px;
+        background: rgba(200, 169, 110, 0.65);
+        transition: width 1.3s ease-out 0.7s;
+      }
+      .draw-strike.active::after {
+        width: 100%;
+      }
+
+      /* ─── GHOST INTERRUPTION ────────────────────────── */
+      #ghost-interruption {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(14px, 2.5vw, 22px);
+        font-style: italic;
+        font-weight: 300;
+        color: rgba(200, 169, 110, 0.72);
+        pointer-events: none;
+        z-index: 50;
+        text-align: center;
+        letter-spacing: 0.05em;
+        opacity: 0;
+        width: 90%;
+        max-width: 620px;
+        transition: opacity 2s ease;
+        user-select: none;
+        filter: blur(2px);
+      }
+      #ghost-interruption.visible {
+        opacity: 1;
+        filter: blur(0px);
+        animation: slightShake 3s ease-in-out;
+      }
+      @keyframes slightShake {
+        0%,
+        100% {
+          transform: translate(-50%, -50%);
+        }
+        25% {
+          transform: translate(-51%, -49%);
+        }
+        75% {
+          transform: translate(-49%, -51%);
+        }
+      }
+
+      /* ─── STAGGER CHILDREN ──────────────────────────── */
+      .stagger-children > * {
+        opacity: 0;
+        transform: translateY(15px);
+        transition:
+          opacity 0.9s ease,
+          transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .stagger-children.active > *:nth-child(1) {
+        transition-delay: 0.1s;
+      }
+      .stagger-children.active > *:nth-child(2) {
+        transition-delay: 0.4s;
+      }
+      .stagger-children.active > *:nth-child(3) {
+        transition-delay: 0.7s;
+      }
+      .stagger-children.active > * {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ─── BOSSA BARS ────────────────────────────────── */
+      .bossa-bar {
+        display: inline-block;
+        width: 2px;
+        height: 7px;
+        background: linear-gradient(to top, #c8a96e, #9fb8d8);
+        margin: 0 1px;
+        animation: none;
+        transform-origin: bottom center;
+        border-radius: 1px;
+      }
+      .is-playing .bossa-bar {
+        animation: bounceBossa 1.4s ease-in-out infinite alternate;
+        animation-delay: calc((var(--i, 1) - 1) * 0.28s);
+      }
+      @keyframes bounceBossa {
+        from {
+          transform: scaleY(0.2);
+          opacity: 0.4;
+        }
+        to {
+          transform: scaleY(1.7);
+          opacity: 1;
+        }
+      }
+
+      @media (hover: none), (pointer: coarse) {
+        body {
+          cursor: auto !important;
+        }
+        #ghost-cursor,
+        #ghost-trail {
+          display: none !important;
+        }
+        #ambient-spotlight {
+          display: none !important;
+        }
+        .nav-link {
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        canvas {
+          display: none !important;
+        }
+        .bossa-bar {
+          animation: none !important;
+        }
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0.028;
+        pointer-events: none;
+        z-index: 9998;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.4s steps(1) infinite;
+      }
+      @keyframes grain {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-3%, 2%);
+        }
+        40% {
+          transform: translate(2%, -3%);
+        }
+        60% {
+          transform: translate(-2%, 3%);
+        }
+        80% {
+          transform: translate(3%, -1%);
+        }
+        100% {
+          transform: translate(1%, 2%);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="font-sans antialiased relative">
+    <!-- Spotlight Ambiente -->
+    <div id="ambient-spotlight"></div>
+
+    <!-- Cursors -->
+    <div id="ghost-cursor" aria-hidden="true"></div>
+    <div id="ghost-trail" aria-hidden="true"></div>
+
+    <!-- Frase fantasma -->
+    <div id="ghost-interruption" aria-hidden="true">
+      O meu corpo guarda memórias de você que eu nunca autorizei.
+    </div>
+
+    <!-- Canvas fundo -->
+    <canvas id="shift-canvas"></canvas>
+
+    <!-- ← Índice -->
+    <a
+      href="sumario.html"
+      class="nav-link fixed top-6 left-6 z-[100] px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 uppercase"
+      >← Sumário</a
+    >
+
+    <!-- Barra de progresso -->
+    <div class="fixed top-0 left-0 w-full h-[2px] z-[100] opacity-60">
+      <div
+        id="global-progress"
+        class="h-full bg-gradient-to-r from-shift-blue via-shift-gold to-shift-blue transition-all duration-150 ease-out"
+        style="width: 0%"
+      ></div>
+    </div>
+
+    <!-- Audio toggle -->
+    <div
+      id="soundtrack-toggle"
+      class="fixed top-6 right-6 z-[100] flex items-center space-x-3 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/[0.05] text-[11px] font-mono text-zinc-400 hover:border-shift-gold/50 transition-all cursor-pointer group"
+    >
+      <div class="flex items-center h-4 mr-1">
+        <span class="bossa-bar" style="--i: 1"></span>
+        <span class="bossa-bar" style="--i: 2"></span>
+        <span class="bossa-bar" style="--i: 3"></span>
+        <span class="bossa-bar" style="--i: 4"></span>
+      </div>
+      <span class="tracking-wider group-hover:text-shift-gold transition-colors"
+        >Eco do Que Ficou</span
+      >
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         MAIN
+    ═══════════════════════════════════════════════ -->
+    <main
+      class="min-h-screen flex flex-col justify-center px-6 md:px-20 max-w-3xl mx-auto py-20 md:py-28 relative z-10"
+    >
+      <div class="space-y-16 md:space-y-24 flex flex-col">
+        <!-- HEADER ─────────────────────────────── -->
+        <div
+          class="poetic-paragraph flex flex-col items-center justify-center space-y-5 text-center pt-10"
+        >
+          <span class="section-label magnetic-el"
+            >capítulo VII · O Deslocamento</span
+          >
+          <h1
+            class="font-serif italic text-5xl md:text-7xl text-zinc-100 font-extralight tracking-wide leading-none hover-glitch transition-all duration-700"
+          >
+            Depois de Você
+          </h1>
+          <p
+            class="text-zinc-500 font-sans font-light text-xs tracking-widest mt-3 max-w-xs leading-loose"
+          >
+            O mundo perdeu a neutralidade.<br />Sem aviso.
+          </p>
+          <div
+            class="w-16 h-[1px] bg-gradient-to-r from-transparent via-shift-gold/40 to-transparent mt-8 relative overflow-hidden"
+          >
+            <div
+              class="absolute inset-0 bg-white/20 w-full animate-[translateX_2s_ease-in-out_infinite]"
+            ></div>
+          </div>
+        </div>
+
+        <!-- I. NEUTRALIDADE ─────────────────────── -->
+        <div class="poetic-paragraph text-center space-y-7">
+          <span class="section-label magnetic-el">I.</span>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300"
+          >
+            O mundo perdeu a neutralidade. Sem aviso.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Tem dias em que eu sigo minha vida como se nada tivesse mudado.
+          </p>
+          <p
+            class="text-2xl md:text-3xl font-serif italic font-light leading-relaxed text-zinc-200"
+          >
+            Mas não existe mais
+            <span class="draw-strike hover-glitch">"nada mudou"</span>.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Existe só o jeito como tudo ficou ligeiramente diferente de
+            encaixar.
+          </p>
+          <div
+            class="pt-2 space-y-4 text-zinc-500 font-sans font-light text-base leading-relaxed stagger-children"
+          >
+            <p>As coisas continuam iguais por fora.</p>
+            <p class="revelation text-xl hover-glitch">
+              Mas alguma parte interna não responde mais do mesmo jeito.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- II. INTERRUPÇÃO ─────────────────────── -->
+        <div
+          class="poetic-paragraph text-left space-y-7 pl-4 md:pl-0 border-l border-white/5 md:border-none"
+        >
+          <span class="section-label magnetic-el">II.</span>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300"
+          >
+            Você não aparece quando eu penso em você.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-400"
+          >
+            Você aparece quando eu não estou pensando em nada.
+          </p>
+          <div
+            class="pt-2 space-y-3 text-zinc-500 font-sans font-light text-base stagger-children"
+          >
+            <p
+              class="hover:text-zinc-300 transition-colors duration-500 cursor-default"
+            >
+              No meio do silêncio.
+            </p>
+            <p
+              class="hover:text-zinc-300 transition-colors duration-500 cursor-default"
+            >
+              No meio de uma tarefa simples.
+            </p>
+            <p
+              class="hover:text-zinc-300 transition-colors duration-500 cursor-default"
+            >
+              No meio de um intervalo qualquer.
+            </p>
+          </div>
+          <p class="text-zinc-500 font-sans font-light text-base pt-2">
+            E isso é o que mais desestabiliza.
+          </p>
+          <div class="flex flex-col space-y-2 pt-4">
+            <span class="interruption text-2xl md:text-3xl"
+              >Não é lembrança.</span
+            >
+            <span
+              data-chars
+              data-key
+              class="text-4xl md:text-5xl font-serif font-extralight text-shift-gold hover-glitch"
+              >É interrupção.</span
+            >
+          </div>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- III. A TARDE ────────────────────────── -->
+        <div
+          class="poetic-paragraph text-left space-y-7 pl-4 md:pl-0 border-l border-white/5 md:border-none"
+        >
+          <span class="section-label magnetic-el">III.</span>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Teve uma tarde. Eu estava fazendo uma coisa qualquer com as mãos — o
+            tipo de coisa que existe só pra ocupar o corpo enquanto a mente
+            descansa.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500"
+          >
+            Nada estava acontecendo.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300"
+          >
+            E você atravessou.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500 space-y-2"
+          >
+            Não a sua imagem. Não um pensamento organizado sobre você.<br />
+            A textura da sua presença. O jeito como o ar muda quando você está
+            perto. Aquele específico.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Só isso — e o tempo parou de um jeito que não tem como explicar
+            direito pra ninguém que não tenha sentido.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed revelation"
+          >
+            Fiquei ali parado. E percebi que não ia conseguir voltar pro nada
+            que estava sendo antes.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- IV. O CORPO ────────────────────────── -->
+        <div
+          class="poetic-paragraph text-right space-y-7 pr-4 md:pr-0 border-r border-white/5 md:border-none"
+        >
+          <span class="section-label text-right block magnetic-el">III.</span>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Eu tentei algumas vezes fingir normalidade.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300"
+          >
+            Mas o corpo não acompanha esse tipo de mentira.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Ele já aprendeu outra coisa quando você existe por perto.
+          </p>
+          <p
+            class="text-2xl md:text-3xl font-serif italic font-light leading-relaxed revelation"
+          >
+            <span class="draw-underline cursor-crosshair"
+              >E depois disso, ele não desaprende.</span
+            >
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- IV. DENSIDADE ───────────────────────── -->
+        <div class="poetic-paragraph text-center space-y-7 relative">
+          <div
+            class="absolute -left-10 top-1/2 w-32 h-32 bg-shift-blue/5 rounded-full blur-3xl"
+          ></div>
+          <div
+            class="absolute -right-10 top-1/2 w-32 h-32 bg-shift-gold/5 rounded-full blur-3xl"
+          ></div>
+          <span class="section-label magnetic-el">IV.</span>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Tem coisas que continuam sendo leves por fora.
+          </p>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300"
+          >
+            Mas mudam de densidade por dentro.
+          </p>
+          <div
+            class="pt-2 space-y-3 text-zinc-500 font-sans font-light text-base stagger-children"
+          >
+            <p>Conversas simples não são mais simples.</p>
+            <p>Silêncios não são mais neutros.</p>
+          </div>
+          <div class="flex flex-col space-y-2 pt-6">
+            <span class="text-zinc-500 font-sans font-light text-sm"
+              >E isso não foi decisão.</span
+            >
+            <span
+              data-chars
+              data-key
+              class="text-4xl md:text-5xl font-serif italic font-extralight text-shift-gold"
+              >Foi acontecimento.</span
+            >
+          </div>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- V. TRÂNSITO ─────────────────────────── -->
+        <div class="poetic-paragraph text-left space-y-7">
+          <span class="section-label magnetic-el">V.</span>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300 hover-glitch"
+          >
+            O nome continua o mesmo.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400"
+          >
+            Mas não sustenta mais tudo o que existe dentro dele.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500"
+          >
+            E isso não virou uma outra coisa clara.
+          </p>
+          <div class="pt-4 space-y-2">
+            <p
+              data-chars
+              data-transit-effect
+              class="interruption text-3xl md:text-4xl"
+            >
+              Virou uma coisa em trânsito.
+            </p>
+            <p class="text-zinc-600 font-sans font-light text-base italic pt-2">
+              Que ainda não escolheu forma.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- VI. SEM NOME ────────────────────────── -->
+        <div class="poetic-paragraph text-center space-y-7" data-section="vi">
+          <span class="section-label magnetic-el">VI.</span>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-400 max-w-xl mx-auto"
+          >
+            Existe uma palavra pra o que isso é entre a gente que ainda não
+            aprendi.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500 max-w-xl mx-auto"
+          >
+            Não é nenhuma das que existem. Cada uma que eu conheço pega só uma
+            parte — e a parte que deixa de fora é sempre a mais verdadeira.
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500 max-w-xl mx-auto"
+          >
+            Então eu fico aqui com as interrupções, os deslocamentos, o peso
+            lateral.
+          </p>
+          <div
+            class="space-y-3 text-zinc-500 font-sans font-light text-base stagger-children pt-2"
+          >
+            <p>Elas não param quando a gente se afasta.</p>
+            <p>Elas só mudam de lugar.</p>
+            <p>E continuam.</p>
+          </div>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-400 pt-4"
+          >
+            As coisas seguem iguais.
+            <span
+              class="block text-zinc-500 text-base not-italic font-sans mt-2"
+            >
+              O mesmo barulho, os mesmos caminhos, as mesmas distrações.
+            </span>
+          </p>
+          <p
+            class="text-lg md:text-xl font-sans font-light leading-relaxed text-zinc-500 pt-2"
+          >
+            Mas alguma coisa perdeu o encaixe.
+          </p>
+          <div class="flex flex-col space-y-3 pt-6">
+            <span class="text-zinc-600 font-sans font-light text-sm"
+              >Não é drama.</span
+            >
+            <!-- A palavra Deslocamento será ativada pelo JS -->
+            <span
+              id="word-displacement"
+              data-key
+              class="text-4xl md:text-6xl font-serif italic font-extralight interruption cursor-none"
+              >É deslocamento.</span
+            >
+          </div>
+          <p
+            class="text-zinc-500 font-sans font-light text-base pt-6 max-w-lg mx-auto leading-relaxed"
+          >
+            Como se eu estivesse dentro do mesmo lugar,<br />
+            mas com outra forma de sentir o espaço.
+          </p>
+          <p
+            class="text-sm md:text-base font-serif italic text-zinc-500 font-light max-w-md mx-auto leading-loose text-center pt-6"
+          >
+            Quando um corpo entra na água, a água se move. Não tem outra opção.
+            A água cede, abre espaço, redefine a forma que tinha. Você entrou e
+            eu me <span class="hover-glitch">movi</span>. Coisas que estavam no
+            lugar saíram do lugar pra você caber. Não me arrependo — não é sobre
+            arrependimento. É sobre reconhecer: você tomou
+            <span class="revelation">espaço</span>. O espaço que você tomou era
+            meu e agora é nosso e eu não sei mais distinguir qual parte era de
+            quem antes de você. Isso não tem nome que caiba. Algumas coisas
+            resistem ao nome como a água resiste à
+            <span class="hover-glitch">forma</span>.
+          </p>
+        </div>
+
+        <div class="section-rule"></div>
+
+        <!-- VII. O MEIO ─────────────────────────── -->
+        <div class="poetic-paragraph text-center space-y-7 pb-10">
+          <span class="section-label magnetic-el">VII.</span>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-300 max-w-xl mx-auto"
+          >
+            E eu não sei como dizer isso sem estragar.
+          </p>
+          <div
+            class="space-y-4 text-zinc-500 font-sans font-light text-base max-w-md mx-auto stagger-children"
+          >
+            <p>Porque se eu tento explicar demais, eu perco o que é real.</p>
+            <p>Mas se eu não digo nada, isso me atravessa inteiro.</p>
+          </div>
+          <p
+            class="text-xl md:text-2xl font-serif italic font-light leading-relaxed text-zinc-400 pt-4"
+          >
+            Então eu fico nesse meio.
+          </p>
+          <div class="pt-8 space-y-4">
+            <p
+              class="text-zinc-600 font-sans font-light text-sm tracking-widest uppercase"
+            >
+              Onde nada está resolvido.
+            </p>
+            <p
+              data-chars
+              data-slow
+              data-glow
+              class="text-4xl md:text-5xl font-serif italic font-extralight revelation hover-glitch"
+            >
+              Mas tudo continua acontecendo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- FOOTER DE NAVEGAÇÃO ─────────────────────── -->
+    <footer
+      id="final-nav"
+      class="mt-16 mb-24 flex flex-col items-center space-y-12 w-full opacity-0 translate-y-8 transition-all duration-[1400ms] ease-out relative z-10"
+    >
+      <div
+        class="w-[1px] h-20 bg-gradient-to-b from-shift-gold/30 to-transparent"
+      ></div>
+      <div
+        class="flex justify-between w-full max-w-md px-6 font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500"
+      >
+        <a
+          href="capitulo-6-a-nossa-bolha.html"
+          class="nav-link hover:text-shift-blue transition-colors duration-300"
+        >
+          ← VI · A Nossa Bolha
+        </a>
+        <a
+          href="capitulo-8-o-risco-do-depois.html"
+          class="nav-link group flex items-center space-x-3 hover:text-shift-gold transition-colors duration-300"
+        >
+          <span>VIII · O Risco</span>
+          <svg
+            class="w-3 h-3 transition-transform duration-300 group-hover:translate-x-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════
+         JAVASCRIPT
+    ═══════════════════════════════════════════════ -->
+    <script>
+      // ───────────────────────────────────────────
+      // GLOBAIS DE MOUSE
+      // ───────────────────────────────────────────
+      const isTouch = window.matchMedia(
+        "(hover: none), (pointer: coarse)",
+      ).matches;
+      const realPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      let lastMousePos = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      };
+      let lastMouseTime = Date.now();
+      let mouseVelocity = 0;
+      let isMouseStill = false;
+      let mouseStillTimer = null;
+
+      if (!isTouch) {
+        document.addEventListener("mousemove", (e) => {
+          realPos.x = e.clientX;
+          realPos.y = e.clientY;
+
+          // Spotlight Dinâmico
+          document
+            .getElementById("ambient-spotlight")
+            .style.setProperty("--x", `${e.clientX}px`);
+          document
+            .getElementById("ambient-spotlight")
+            .style.setProperty("--y", `${e.clientY}px`);
+
+          // Cálculo de Velocidade para Glitch
+          const now = Date.now();
+          const dt = Math.max(1, now - lastMouseTime);
+          const dx = e.clientX - lastMousePos.x;
+          const dy = e.clientY - lastMousePos.y;
+          mouseVelocity = Math.sqrt(dx * dx + dy * dy) / dt;
+
+          if (mouseVelocity > 4.5 && !glitchActive) {
+            triggerGlitch(true); // glitch induzido por pânico/movimento brusco
+          }
+
+          // Lógica de imobilidade do mouse (Gravidade da Atenção)
+          clearTimeout(mouseStillTimer);
+          isMouseStill = false;
+          mouseStillTimer = setTimeout(() => {
+            isMouseStill = true;
+          }, 3000);
+
+          lastMousePos = { x: e.clientX, y: e.clientY };
+          lastMouseTime = now;
+
+          // Camada fome responde ao movimento do cursor
+          if (fomeGain && audioCtx) {
+            var fomeTarget = 0.008 + Math.min(mouseVelocity * 0.0045, 0.014);
+            fomeGain.gain.cancelScheduledValues(audioCtx.currentTime);
+            fomeGain.gain.setTargetAtTime(
+              fomeTarget,
+              audioCtx.currentTime,
+              0.3,
+            );
+          }
+        });
+      }
+
+      // ───────────────────────────────────────────
+      // CANVAS: PARTÍCULAS REATIVAS (REPULSÃO)
+      // ───────────────────────────────────────────
+      const canvas = document.getElementById("shift-canvas");
+      const ctx = canvas.getContext("2d");
+      let width, height;
+      let driftParticles = [];
+      const NUM_DRIFT = 65; // Aumentado
+      let glitchActive = false;
+
+      function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+        initDrift();
+      }
+
+      function initDrift() {
+        driftParticles = [];
+        for (let i = 0; i < NUM_DRIFT; i++) {
+          const isBlue = Math.random() > 0.55;
+          driftParticles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            ox: 0,
+            oy: 0, // glitch offset
+            size: Math.random() * 1.2 + 0.2,
+            vx: (Math.random() - 0.5) * 0.08,
+            vy: (Math.random() - 0.5) * 0.06,
+            baseAlpha: Math.random() * 0.18 + 0.02,
+            r: isBlue ? 159 : 200,
+            g: isBlue ? 184 : 169,
+            b: isBlue ? 216 : 110,
+            phase: Math.random() * Math.PI * 2,
+            pulseSpeed: Math.random() * 0.006 + 0.002,
+          });
+        }
+      }
+
+      function triggerGlitch(isManual = false) {
+        if (glitchActive) return;
+        glitchActive = true;
+        const intensity = isManual ? 80 : 45;
+        driftParticles.forEach((p) => {
+          p.ox = (Math.random() - 0.5) * intensity;
+          p.oy = (Math.random() - 0.5) * intensity;
+        });
+
+        // Ocasionalmente pisca o fundo
+        if (isManual && Math.random() > 0.5) {
+          document.body.style.backgroundColor = "#0f0f18";
+          setTimeout(
+            () => (document.body.style.backgroundColor = "#080810"),
+            100,
+          );
+        }
+
+        setTimeout(
+          () => {
+            driftParticles.forEach((p) => {
+              p.ox = 0;
+              p.oy = 0;
+            });
+            glitchActive = false;
+          },
+          isManual ? 200 : 420,
+        );
+      }
+
+      let mouseStillFactor = 0; // 0 = repulsão, 1 = gravidade
+
+      function renderDrift() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Transição suave para o estado de gravidade
+        mouseStillFactor += ((isMouseStill ? 1 : 0) - mouseStillFactor) * 0.05;
+
+        // MODULAÇÃO SONORA: A estática abre quando o leitor para o mouse
+        if (audioCtx && noiseFilter && isPlaying) {
+          const targetFreq = 160 + mouseStillFactor * 240; // Abre de 160Hz para 400Hz
+          noiseFilter.frequency.setTargetAtTime(
+            targetFreq,
+            audioCtx.currentTime,
+            0.1,
+          );
+        }
+
+        driftParticles.forEach((p) => {
+          // Movimento base
+          p.x += p.vx;
+          p.y += p.vy;
+          p.phase += p.pulseSpeed;
+
+          // Repulsão Magnética do Mouse
+          const dxMouse = p.x - realPos.x;
+          const dyMouse = p.y - realPos.y;
+          const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+
+          if (distMouse < 180) {
+            const force = (180 - distMouse) / 180;
+            const direction = 1 - mouseStillFactor * 2.2; // 1 (repulsão) para -1.2 (atração)
+            const strength = 1.5;
+            p.x += (dxMouse / distMouse) * force * direction * strength;
+            p.y += (dyMouse / distMouse) * force * direction * strength;
+          }
+
+          // Wrap around
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          const pulse = p.baseAlpha + Math.sin(p.phase) * 0.05;
+          const drawX =
+            p.x + (glitchActive ? p.ox * (1 - Math.random() * 0.5) : 0);
+          const drawY =
+            p.y + (glitchActive ? p.oy * (1 - Math.random() * 0.5) : 0);
+
+          ctx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${Math.max(0, pulse)})`;
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        requestAnimationFrame(renderDrift);
+      }
+      window.addEventListener("resize", resizeCanvas);
+
+      // ───────────────────────────────────────────
+      // CURSOR FANTASMA & TRAIL
+      // ───────────────────────────────────────────
+      const ghostEl = document.getElementById("ghost-cursor");
+      const ghostTrail = document.getElementById("ghost-trail");
+      const ghostPos = { x: -200, y: -200 };
+      const trailPos = { x: -200, y: -200 };
+
+      if (!isTouch) {
+        // Expand cursor ao entrar em frases-chave
+        document.querySelectorAll("[data-key]").forEach((el) => {
+          el.addEventListener("mouseenter", () =>
+            ghostEl.classList.add("on-key-phrase"),
+          );
+          el.addEventListener("mouseleave", () =>
+            ghostEl.classList.remove("on-key-phrase"),
+          );
+        });
+
+        function trackGhostCursor() {
+          // Cursor principal
+          ghostPos.x += (realPos.x - ghostPos.x) * 0.08;
+          ghostPos.y += (realPos.y - ghostPos.y) * 0.08;
+          ghostEl.style.left = ghostPos.x + "px";
+          ghostEl.style.top = ghostPos.y + "px";
+
+          // Rastro secundário (mais lento)
+          trailPos.x += (realPos.x - trailPos.x) * 0.03;
+          trailPos.y += (realPos.y - trailPos.y) * 0.03;
+          ghostTrail.style.left = trailPos.x + "px";
+          ghostTrail.style.top = trailPos.y + "px";
+
+          requestAnimationFrame(trackGhostCursor);
+        }
+        trackGhostCursor();
+
+        // ───────────────────────────────────────────
+        // ELEMENTOS MAGNÉTICOS (Section Labels)
+        // ───────────────────────────────────────────
+        document.querySelectorAll(".magnetic-el").forEach((el) => {
+          el.addEventListener("mousemove", (e) => {
+            const rect = el.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const distX = e.clientX - centerX;
+            const distY = e.clientY - centerY;
+            el.style.transform = `translate(${distX * 0.2}px, ${distY * 0.2}px)`;
+          });
+          el.addEventListener("mouseleave", () => {
+            el.style.transform = `translate(0px, 0px)`;
+          });
+        });
+      }
+
+      // ───────────────────────────────────────────
+      // DISPLACEMENT INTERATIVO DA PALAVRA
+      // ───────────────────────────────────────────
+      const displacementWord = document.getElementById("word-displacement");
+      const textToDisplace = displacementWord.textContent;
+      displacementWord.textContent = "";
+      const displaceChars = [];
+
+      [...textToDisplace].forEach((char) => {
+        const container = document.createElement("span");
+        container.className = "displace-char-container";
+
+        const shadow = document.createElement("span");
+        shadow.className = "displace-shadow opacity-0";
+        shadow.textContent = char === " " ? "\u00A0" : char;
+
+        const main = document.createElement("span");
+        main.className = "displace-main";
+        main.textContent = char === " " ? "\u00A0" : char;
+
+        container.appendChild(shadow);
+        container.appendChild(main);
+        displacementWord.appendChild(container);
+        displaceChars.push({ main, shadow });
+      });
+
+      function updateDisplacement() {
+        if (!displacementWord.closest(".reveal")) {
+          requestAnimationFrame(updateDisplacement);
+          return;
+        }
+
+        displaceChars.forEach((obj) => {
+          const rect = obj.main.getBoundingClientRect();
+          const charCenterX = rect.left + rect.width / 2;
+          const charCenterY = rect.top + rect.height / 2;
+
+          const dx = realPos.x - charCenterX;
+          const dy = realPos.y - charCenterY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          const maxDist = 120; // Área de influência do mouse
+
+          if (dist < maxDist) {
+            // Força de repulsão baseada na proximidade
+            const force = (maxDist - dist) / maxDist;
+            const pushX = -(dx / dist) * force * 15; // Move max 15px
+            const pushY = -(dy / dist) * force * 15;
+            const rotate = force * 10 * (Math.random() > 0.5 ? 1 : -1);
+
+            obj.main.style.transform = `translate(${pushX}px, ${pushY}px) rotate(${rotate}deg)`;
+            obj.main.style.color = "#ffffff";
+
+            // A sombra segue as mesmas coordenadas, mas o CSS aplica o lag de 1.2s
+            obj.shadow.style.transform = `translate(${pushX}px, ${pushY}px) rotate(${rotate}deg)`;
+            obj.shadow.style.opacity = "0.4";
+            obj.shadow.style.color = "#9fb8d8";
+          } else {
+            obj.main.style.transform = `translate(0px, 0px) rotate(0deg)`;
+            obj.main.style.color = "";
+            obj.shadow.style.transform = `translate(0px, 0px) rotate(0deg)`;
+            obj.shadow.style.opacity = "0";
+          }
+        });
+        requestAnimationFrame(updateDisplacement);
+      }
+      updateDisplacement();
+
+      // ───────────────────────────────────────────
+      // CHAR SPLIT ANIMATIONS (Para outras seções)
+      // ───────────────────────────────────────────
+      function splitIntoChars(el, isSlow = false) {
+        const text = el.textContent;
+        el.textContent = "";
+        [...text].forEach((char, i) => {
+          const span = document.createElement("span");
+          span.className = "char" + (isSlow ? " slow" : "");
+          span.style.setProperty("--ci", i);
+          span.textContent = char === " " ? "\u00A0" : char;
+          el.appendChild(span);
+        });
+      }
+
+      function activateChars(el, delay = 0) {
+        setTimeout(() => {
+          el.querySelectorAll(".char").forEach((c) =>
+            c.classList.add("visible"),
+          );
+        }, delay);
+      }
+
+      // ───────────────────────────────────────────
+      // SECTION-SPECIFIC EFFECTS
+      // ───────────────────────────────────────────
+      function activateSectionEffects(sectionEl) {
+        // Strikethrough
+        sectionEl.querySelectorAll(".draw-strike").forEach((el) => {
+          setTimeout(() => el.classList.add("active"), 500);
+        });
+
+        // Underline draw
+        sectionEl.querySelectorAll(".draw-underline").forEach((el) => {
+          setTimeout(() => {
+            el.classList.add("active");
+            setTimeout(
+              () => el.closest("p")?.classList.add("breath-glow"),
+              2500,
+            );
+          }, 400);
+        });
+
+        // Stagger children
+        sectionEl.querySelectorAll(".stagger-children").forEach((el) => {
+          setTimeout(() => el.classList.add("active"), 600);
+        });
+
+        // Char reveals
+        sectionEl.querySelectorAll("[data-chars]").forEach((el) => {
+          const isSlow = el.hasAttribute("data-slow");
+          const isTransit = el.hasAttribute("data-transit");
+          const hasGlow = el.hasAttribute("data-glow");
+
+          splitIntoChars(el, isSlow);
+          activateChars(el, 300);
+
+          if (isTransit) {
+            setTimeout(
+              () => el.classList.add("transit-float"),
+              el.textContent.length * 40 + 800,
+            );
+          }
+          if (hasGlow) {
+            setTimeout(
+              () => el.classList.add("breath-glow"),
+              el.textContent.length * 60 + 900,
+            );
+          }
+        });
+
+        // Canvas glitch para seção VI
+        if (sectionEl.dataset.section === "vi") {
+          setTimeout(() => triggerGlitch(false), 500);
+        }
+
+        // Gatilho para a Interrupção
+        if (el.querySelector('[data-key="interrupcao"]')) {
+          setTimeout(() => triggerGlitch(true), 800);
+        }
+
+        // Gatilho para o Trânsito
+        if (el.querySelector("[data-transit-effect]")) {
+          el.classList.add("in-transit");
+        }
+      }
+
+      // ───────────────────────────────────────────
+      // AUDIO: ECO DO QUE FICOU
+      // ───────────────────────────────────────────
+      let audioCtx = null;
+      let isPlaying = false;
+      let droneOsc,
+        droneGain,
+        upperOsc,
+        upperGain,
+        noiseSource,
+        noiseGain,
+        noiseFilter,
+        fomeOsc,
+        fomeGain;
+      let interruptionTimerId = null;
+
+      function playInterruptionMotif() {
+        if (!audioCtx || !isPlaying) return;
+        const now = audioCtx.currentTime;
+
+        const notes = [
+          { freq: 660, t: 0, gain: 0.018, decay: 4.2 },
+          { freq: 742, t: 0.38, gain: 0.015, decay: 3.8 },
+          { freq: 699, t: 0.74, gain: 0.013, decay: 4.8 },
+        ];
+
+        notes.forEach((note) => {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.type = "sine";
+          osc.frequency.value = note.freq;
+          g.gain.setValueAtTime(0, now + note.t);
+          g.gain.linearRampToValueAtTime(note.gain, now + note.t + 0.008);
+          g.gain.exponentialRampToValueAtTime(
+            0.0001,
+            now + note.t + note.decay,
+          );
+          osc.connect(g);
+          g.connect(audioCtx.destination);
+          osc.start(now + note.t);
+          osc.stop(now + note.t + note.decay + 0.1);
+        });
+
+        // Ghost note
+        const ghostOsc = audioCtx.createOscillator();
+        const ghostGain = audioCtx.createGain();
+        ghostOsc.type = "sine";
+        ghostOsc.frequency.value = 742 * Math.pow(2, 5 / 1200);
+        ghostGain.gain.setValueAtTime(0, now + 0.58);
+        ghostGain.gain.linearRampToValueAtTime(0.004, now + 0.59);
+        ghostGain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
+        ghostOsc.connect(ghostGain);
+        ghostGain.connect(audioCtx.destination);
+        ghostOsc.start(now + 0.58);
+        ghostOsc.stop(now + 4.0);
+
+        // Motivo soa uma única vez — memória involuntária não se repete
+      }
+
+      function startAudio() {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+
+        droneOsc = audioCtx.createOscillator();
+        droneGain = audioCtx.createGain();
+        droneOsc.type = "sine";
+        droneOsc.frequency.value = 40;
+        droneGain.gain.setValueAtTime(0, now);
+        droneGain.gain.linearRampToValueAtTime(0.015, now + 7);
+        droneOsc.connect(droneGain);
+        droneGain.connect(audioCtx.destination);
+        droneOsc.start();
+
+        upperOsc = audioCtx.createOscillator();
+        upperGain = audioCtx.createGain();
+        upperOsc.type = "sine";
+        upperOsc.frequency.value = 160;
+        upperGain.gain.setValueAtTime(0, now);
+        upperGain.gain.linearRampToValueAtTime(0.006, now + 10);
+        upperOsc.connect(upperGain);
+        upperGain.connect(audioCtx.destination);
+        upperOsc.start();
+
+        // Camada fome: 864Hz — aparece com proximidade do cursor
+        fomeOsc = audioCtx.createOscillator();
+        fomeGain = audioCtx.createGain();
+        fomeOsc.type = "sine";
+        fomeOsc.frequency.value = 864;
+        fomeGain.gain.setValueAtTime(0, now);
+        fomeGain.gain.linearRampToValueAtTime(0.008, now + 12);
+        fomeOsc.connect(fomeGain);
+        fomeGain.connect(audioCtx.destination);
+        fomeOsc.start();
+
+        const bufSize = audioCtx.sampleRate * 4;
+        const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+        noiseSource = audioCtx.createBufferSource();
+        noiseSource.buffer = buf;
+        noiseSource.loop = true;
+
+        noiseFilter = audioCtx.createBiquadFilter();
+        noiseFilter.type = "lowpass";
+        noiseFilter.frequency.value = 160;
+        noiseFilter.Q.value = 0.4;
+
+        noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0, now);
+        noiseGain.gain.linearRampToValueAtTime(0.007, now + 8);
+
+        noiseSource.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        noiseGain.connect(audioCtx.destination);
+        noiseSource.start();
+
+        isPlaying = true;
+        document
+          .getElementById("soundtrack-toggle")
+          .classList.add("is-playing");
+        interruptionTimerId = setTimeout(playInterruptionMotif, 15000);
+        sessionStorage.setItem("audioState", "playing");
+      }
+
+      function stopAudio() {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        if (droneGain) droneGain.gain.linearRampToValueAtTime(0, now + 2.5);
+        if (upperGain) upperGain.gain.linearRampToValueAtTime(0, now + 2.5);
+        if (noiseGain) noiseGain.gain.linearRampToValueAtTime(0, now + 2.5);
+        if (fomeGain) fomeGain.gain.linearRampToValueAtTime(0, now + 2.5);
+        if (droneOsc) droneOsc.stop(now + 2.6); // STOP REAL
+        if (upperOsc) upperOsc.stop(now + 2.6);
+        if (fomeOsc) fomeOsc.stop(now + 2.6);
+        if (noiseSource) noiseSource.stop(now + 2.6);
+        if (interruptionTimerId) clearTimeout(interruptionTimerId);
+        isPlaying = false;
+        document
+          .getElementById("soundtrack-toggle")
+          .classList.remove("is-playing");
+        sessionStorage.setItem("audioState", "paused");
+      }
+
+      document
+        .getElementById("soundtrack-toggle")
+        .addEventListener("click", () => {
+          if (!isPlaying) startAudio();
+          else stopAudio();
+        });
+
+      // ───────────────────────────────────────────
+      // PROGRESSO GLOBAL & OBSERVERS
+      // ───────────────────────────────────────────
+      window.addEventListener("scroll", () => {
+        const scrolled = document.documentElement.scrollTop;
+        const h =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        const page = scrolled / h;
+        const global = (6 / 9) * 100 + page * (100 / 9);
+        document.getElementById("global-progress").style.width = global + "%";
+      });
+
+      const poeticObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            el.classList.add("reveal");
+            activateSectionEffects(el);
+            poeticObserver.unobserve(el);
+          });
+        },
+        { threshold: 0.1, rootMargin: "0px 0px -10% 0px" },
+      );
+
+      document.querySelectorAll(".poetic-paragraph").forEach((el) => {
+        poeticObserver.observe(el);
+      });
+
+      const footerObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            document
+              .getElementById("final-nav")
+              .classList.add("opacity-100", "translate-y-0");
+            footerObserver.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.1 },
+      );
+      footerObserver.observe(document.getElementById("final-nav"));
+
+      // ───────────────────────────────────────────
+      // INTERRUPÇÃO SUBLIMINAR (Frase e Glitch)
+      // ───────────────────────────────────────────
+      // Aparece esporadicamente para assustar/deslocar a percepção
+      function scheduleGhostInterruption() {
+        if (sessionStorage.getItem("ghostFired")) return;
+        const delay = 20000 + Math.random() * 40000; // Entre 20 e 60 segs
+        setTimeout(() => {
+          if (sessionStorage.getItem("ghostFired")) return;
+          sessionStorage.setItem("ghostFired", "1");
+          const gi = document.getElementById("ghost-interruption");
+          gi.classList.add("visible");
+          triggerGlitch(true);
+
+          // Toca um som muito baixo se o áudio estiver ligado
+          if (audioCtx && isPlaying) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "square";
+            osc.frequency.value = 55;
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(
+              0.005,
+              audioCtx.currentTime + 0.1,
+            );
+            gain.gain.exponentialRampToValueAtTime(
+              0.0001,
+              audioCtx.currentTime + 1.5,
+            );
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 2);
+          }
+
+          setTimeout(() => gi.classList.remove("visible"), 3000);
+        }, delay);
+      }
+
+      // ───────────────────────────────────────────
+      // INIT
+      // ───────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("loaded");
+        resizeCanvas();
+        renderDrift();
+        scheduleGhostInterruption();
+        if (sessionStorage.getItem("audioState") === "playing") {
+          startAudio();
+          const btnPlay = document.getElementById("icon-play");
+          const btnPause = document.getElementById("icon-pause");
+          if (btnPlay) btnPlay.classList.add("hidden");
+          if (btnPause) btnPause.classList.remove("hidden");
+        }
+      });
+
+      // ───────────────────────────────────────────
+      // NAVEGAÇÃO COM SOM
+      // ───────────────────────────────────────────
+      function playNavClick() {
+        try {
+          const c = new (window.AudioContext || window.webkitAudioContext)();
+          const now = c.currentTime;
+          const bufLen = Math.floor(c.sampleRate * 0.14);
+          const buf = c.createBuffer(1, bufLen, c.sampleRate);
+          const d = buf.getChannelData(0);
+          for (let i = 0; i < bufLen; i++) d[i] = Math.random() * 2 - 1;
+          const noise = c.createBufferSource();
+          noise.buffer = buf;
+          const filter = c.createBiquadFilter();
+          filter.type = "bandpass";
+          filter.frequency.value = 2000;
+          filter.Q.value = 0.7;
+          const g = c.createGain();
+          g.gain.setValueAtTime(0, now);
+          g.gain.linearRampToValueAtTime(0.13, now + 0.008);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+          noise.connect(filter);
+          filter.connect(g);
+          g.connect(c.destination);
+          noise.start(now);
+          noise.stop(now + 0.14);
+          const thump = c.createOscillator();
+          const tg = c.createGain();
+          thump.type = "sine";
+          thump.frequency.setValueAtTime(110, now + 0.07);
+          thump.frequency.exponentialRampToValueAtTime(55, now + 0.16);
+          tg.gain.setValueAtTime(0.055, now + 0.07);
+          tg.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+          thump.connect(tg);
+          tg.connect(c.destination);
+          thump.start(now + 0.07);
+          thump.stop(now + 0.16);
+          setTimeout(() => c.close(), 600);
+        } catch (e) {}
+      }
+
+      function playExitRipple(x, y, cb) {
+        const el = document.createElement("div");
+        const s = Math.hypot(window.innerWidth, window.innerHeight) * 2.4;
+        el.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(239,176,87,0.18) 0%,rgba(1,7,9,0.97) 65%);transform:translate(-50%,-50%) scale(1);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1);pointer-events:none;z-index:9997;`;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(-50%,-50%) scale(${s})`;
+        });
+        setTimeout(() => {
+          el.remove();
+          cb();
+        }, 670);
+      }
+
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (audioCtx && audioCtx.state === "running") {
+            try {
+              const _ft = audioCtx.currentTime;
+              [droneGain, upperGain, noiseGain].forEach((g) => {
+                if (g) {
+                  g.gain.cancelScheduledValues(_ft);
+                  g.gain.linearRampToValueAtTime(0, _ft + 0.5);
+                }
+              });
+            } catch (_) {}
+          }
+          playNavClick();
+          const rx = e.clientX || window.innerWidth / 2;
+          const ry = e.clientY || window.innerHeight / 2;
+          playExitRipple(rx, ry, () => {
+            document.body.classList.remove("loaded");
+            setTimeout(() => {
+              window.location.href = link.getAttribute("href");
+            }, 60);
+          });
+        });
+      });
+
+      if (!isTouch) {
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("mouseenter", () => {
+            try {
+              const c = new (
+                window.AudioContext || window.webkitAudioContext
+              )();
+              const o = c.createOscillator();
+              const g = c.createGain();
+              o.type = "sine";
+              o.frequency.value = 800;
+              g.gain.setValueAtTime(0.018, c.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+              o.connect(g);
+              g.connect(c.destination);
+              o.start();
+              o.stop(c.currentTime + 0.12);
+              setTimeout(() => c.close(), 400);
+            } catch (e) {}
+          });
+        });
+      }
+    </script>
+
+    <!-- ── NOTA DE RODAPÉ ──────────────────────────────────────────────── -->
+    <aside
+      id="fn-cap-6"
+      style="
+        font-family: &quot;JetBrains Mono&quot;, monospace;
+        font-size: 0.595rem;
+        line-height: 1.95;
+        color: rgba(255, 255, 255, 0.22);
+        border-left: 1px solid rgba(205, 172, 108, 0.14);
+        padding: 1.1rem 1.6rem;
+        max-width: 38rem;
+        margin: 4.5rem auto 0;
+        opacity: 0;
+        transform: translateY(10px);
+        transition:
+          opacity 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 2.4s cubic-bezier(0.16, 1, 0.3, 1);
+        letter-spacing: 0.025em;
+        display: block;
+      "
+    >
+      <span
+        style="
+          display: block;
+          width: 1.8rem;
+          height: 1px;
+          background: rgba(205, 172, 108, 0.2);
+          margin-bottom: 0.8rem;
+        "
+      ></span
+      >Quando um corpo entra na água, a água se move. Não tem outra opção. A
+      água cede, abre espaço, redefine a forma que tinha. Você entrou e eu me
+      movi. Coisas que estavam no lugar saíram do lugar pra você caber. Não me
+      arrependo — não é sobre arrependimento. É sobre reconhecer: você tomou
+      espaço. O espaço que você tomou era meu e agora é nosso e eu não sei mais
+      distinguir qual parte era de quem antes de você. Isso não tem nome que
+      caiba. Algumas coisas resistem ao nome como a água resiste à forma.
+    </aside>
+    <script>
+      (function () {
+        var fn = document.getElementById("fn-cap-6"),
+          fired = false;
+        if (!fn) return;
+        window.addEventListener("scroll", function () {
+          if (fired) return;
+          var t = document.documentElement.scrollHeight - window.innerHeight;
+          if (t > 0 && window.scrollY / t > 0.8) {
+            fired = true;
+            fn.style.opacity = "1";
+            fn.style.transform = "translateY(0)";
+          }
+        });
+      })();
+    </script>
+    <script src="oa-fragmentos.js"></script>
+    <script src="constelacao-header.js"></script>
+    <script>
+      /* Autoplay: inicia o audio no primeiro gesto do usuario em cada capitulo */
+      (function () {
+        window.addEventListener("load", function () {
+          var btn =
+            document.getElementById("btn-audio") ||
+            document.getElementById("soundtrack-toggle");
+          if (!btn) return;
+          function _playing() {
+            if (btn.id === "btn-audio") {
+              var ip = document.getElementById("icon-play");
+              return ip && ip.classList.contains("hidden");
+            }
+            return btn.classList.contains("is-playing");
+          }
+          if (_playing()) return;
+          document.addEventListener(
+            "pointerdown",
+            function oa_auto() {
+              document.removeEventListener("pointerdown", oa_auto, true);
+              if (!_playing()) btn.click();
+            },
+            { capture: true },
+          );
+        });
+      })();
+    </script>
+  </body>
+</html>
