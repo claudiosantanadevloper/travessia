@@ -1058,6 +1058,7 @@
       let width, height;
 
       let combustaoMode = false;
+      let combustaoIntensity = 0;
       const isTouch = window.matchMedia(
         "(hover: none), (pointer: coarse)",
       ).matches;
@@ -1329,6 +1330,18 @@
       let heartbeatInterval = null;
       let isPlaying = false;
       let droneRafId = null;
+      let saturationNode = null;
+
+      function makeDistortionCurve(amount) {
+        const k = typeof amount === 'number' ? amount : 50;
+        const samples = 256;
+        const curve = new Float32Array(samples);
+        for (let i = 0; i < samples; ++i) {
+          const x = (i * 2) / samples - 1;
+          curve[i] = ((Math.PI + k) * x) / (Math.PI + k * Math.abs(x));
+        }
+        return curve;
+      }
 
       const btnAudio = document.getElementById("btn-audio"),
         iconPlay = document.getElementById("icon-play"),
@@ -1507,8 +1520,6 @@
         document.body.classList.add("loaded");
 
         // Garantir que os ícones do áudio iniciem no estado correto
-        const iconPlay = document.getElementById("icon-play");
-        const iconPause = document.getElementById("icon-pause");
         if (iconPlay && iconPause) {
           iconPlay.classList.remove("hidden");
           iconPause.classList.add("hidden");
@@ -1676,6 +1687,9 @@
         }
         setTimeout(type, 800);
       };
+
+      // Garantir visibilidade imediata — script roda após </main>, DOM já está pronto
+      document.body.classList.add("loaded");
 
       // Intersection Observers (Configurações e Acionamentos)
       const observerOptions = {
